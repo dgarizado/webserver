@@ -8,6 +8,7 @@
 #include <string>
 #include <variant>
 #include <sstream>
+#include <cstring>
 
 # define RED "\033[31m"
 # define GREEN "\033[32m"
@@ -17,22 +18,34 @@
 # define RESET "\033[0m"
 
 typedef struct s_location {
-    std::string 				root;
-    std::vector<std::string> 	index;
+    std::string 			    root;
+    std::vector<std::string>    index;
 }t_location;
 
 typedef struct s_server {
-    int 						listen;
-    std::string 				errorLogs;
-    std::string 				workerConnections;
-	std::vector<t_location>		locations;
+    std::vector<std::string>    server_name;
+    int 					    listen;
+    std::string 			    errorLogs;
+    std::string 			    workerConnections;
+	std::vector<t_location>	    locations;
 }t_server;
+
+typedef struct s_fileParse {
+    int                         test;
+	std::set<int>               ports;
+	std::string                 errorLog;
+	std::string                 workerConnections;
+    std::vector<t_server>       serverData;
+}t_fileParse;
 
 class VicParse {
 public:
 	
     // // Constructor por defecto
-    // VicParse() = default;
+    VicParse(void)
+    {
+    //   memset(&this->configData, 0, sizeof(t_fileParse));
+    }
 
     // // Destructor
     // ~VicParse() = default;
@@ -43,12 +56,11 @@ public:
     // Método para obtener un valor de la configuración
     //std::variant<int, std::string, std::map<std::string, std::string>> getValue(const std::string& key) const;
 
-protected:
-	std::string test;
-	std::set<int> ports;
-	std::string errorLogs;
-	std::string workerConnections;
-    std::vector<t_server> serverData;
+    //getter
+    t_fileParse & getStruct(void);
+
+private:
+	t_fileParse configData;
 
 };
 
