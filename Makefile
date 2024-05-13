@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
+#    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/12 12:57:39 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/05/13 14:55:34 by vcereced         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,3 +46,13 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(HEADERS)
 		g++ -Wall -Wextra -Werror -std=c++98 -o $(NAME) $(OBJS)
+
+################################################################################
+#                                  VICTOR LAB                                  #
+################################################################################
+
+fvic:
+	rm vic VicParse.o vicmain.o
+
+vic:
+	g++ VicParse.cpp vicmain.cpp -o vic && ./vic
