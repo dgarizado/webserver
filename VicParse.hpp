@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <variant>
+#include <sstream>
 
 # define RED "\033[31m"
 # define GREEN "\033[32m"
@@ -15,15 +16,16 @@
 # define MAGENTA "\033[35m"
 # define RESET "\033[0m"
 
-typedef struct s_locations {
+typedef struct s_location {
     std::string 				root;
     std::vector<std::string> 	index;
-}t_locations;
+}t_location;
 
 typedef struct s_server {
     int 						listen;
     std::string 				errorLogs;
     std::string 				workerConnections;
+	std::vector<t_location>		locations;
 }t_server;
 
 class VicParse {
@@ -41,7 +43,8 @@ public:
     // Método para obtener un valor de la configuración
     //std::variant<int, std::string, std::map<std::string, std::string>> getValue(const std::string& key) const;
 
-private:
+protected:
+	std::string test;
 	std::set<int> ports;
 	std::string errorLogs;
 	std::string workerConnections;
