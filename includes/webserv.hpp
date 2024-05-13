@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/12 13:05:49 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/13 15:12:36 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <unistd.h>
+#include <sys/event.h> // Include this for kqueue
+#include <sys/time.h>  // Include this for kqueue
 
 # define RED "\033[31m"
 # define GREEN "\033[32m"
