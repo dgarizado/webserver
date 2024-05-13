@@ -21,15 +21,11 @@ void ft_brackets(int &server, std::string &token, int &brackets)
         brackets--;
     
     if (brackets == 0)
-        server--;
+        server = 0;
 }
 
-// void setData(VicParse *ref, std::string &data)
-// {
-//     ref->getStruct().test = data;
-// }
 
-int isVarInsideServer(VicParse *ref, std::istringstream &iss, std::string &token, int &server, int &brackets)
+int isVarInsideServer(VicParse *ref, int &nServer, std::istringstream &iss, std::string &token, int &server, int &brackets)
 {
     int encounter = 0;
     int valor_entero = 0;
@@ -40,53 +36,76 @@ int isVarInsideServer(VicParse *ref, std::istringstream &iss, std::string &token
 
         try {
         valor_entero = std::stoi(token); // Convertir el token a int
-        std::cout << "Valor entero: " << valor_entero << std::endl;
         } catch (const std::invalid_argument& e) {
-        std::cerr << "Error: El token no es un número válido." << std::endl;
+        std::cerr << "Error: not valid num" << std::endl;
         } catch (const std::out_of_range& e) {
-        std::cerr << "Error: El número es grande o pequeño para ser representado como int." << std::endl;
+        std::cerr << "Error: num out of range" << std::endl;
         }
-        std::cout << "antes" << std::endl;
         ref->getStruct().ports.insert(valor_entero);
-        std::cout << "despues" << std::endl;
+        ref->getStruct().serverData[nServer].listen = valor_entero;
+        std::cout << GREEN << "var: serverData[" << nServer << "].listen= " << valor_entero << RESET << std::endl;
         encounter = 1;
     }
+    else if (token == "server_name")
+    {
+        while (iss >> token)
+        {
+            token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+            std::string name(token);
+            ref->getStruct().serverData[nServer].server_name.push_back(name);
+        }
+    }
     
+    
+    if (server)
+            ft_brackets(server, token, brackets);
     while (iss >> token)
     {
-        ft_brackets(server, token, brackets);
+        if (server)
+            ft_brackets(server, token, brackets);
     }
+
 
     return encounter;
 
 }
 
-int isServer(std::istringstream &iss, std::string &token, int &server, int &brackets)
+int isServer(VicParse *ref, std::istringstream &iss, int &nServer, std::string &token, int &server, int &brackets)
 {
     int encounter = 0;
-
+    std::cout << YELLOW << "IS SERVER token= " <<token << " status server= " << server << " N server= " << nServer << " brackets= " << brackets << RESET << std::endl;
     if (token == "server")
     {
+        t_server empty;
         server++;
         encounter++;
+        nServer++;
+        ref->getStruct().serverData.push_back(empty);
+        std::cout << GREEN << "push_back de una struct t_server !!!" << RESET << std::endl;
     }
 
     while (iss >> token)
     {
-        ft_brackets(server, token, brackets);
+        if (server)
+            ft_brackets(server, token, brackets);
     }
     return encounter;
 }
 
 int varServer(VicParse *ref, std::istringstream &iss, std::string &token, int &server, int &brackets)
 {
+    //index of vhost(server)
+    static int          nServer = -1;
+
+
+    std::cout << YELLOW << "VAR SERVER token= " << token << " status server= " << server << " N server= " << nServer << " brackets= " << brackets << RESET << std::endl;
     //si ya esta dentro de un bloque server
     if (server)
-        return isVarInsideServer(ref, iss, token, server, brackets);
+        return isVarInsideServer(ref, nServer, iss, token, server, brackets);
     else
     {
         //si todavia no ha entrado en un bloque server check, si empieza el bloque
-        return (isServer(iss, token, server, brackets));
+        return (isServer(ref, iss, nServer, token, server, brackets));
     }
 
 }
@@ -119,6 +138,7 @@ int lineParser(VicParse *ref, std::string &line)
     std::istringstream  iss(line);
     std::string         token;
     static int          server = 0;
+   
     static int          brackets = 0;
 
    
@@ -171,15 +191,30 @@ int VicParse::loadConfigFromFile(const std::string& filename)
     }
 
 
-
     //PRINT THE WHOLE STRUCTURE!!!!
-    
-    std::cout << YELLOW << "/errorLogs= " << this->configData.errorLog << RESET << std::endl;
-    std::cout << YELLOW << "/workerConnections= " << this->configData.workerConnections << RESET << std::endl;
-     for (int elem : this->configData.workerConnections) {
-        std::cout << YELLOW << "/VECTOR:port= " << elem << RESET << std::endl;
+     std::cout << "----------- STRUCT -------------" << std::endl;
+    std::cout << GREEN << "/errorLogs= " << this->configData.errorLog << RESET << std::endl;
+    std::cout << GREEN << "/workerConnections= " << this->configData.workerConnections << RESET << std::endl;
+    std::cout << GREEN << "/VECTOR:port= " ;
+    for (std::set<int>::iterator it = this->configData.ports.begin(); it != this->configData.ports.end(); ++it) {
+        std::cout << *it <<", ";
     }
-    std::cout << YELLOW << "/VECTOR:port= " << this->configData.workerConnections << RESET << std::endl;
+    std::cout << RESET << std::endl;
+    std::cout << "--------vector<t_server>[0]----------" << std::endl;
+    std::cout << GREEN "/serverData[0].listen= " << this->configData.serverData[0].listen << RESET << std::endl;
+    std::cout << GREEN << "/serverData[0].server_name= " ;
+    for (std::vector<std::string>::iterator it = this->configData.serverData[0].server_name.begin(); it != this->configData.serverData[0].server_name.end(); ++it) {
+        std::cout << *it <<", ";
+    }
+    std::cout << RESET << std::endl;
+
+    std::cout << "--------vector<t_server>[1]----------" << std::endl;
+    std::cout << GREEN "/serverData[1].listen= " << this->configData.serverData[1].listen << std::endl;
+    std::cout << GREEN << "/serverData[1].server_name= " ;
+    for (std::vector<std::string>::iterator it = this->configData.serverData[1].server_name.begin(); it != this->configData.serverData[1].server_name.end(); ++it) {
+        std::cout << *it <<", ";
+    }
+    std::cout << RESET << std::endl;
     // Cierra el archivo
     file.close();
     return 0;
