@@ -18,6 +18,7 @@
 # define RESET "\033[0m"
 
 typedef struct s_location {
+    std::string                 uri;
     std::string 			    root;
     std::vector<std::string>    index;
 }t_location;

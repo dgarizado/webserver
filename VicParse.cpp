@@ -13,7 +13,7 @@
  }
 
 
-void ft_brackets(int &server, std::string &token, int &brackets)
+void ft_brackets(int &server, std::string &token, int &brackets, int *nLocation)
 {
     if (token == "{")
         brackets++;
@@ -21,14 +21,35 @@ void ft_brackets(int &server, std::string &token, int &brackets)
         brackets--;
     
     if (brackets == 0)
+    {
         server = 0;
+        if (*nLocation)
+            *nLocation = -1;
+    }
+}
+
+int newLocation(VicParse *ref, std::istringstream &iss, int &nServer, std::string &token, int &server, int &brackets, int &nLocation)
+{
+    nLocation++;
+    std::cout << YELLOW << "NEW LOCATION token= " <<token << " status server= " << server << " N server= " << nServer << " brackets= " << brackets << "Nlocation" << nLocation << RESET << std::endl;
+    t_location empty;
+
+    ref->getStruct().serverData[nServer].locations.push_back(empty);
+    std::cout << GREEN << "push_back de una struct t_LOCATION[" << nServer << "] !!" <<  RESET << std::endl;
+
+    return 1;
 }
 
 
 int isVarInsideServer(VicParse *ref, int &nServer, std::istringstream &iss, std::string &token, int &server, int &brackets)
 {
+    static int nLocation = -1;
+   
     int encounter = 0;
     int valor_entero = 0;
+
+    std::cout << YELLOW << "isVarInsideServer= " <<token << " status server= " << server << " N server= " << nServer << " brackets= " << brackets << "Nlocation" << nLocation << RESET << std::endl;
+
     if (token == "listen")
     {
         iss >> token;
@@ -54,15 +75,21 @@ int isVarInsideServer(VicParse *ref, int &nServer, std::istringstream &iss, std:
             std::string name(token);
             ref->getStruct().serverData[nServer].server_name.push_back(name);
         }
+        encounter = 1;
+    }
+    else if (token == "location")
+    {
+        newLocation(ref, iss, nServer, token, server, brackets, nLocation);
+        
+        encounter = 1;
     }
     
-    
     if (server)
-            ft_brackets(server, token, brackets);
+            ft_brackets(server, token, brackets, &nLocation);
     while (iss >> token)
     {
         if (server)
-            ft_brackets(server, token, brackets);
+            ft_brackets(server, token, brackets, &nLocation);
     }
 
 
@@ -70,7 +97,7 @@ int isVarInsideServer(VicParse *ref, int &nServer, std::istringstream &iss, std:
 
 }
 
-int isServer(VicParse *ref, std::istringstream &iss, int &nServer, std::string &token, int &server, int &brackets)
+int newServer(VicParse *ref, std::istringstream &iss, int &nServer, std::string &token, int &server, int &brackets)
 {
     int encounter = 0;
     std::cout << YELLOW << "IS SERVER token= " <<token << " status server= " << server << " N server= " << nServer << " brackets= " << brackets << RESET << std::endl;
@@ -87,25 +114,25 @@ int isServer(VicParse *ref, std::istringstream &iss, int &nServer, std::string &
     while (iss >> token)
     {
         if (server)
-            ft_brackets(server, token, brackets);
+            ft_brackets(server, token, brackets, NULL);
     }
     return encounter;
 }
 
-int varServer(VicParse *ref, std::istringstream &iss, std::string &token, int &server, int &brackets)
+int isServer(VicParse *ref, std::istringstream &iss, std::string &token, int &server, int &brackets)
 {
     //index of vhost(server)
     static int          nServer = -1;
 
 
-    std::cout << YELLOW << "VAR SERVER token= " << token << " status server= " << server << " N server= " << nServer << " brackets= " << brackets << RESET << std::endl;
+    std::cout << YELLOW << "IS SERVER token= " << token << " status server= " << server << " N server= " << nServer << " brackets= " << brackets << RESET << std::endl;
     //si ya esta dentro de un bloque server
     if (server)
         return isVarInsideServer(ref, nServer, iss, token, server, brackets);
     else
     {
         //si todavia no ha entrado en un bloque server check, si empieza el bloque
-        return (isServer(ref, iss, nServer, token, server, brackets));
+        return (newServer(ref, iss, nServer, token, server, brackets));
     }
 
 }
@@ -146,7 +173,7 @@ int lineParser(VicParse *ref, std::string &line)
     iss >> token;
     //index of token
 
-    if (VarOutsideServer(ref, iss, token) || varServer(ref, iss, token, server, brackets))
+    if (VarOutsideServer(ref, iss, token) || isServer(ref, iss, token, server, brackets))
     {
             std::cout << GREEN << "register var= " << token << RESET << std::endl;
     }

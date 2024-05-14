@@ -6,7 +6,7 @@
 #    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/13 14:55:34 by vcereced         ###   ########.fr        #
+#    Updated: 2024/05/14 11:18:28 by vcereced         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,7 +52,7 @@ $(NAME): $(OBJS) $(HEADERS)
 ################################################################################
 
 fvic:
-	rm vic VicParse.o vicmain.o
+	rm vic VicParseImproved.o vicmain.o
 
 vic:
-	g++ VicParse.cpp vicmain.cpp -o vic && ./vic
+	g++ VicParseImproved.cpp vicmain.cpp -o vic && ./vic
