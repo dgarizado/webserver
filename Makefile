@@ -6,7 +6,7 @@
 #    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/14 11:18:28 by vcereced         ###   ########.fr        #
+#    Updated: 2024/05/15 12:44:27 by vcereced         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,4 +55,4 @@ fvic:
 	rm vic VicParseImproved.o vicmain.o
 
 vic:
-	g++ VicParseImproved.cpp vicmain.cpp -o vic && ./vic
+	g++ -Wall -Wextra -Werror VicParseImproved.cpp vicmain.cpp -o vic && ./vic

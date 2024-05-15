@@ -1,14 +1,12 @@
 #ifndef VICPARSE_HPP
-#define VICPARSE_HPP
+# define VICPARSE_HPP
 
-#include <fstream>
-#include <map>
-#include <set>
-#include <vector>
-#include <string>
-#include <variant>
-#include <sstream>
-#include <cstring>
+# include <fstream>
+# include <set>
+# include <vector>
+# include <string>
+# include <sstream>
+# include <iostream>
 
 # define RED "\033[31m"
 # define GREEN "\033[32m"
@@ -41,24 +39,14 @@ typedef struct s_fileParse {
 
 class VicParse {
 public:
-	
     // // Constructor por defecto
-    VicParse(void)
-    {
-    //   memset(&this->configData, 0, sizeof(t_fileParse));
-    }
+    VicParse(void) {}
 
-    // // Destructor
-    // ~VicParse() = default;
-
-    // Método para cargar la configuración desde un archivo
     int loadConfigFromFile(const std::string& filename);
-
-    // Método para obtener un valor de la configuración
-    //std::variant<int, std::string, std::map<std::string, std::string>> getValue(const std::string& key) const;
+    void showConfig(void);
 
     //getter
-    t_fileParse & getStruct(void);
+    t_fileParse &getStruct(void);
 
 private:
 	t_fileParse configData;
