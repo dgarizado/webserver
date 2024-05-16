@@ -6,31 +6,31 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:11:51 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 18:11:19 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:44:25 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/VHost.hpp"
 
-VHOST::VHOST()
+VHost::VHost()
 {
 }
 
-VHOST::VHOST(ConfParse &config)
+VHost::VHost(ConfParse &config)
 {
 	//parse the configuration and store it in the VHost object
 }
 
-VHOST::~VHOST()
+VHost::~VHost()
 {
 }
 
-VHOST::VHOST(VHOST const &src)
+VHost::VHost(VHost const &src)
 {
 	*this = src;
 }
 
-VHOST &VHOST::operator=(VHOST const &src)
+VHost &VHost::operator=(VHost const &src)
 {
 	if (this != &src)
 	{

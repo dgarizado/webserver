@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:17:12 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 18:18:55 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:11:14 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,15 @@
 # include <set>
 
 class ConfParse;
-class VHOST
+
+class VHost
 {
 	public:
-		VHOST();
-		VHOST(ConfParse &config);
-		~VHOST();
-		VHOST(VHOST const &src);
-		VHOST &operator=(VHOST const &src);
+		VHost();
+		VHost(ConfParse &config);
+		~VHost();
+		VHost(VHost const &src);
+		VHost &operator=(VHost const &src);
 
 	private:
 		//Here we will store the VHost configuration

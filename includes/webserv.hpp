@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 18:17:37 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:58:19 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 # define MAGENTA "\033[35m"
 # define RESET "\033[0m"
 
-# include "ConfParse.hpp"
 # include "VHost.hpp"
+# include "ConfParse.hpp"
 int ft_error(std::string msg);
 #endif

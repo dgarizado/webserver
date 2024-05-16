@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:41:19 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 18:08:47 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:06:11 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int createPorts(std::vector<int> &ports)
 
 int main(int argc, char **argv)
 {
+	// argv = NULL;
 	if (argc > 2)
 		ft_error("Bad arguments, use: ./webserv [config_file]");
 	if (argc == 2)
@@ -37,8 +38,9 @@ int main(int argc, char **argv)
 		// ConfParse();
 		std::cout << GREEN << "Usign Default config file: ./config/default.conf"<< RESET<< std::endl;
 	}
-	//1. Parse the configuration file
+	// 1. Parse the configuration file
 		std::string config_file(argv[1]);
+		std::cout << GREEN << "Parsing configuration file" << RESET << std::endl;
 		ConfParse conf(config_file);
 		if (!conf.readConfigFile())
 		 	ft_error("Error reading config file");
