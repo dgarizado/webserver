@@ -1,5 +1,5 @@
-#ifndef FILEPARSE_HPP
-# define FILEPARSE_HPP
+#ifndef VICPARSE_HPP
+# define VICPARSE_HPP
 
 # include <fstream>
 # include <set>
@@ -46,10 +46,10 @@ typedef struct s_fileParse {
     std::vector<t_server>       serverData;
 }t_fileParse;
 
-class FileParse {
+class VicParse {
 public:
     // // Constructor por defecto
-    FileParse(void) {}
+    VicParse(void) {}
 
     int loadConfigFromFile(const std::string& filename);
     void showConfig(void);
@@ -59,9 +59,10 @@ public:
 
 private:
 	t_fileParse configData;
+
 };
 
-#endif  // FileParse_HPP 
+#endif  // VICPARSE_HPP 
 
 
 
