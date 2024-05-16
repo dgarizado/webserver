@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
+#    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/15 12:44:27 by vcereced         ###   ########.fr        #
+#    Updated: 2024/05/16 19:22:43 by dgarizad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,22 +17,32 @@
 
 NAME = webserv
 
-HEADERS = includes/webserv.hpp  includes/ConfParse.hpp
+HEADERS = includes/webserv.hpp  includes/ConfParse.hpp includes/Master.hpp  includes/VHost.hpp
 OBJDIR = ./obj
+FLAGS = -Wall -Wextra -Werror -std=c++98
 
+CLR_RMV		:= \033[0m
+RED		    := \033[1;31m
+GREEN		:= \033[1;32m
+YELLOW		:= \033[1;33m
+BLUE		:= \033[1;34m
+CYAN 		:= \033[1;36m
+RM		    := rm -rf
 
 ################################################################################
 #                                 PROGRAM'S SRCS                               #
 ################################################################################
 
 # SRCS =  $(wildcard srcs/*.cpp)
-SRCS = srcs/main.cpp srcs/ConfParse.cpp
+SRCS = main.cpp ConfParse.cpp Master.cpp utils.cpp VHost.cpp 
+SRCS := $(addprefix srcs/, $(SRCS))
+# SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
 # OBJS = $(SRCS:srcs/%.cpp=$(OBJDIR)/%.o)
 
 $(OBJDIR)/%.o: %.cpp $(HEADERS)
 	@mkdir -p $(@D)
-	g++ -Wall -Wextra -Werror -std=c++98 -c $< -o $@
+	@g++ -c $< -o $@  #$(FLAGS)
 
 
 
@@ -45,14 +55,13 @@ $(OBJDIR)/%.o: %.cpp $(HEADERS)
 all: $(NAME)
 
 $(NAME): $(OBJS) $(HEADERS)
-		g++ -Wall -Wextra -Werror -std=c++98 -o $(NAME) $(OBJS)
+	@g++ -o $(NAME) $(OBJS) #$(FLAGS)
+	@echo "$(GREEN)$(NAME) executable has been created!$(CLR_RMV)"
 
-################################################################################
-#                                  VICTOR LAB                                  #
-################################################################################
+clean:
+	@$(RM) $(OBJDIR)
+	@echo "$(YELLOW)$(NAME) objects have been removed$(CLR_RMV)"
 
-fvic:
-	rm vic VicParseImproved.o vicmain.o
-
-vic:
-	g++ -Wall -Wextra -Werror VicParseImproved.cpp vicmain.cpp -o vic && ./vic
+fclean: clean
+	@$(RM) $(NAME)
+	@echo "$(RED)$(NAME) executable has been removed!$(CLR_RMV)"
