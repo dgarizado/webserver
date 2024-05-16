@@ -6,14 +6,17 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:17:12 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/13 16:57:40 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:18:55 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VHOST_HPP
 # define VHOST_HPP
 # include "webserv.hpp"
+# include "ConfParse.hpp"
+# include <set>
 
+class ConfParse;
 class VHOST
 {
 	public:
@@ -41,7 +44,8 @@ class VHOST
 		int _serverSocket;
 		struct sockaddr_in _serverAddr;
 		
-		
+	//having a static variable for storing all the VHosts sockets in a set
+	static std::set<int> _ListenSockets;
 	
 };
 #endif

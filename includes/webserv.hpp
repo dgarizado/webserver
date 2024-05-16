@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/13 15:12:36 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:17:37 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <unistd.h>
 #include <sys/event.h> // Include this for kqueue
 #include <sys/time.h>  // Include this for kqueue
+#include <set>
 
 # define RED "\033[31m"
 # define GREEN "\033[32m"
@@ -35,4 +36,6 @@
 # define RESET "\033[0m"
 
 # include "ConfParse.hpp"
+# include "VHost.hpp"
+int ft_error(std::string msg);
 #endif

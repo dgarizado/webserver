@@ -6,7 +6,7 @@
 #    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/12 12:57:39 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/05/16 18:30:35 by dgarizad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@
 
 NAME = webserv
 
-HEADERS = includes/webserv.hpp  includes/ConfParse.hpp
+HEADERS = includes/webserv.hpp  includes/ConfParse.hpp includes/Master.hpp  #includes/VHost.hpp
 OBJDIR = ./obj
 
 
@@ -26,7 +26,9 @@ OBJDIR = ./obj
 ################################################################################
 
 # SRCS =  $(wildcard srcs/*.cpp)
-SRCS = srcs/main.cpp srcs/ConfParse.cpp
+SRCS = main.cpp ConfParse.cpp Master.cpp utils.cpp VHost.cpp 
+SRCS := $(addprefix srcs/, $(SRCS))
+# SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
 # OBJS = $(SRCS:srcs/%.cpp=$(OBJDIR)/%.o)
 

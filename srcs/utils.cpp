@@ -1,41 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   VHost.cpp                                          :+:      :+:    :+:   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/13 15:11:51 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 18:11:19 by dgarizad         ###   ########.fr       */
+/*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
+/*   Updated: 2024/05/16 16:53:46 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/VHost.hpp"
+#include "../includes/webserv.hpp"
 
-VHOST::VHOST()
+int ft_error(std::string msg)
 {
+	std::cerr << RED << msg << RESET << std::endl;
+	return (1);
 }
-
-VHOST::VHOST(ConfParse &config)
-{
-	//parse the configuration and store it in the VHost object
-}
-
-VHOST::~VHOST()
-{
-}
-
-VHOST::VHOST(VHOST const &src)
-{
-	*this = src;
-}
-
-VHOST &VHOST::operator=(VHOST const &src)
-{
-	if (this != &src)
-	{
-		//copy the attributes here
-	}
-	return (*this);
-}
-

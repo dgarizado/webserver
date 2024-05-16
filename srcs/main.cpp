@@ -6,35 +6,50 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:41:19 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/12 13:06:21 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:08:47 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/webserv.hpp"
 #include "../includes/ConfParse.hpp"
+#include "../includes/Master.hpp"
+
+int createPorts(std::vector<int> &ports)
+{
+	ports.push_back(8084);
+	ports.push_back(8083);
+	ports.push_back(8082);
+	ports.push_back(8081);
+	ports.push_back(8085);
+	return (0);
+}
 
 int main(int argc, char **argv)
 {
 	if (argc > 2)
-	{
-		std::cerr << RED << "Usage: ./webserver [config_file]" << RESET <<std::endl;
-		return (1);
-	}
+		ft_error("Bad arguments, use: ./webserv [config_file]");
 	if (argc == 2)
 	{
-		
-		std::string config_file(argv[1]);
-		ConfParse conf(config_file);
-		if (!conf.readConfigFile())
-		{
-			return (1);
-		}
-		return (0);
+		//HERE COMES PARSING AND LEXING BY VICTOR
 	} 
 	else
 	{
+		// ConfParse();
 		std::cout << GREEN << "Usign Default config file: ./config/default.conf"<< RESET<< std::endl;
-		//USE DEFAULT CONFIG FILE
 	}
+	//1. Parse the configuration file
+		std::string config_file(argv[1]);
+		ConfParse conf(config_file);
+		if (!conf.readConfigFile())
+		 	ft_error("Error reading config file");
+	//2. Create Vhost objects based on the configuration.
+	//3. Create Master object and pass the Vhost objects to it
+		
+		std::vector<int> ports;
+		createPorts(ports);
+		Master master;
+		master.setSockets(ports);
+		master.setEvents();
+		master.startEventLoop();
 	return (0);
 }

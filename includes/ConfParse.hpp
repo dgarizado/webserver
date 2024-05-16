@@ -6,13 +6,14 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 12:12:00 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/13 17:27:18 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:27:01 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONFPARSE_HPP
 # define CONFPARSE_HPP
 # include "webserv.hpp"
+// # include "VHOST.hpp"
 
 class ConfParse
 {
@@ -26,7 +27,9 @@ class ConfParse
 		bool readConfigFile() const;
 	private:
 		std::string _config_file;
-		int serverQty;
+		// std::vector<VHOST> _vhosts;
+		std::set<int> _ports;
+		// int serverQty;
 };
 
 #endif
