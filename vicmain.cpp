@@ -8,8 +8,8 @@ int main() {
     // Carga la configuración desde un archivo
     if (FileParser.loadConfigFromFile("./conf/server.conf") == -1)
     {
-		perror("parser error load from file");
-		return(errno);
+		  perror("parser error load from file");
+		  return(errno);
 	}else
 		std::cout << GREEN << "parser load file ok" << RESET << std::endl;
     FileParser.showConfig();

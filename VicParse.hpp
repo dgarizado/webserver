@@ -7,6 +7,7 @@
 # include <string>
 # include <sstream>
 # include <iostream>
+# include <unistd.h>
 
 # define RED "\033[31m"
 # define GREEN "\033[32m"
@@ -14,6 +15,14 @@
 # define BLUE "\033[34m"
 # define MAGENTA "\033[35m"
 # define RESET "\033[0m"
+
+enum nums {
+    LISTEN = 0,
+    SERVER_NAME = 1,
+    LOCATION = 2,
+    ROOT = 0,
+    INDEX = 1
+};
 
 typedef struct s_location {
     std::string                 uri;

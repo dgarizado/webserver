@@ -1,5 +1,11 @@
 #include "VicParse.hpp"
 
+int ft_err(std::string str)
+{
+    std::cerr  << str << std::endl;
+    return -1;
+}
+
 void ft_braces(int &braces, std::string &token)
 {
     if (token == "{")
@@ -8,12 +14,69 @@ void ft_braces(int &braces, std::string &token)
         braces--;
 }
 
-int varServer(VicParse *ref, std::istringstream &iss, int &nServer, std::string &token)
+
+int varLocation(VicParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token, int *varsCheck)
 {
-    int encounter = 0;
+    //int encounter = 0;
+
+    if (token == "root" && (varsCheck[ROOT] = 1))
+    {
+        iss >> token; 
+        token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+        ref->getStruct().serverData[nServer].locations[nLocation].root = token;
+    }
+    else if (token == "index" && (varsCheck[INDEX] = 1))
+    {
+        while (iss >> token)
+        {
+            token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+            ref->getStruct().serverData[nServer].locations[nLocation].index.push_back(token);
+        }
+    }
+    return 0;
+}
+
+
+void insideLocation(VicParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
+{
+    int 	        locationBraces = 0;
+
+    int             v[2] = {0, 0};//to markdown the vars to find
+    std::string     line;
+    t_location      empty;
+
+    if (token == "location")
+    {
+        //push a empty t_location into locations vector
+        nLocation++;
+        ref->getStruct().serverData[nServer].locations.push_back(empty);
+        //register the uri
+        iss >> token;
+        ref->getStruct().serverData[nServer].locations[nLocation].uri = token;
+       do{
+            while(iss >> token)
+		    {
+			    ft_braces(locationBraces, token);
+                varLocation(ref, iss, nServer, nLocation, token, v);
+		    }
+            if (locationBraces > 0 && std::getline(file, line))
+            {
+                iss.clear();    
+                iss.str(line);
+            }
+        }while (locationBraces > 0);
+
+        if (v[ROOT] == 0 || v[INDEX] == 0)
+            throw std::runtime_error("location block wrong");
+    }
+
+}
+
+void varServer(VicParse *ref, std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token, int *varsCheck)
+{
     int port;
 
-    if (token == "listen" && (encounter = 1))
+    if (token == "listen" && (varsCheck[LISTEN] = 1))
     {
         iss >> token;
         token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
@@ -26,7 +89,7 @@ int varServer(VicParse *ref, std::istringstream &iss, int &nServer, std::string 
         ref->getStruct().ports.insert(port);
         ref->getStruct().serverData[nServer].listen = port;
     }
-    else if (token == "server_name" && (encounter = 1))
+    else if (token == "server_name" && (varsCheck[SERVER_NAME] = 1))
     {
        while (iss >> token)
         {
@@ -34,67 +97,17 @@ int varServer(VicParse *ref, std::istringstream &iss, int &nServer, std::string 
             ref->getStruct().serverData[nServer].server_name.push_back(token);
         }
     }
-    return encounter;
+    else if (token == "location" && (varsCheck[LOCATION] = 1))
+        insideLocation(ref, file, iss, nServer, nLocation, token);
 }
 
-int varLocation(VicParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
-{
-    int encounter = 0;
-
-    if (token == "root" && (encounter = 1))
-    {
-        iss >> token; 
-        token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
-        ref->getStruct().serverData[nServer].locations[nLocation].root = token;
-    }
-    else if (token == "index" && (encounter = 1))
-    {
-        while (iss >> token)
-        {
-            token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
-            ref->getStruct().serverData[nServer].locations[nLocation].index.push_back(token);
-        }
-    }
-    return 0;
-}
-
-int insideLocation(VicParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
-{
-    int 	        locationBraces = 0;
-	int 		    encounter = 0;
-    std::string     line;
-    t_location      empty;
-
-    if (token == "location" && (encounter = 1))
-    {
-        //push a empty t_location into locations vector
-        nLocation++;
-        ref->getStruct().serverData[nServer].locations.push_back(empty);
-        //register the uri
-        iss >> token;
-        ref->getStruct().serverData[nServer].locations[nLocation].uri = token;
-       do{
-            while(iss >> token)
-		    {
-			    ft_braces(locationBraces, token);
-                varLocation(ref, iss, nServer, nLocation, token);
-		    }
-            if (locationBraces > 0 && std::getline(file, line))
-            {
-                iss.clear();    
-                iss.str(line);
-            }
-        }while (locationBraces > 0);
-    }
-    return encounter;
-}
-
-int insideServer(VicParse *ref,std::ifstream &file, std::istringstream &iss, std::string &token)
+int insideServer(VicParse *ref, std::ifstream &file, std::istringstream &iss, std::string &token)
 {
     static int      nServer = -1;
     int             nLocation = -1;
     int 	        serverBraces = 0;
-	int 		    encounter = 0;
+	int 		    encounter = -1;
+    int             v[3] = {0, 0, 0};//to markdown the vars to find
     std::string     line;
     t_server        empty;
 
@@ -107,8 +120,7 @@ int insideServer(VicParse *ref,std::ifstream &file, std::istringstream &iss, std
             while(iss >> token)
 		    {
 			    ft_braces(serverBraces, token);
-                insideLocation(ref, file, iss, nServer, nLocation, token);
-                varServer(ref, iss, nServer, token);
+                varServer(ref, file, iss, nServer, nLocation, token, v);
 		    }
             if (serverBraces > 0 && std::getline(file, line))
             {
@@ -116,6 +128,9 @@ int insideServer(VicParse *ref,std::ifstream &file, std::istringstream &iss, std
                 iss.str(line);
             }
         }while (serverBraces > 0);
+
+        if (v[LISTEN] == 0 || v[SERVER_NAME] == 0 || v[LOCATION] == 0)
+            throw std::runtime_error("Server block wrong");
     }
     return encounter;
 }
@@ -126,7 +141,8 @@ int insideServer(VicParse *ref,std::ifstream &file, std::istringstream &iss, std
 int insideHttp(VicParse *ref, std::ifstream &file, std::istringstream &iss, std::string &token)
 {
 	int 	        httpBraces = 0;
-	int 		    encounter = 0;
+	int 		    encounter = -1;
+    bool            server = false;
     std::string     line;
 
 	if (token == "http" && (encounter = 1))
@@ -135,15 +151,20 @@ int insideHttp(VicParse *ref, std::ifstream &file, std::istringstream &iss, std:
             while(iss >> token)
 		    {
 			    ft_braces(httpBraces, token);
-                insideServer(ref, file, iss, token);
-		    }
+                if (insideServer(ref, file, iss, token) == 1)
+                    server = true;
+            }   
             if (httpBraces > 0 && std::getline(file, line))
             {
                 iss.clear();    
                 iss.str(line);
             }
         }while (httpBraces > 0);
+        
+        if (!server)
+            throw std::runtime_error("Http block wrong");
     }
+
 	return encounter;
 }
 
@@ -177,7 +198,9 @@ int lineParser(VicParse *ref, std::ifstream &file, std::string &line)
    
     //Procesa el primer token
     iss >> token;
-    return (outsideHttp(ref, iss, token) || insideHttp(ref, file, iss, token));
+    outsideHttp(ref, iss, token);//MAY DELETE CUZ DONT NEED VARS OUTSIDE OF HTTP SERVERS
+
+    return (insideHttp(ref, file, iss, token));//jump into if "http"
 }
 
 /**
@@ -197,6 +220,7 @@ int VicParse::loadConfigFromFile(const std::string& filename)
 {
     std::ifstream       file(filename);
     std::string         line;
+    bool                http = false;
     
     // Checks is file open
     if (!file.is_open()) {
@@ -208,15 +232,22 @@ int VicParse::loadConfigFromFile(const std::string& filename)
     while (std::getline(file, line)) 
     {  
 		try{
-            lineParser(this, file, line);
-		}catch(const std::exception& e) {
+
+            if (lineParser(this, file, line) == 1)
+                http = true; 
+		
+        }catch(const std::exception& e) {
 			std::cerr << RED << "Exception: " << e.what() << RESET << std::endl;
             return -1;    
         }
     }
     file.close();
+
+    if (http == false)
+        return ft_err("error: not found http block");
     return 0;
 }
+
 
 void VicParse::showConfig(void)
 {
