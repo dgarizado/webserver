@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   VHOST.hpp                                          :+:      :+:    :+:   */
+/*   VHost.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:17:12 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 19:11:14 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 00:32:25 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VHOST_HPP
 # define VHOST_HPP
 # include "webserv.hpp"
-# include "ConfParse.hpp"
-# include <set>
 
-class ConfParse;
+class FileParse;
 
 class VHost
 {
 	public:
 		VHost();
-		VHost(ConfParse &config);
+		VHost(FileParse &config);
 		~VHost();
 		VHost(VHost const &src);
 		VHost &operator=(VHost const &src);
+
+		//setters
+		void setServer(t_server server);
 
 	private:
 		//Here we will store the VHost configuration
@@ -44,6 +45,9 @@ class VHost
 		//NETWORK
 		int _serverSocket;
 		struct sockaddr_in _serverAddr;
+
+		//THIS IS THE SERVER BLOCK STRUCTURE
+		t_server _server;
 		
 	//having a static variable for storing all the VHosts sockets in a set
 	static std::set<int> _ListenSockets;

@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 17:10:40 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 00:52:29 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,28 @@ Master &Master::operator=(Master const &src)
 		//copy the attributes here
 	}
 	return (*this);
+}
+
+int Master::createVHosts(FileParse &config)
+{
+	//create VHost objects and store them in the _vhosts vector
+	//one vhost per server block. server blocks are stored in the config object as a vector of t_server structs
+	std::vector<t_server> servers = config.getStruct().serverData;
+	std::vector<t_server>::iterator it = servers.begin();
+	for (; it != servers.end(); it++)
+	{
+		VHost vhost;
+		vhost.setServer(*it);
+		//problem here, serverName can be more than one.. 
+		_vhostMap[(*it).serverName] = vhost;
+		_vhosts.push_back(vhost);
+		std::cout << GREEN << "Created VHost for server " << (*it).serverName << RESET << std::endl;
+	}
+
+	
+	
+	
+	return (0);
 }
 
 int Master::setSockets(std::vector<int> ports)

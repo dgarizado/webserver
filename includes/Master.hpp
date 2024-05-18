@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 18:26:39 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 00:35:45 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define MAX_CLIENTS 100
 #include "webserv.hpp"
 
+class VHost;
 
 class Master
 {
@@ -24,16 +25,17 @@ class Master
 		Master(Master const &src);
 		Master &operator=(Master const &src);
 
-		// int createVHosts(ConfParse &config);
+		int createVHosts(FileParse &config);
 		int setSockets(std::vector<int> ports);
 		int setEvents();
 		int startEventLoop();
 		
 		
 	private:
+
 		std::vector<int> _ListenSockets;
-		// std::vector<VHost> _vhosts;
-		// std::map<std::string, VHost> _vhostsMap;
+		std::vector<VHost> _vhosts;
+		std::map<std::string, VHost> _vhostMap;
 		int _kq;
 };
 
