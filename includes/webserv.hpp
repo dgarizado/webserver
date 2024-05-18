@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 18:58:19 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:49:07 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,7 @@
 
 # include "VHost.hpp"
 # include "ConfParse.hpp"
+# include "Master.hpp"
+
 int ft_error(std::string msg);
 #endif

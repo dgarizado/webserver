@@ -6,13 +6,13 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:41:19 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 19:06:11 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:54:07 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/webserv.hpp"
 #include "../includes/ConfParse.hpp"
-#include "../includes/Master.hpp"
+#include "../includes/VicParse.hpp"
 
 int createPorts(std::vector<int> &ports)
 {
@@ -29,6 +29,8 @@ int main(int argc, char **argv)
 	// argv = NULL;
 	if (argc > 2)
 		ft_error("Bad arguments, use: ./webserv [config_file]");
+	
+	VicParse parseObj;
 	if (argc == 2)
 	{
 		//HERE COMES PARSING AND LEXING BY VICTOR

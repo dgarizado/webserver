@@ -1,4 +1,4 @@
-#include "VicParse.hpp"
+#include "../includes/VicParse.hpp"
 
 int ft_err(std::string str)
 {
