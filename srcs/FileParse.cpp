@@ -60,7 +60,7 @@ void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss,
             }
         }while (locationBraces > 0);
         //Checks if vars are encounter inside of location block
-        if (v[ROOT] == 0 || v[INDEX] == 0)
+        if (vars[ROOT] == 0 || vars[INDEX] == 0)
             throw std::runtime_error("location block wrong");
     }
 }
