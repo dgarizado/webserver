@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 18:17:04 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 18:32:19 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ class Master
 		Master &operator=(Master const &src);
 
 		int createVHosts(FileParse &config);
-		int setSockets(std::vector<int> ports);
+		
+		//NETWORK METHODS
+		int setSockets(std::set<int> &ports);
 		int setEvents();
 		int startEventLoop();
 

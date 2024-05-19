@@ -6,7 +6,7 @@
 #    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/18 23:32:38 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/05/19 18:29:13 by dgarizad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ RM		    := rm -rf
 ################################################################################
 
 # SRCS =  $(wildcard srcs/*.cpp)
-SRCS = main.cpp Master.cpp utils.cpp VHost.cpp  FileParse.cpp
+SRCS = main.cpp Master.cpp  MasterNetworking.cpp utils.cpp VHost.cpp  FileParse.cpp
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
