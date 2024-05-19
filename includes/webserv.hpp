@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 00:41:58 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 17:40:14 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 #define YELLOW "\033[33m"
 #define BLUE "\033[34m"
 #define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
 #define RESET "\033[0m"
 
 
@@ -51,14 +52,15 @@ typedef struct s_location {
 }t_location;
 
 typedef struct s_server {
-	std::vector<std::string>	server_name;
-	std::string					serverName;
-	int 						listen;
-	int 						port;
-	std::string					errorLogs;
-	std::string					workerConnections;
-	std::vector<t_location>		locations;
-}t_server;
+    std::vector<std::string>	server_name;
+    std::string					serverName;
+    int 						listen;
+    int 						port;
+    std::string					errorLogs;
+    std::string					workerConnections;
+    std::vector<t_location>		locations;
+
+} t_server;
 
 typedef struct s_fileParse {
 	int							test;

@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 00:35:45 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 18:17:04 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,19 @@ class Master
 		int setSockets(std::vector<int> ports);
 		int setEvents();
 		int startEventLoop();
+
+		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME
+		VHost &getVHost(std::string serverName);
 		
+
+		//AUXILIARY FUNCTIONS
+		void printServerNames();
 		
 	private:
 
 		std::vector<int> _ListenSockets;
 		std::vector<VHost> _vhosts;
+		std::vector<t_server> _servers;
 		std::map<std::string, VHost> _vhostMap;
 		int _kq;
 };

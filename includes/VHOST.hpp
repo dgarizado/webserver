@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:17:12 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 00:32:25 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 18:17:54 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,14 @@ class VHost
 		VHost(VHost const &src);
 		VHost &operator=(VHost const &src);
 
+		//getters
+		t_server &getServerStruct();
+		std::string getServerName();
+		
 		//setters
-		void setServer(t_server server);
+		void setServer(t_server &server);
+		//AUXILIARY FUNCTIONS
+		void printServerNames();
 
 	private:
 		//Here we will store the VHost configuration
@@ -36,6 +42,7 @@ class VHost
 		std::vector<std::string> _error_pages;
 		std::vector<std::string> _locations;
 		in_port_t _port;
+		int _listen;
 		int _max_body_size;
 		bool _auto_index;
 		bool _cgi;

@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:41:19 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 00:56:28 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 18:21:46 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,21 @@ int main(int argc, char **argv)
 			return (ft_error("Error while parsing the configuration file"));
 	}
 	//1. Parse the configuration file
-	//QUESTIONS: - WHAT HAPPENS IF A SERVERBLOCK HAS MULTIPLE SERVER NAMES?
-	//			 - WHAT HAPPENS IF TWO SERVER BLOCKS HAVE THE SAME SERVER NAME?	: THIs is not an error,but it will just 
-	//				overwrite the previous server block.
-	//2. Create Vhost objects based on the configuration.
-	//3. Create Master object and pass the Vhost objects to it
+	//QUESTIONS: 
+	// 			 Q1:WHAT HAPPENS IF A SERVERBLOCK HAS MULTIPLE SERVER NAMES?
+	//			 Q2:WHAT HAPPENS IF TWO SERVER BLOCKS HAVE THE SAME SERVER NAME?:
+	// 			 A2: THE LAST ONE WILL BE THE ONE USED
+	//			 - WHAT HAPPENS IF A SERVER BLOCK HAS NO SERVER NAME?
+	//2. Create Vhost objects based on the configuration. check
+	//3. Create Master object and pass the Vhost objects to it check
 		
 	std::vector<int> ports;
 	createPorts(ports);
 	fileParser.showConfig();
 	master.createVHosts(fileParser);
+	// master.printServerNames();:
+	VHost &vhost = master.getVHost("www.domain2.com");
+	std::cout << "VHOST SERVER NAME: " << vhost.getServerStruct().listen << std::endl;
 	master.setSockets(ports);
 	master.setEvents();
 	master.startEventLoop();
