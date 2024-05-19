@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:17:12 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 18:17:54 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 19:45:07 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class VHost
 		in_port_t _port;
 		int _listen;
 		int _max_body_size;
-		bool _auto_index;
+		bool _auto_index; 
 		bool _cgi;
 		bool _redirection;
 		std::string _cgi_path;

@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 18:28:09 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 18:54:22 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 20:09:15 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,13 @@ int Master::setSockets(std::set<int> &ports)
 		serverAddr.sin_port = htons(*it);
 		serverAddr.sin_addr.s_addr = INADDR_ANY;
 		// Set socket to non-blocking
-		fcntl(serverSocket, F_SETFL, O_NONBLOCK);
+		// fcntl(serverSocket, F_SETFL, O_NONBLOCK);
 		if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
 			ft_error("Error binding socket");
 		if (listen(serverSocket, 10) < 0)
 		 	ft_error("Error listening on socket");
 		_ListenSockets.push_back(serverSocket);
-		std::cout << GREEN << "Socket " << serverSocket << " listening on port " << *it << RESET << std::endl;
+		std::cout << GREEN << "Sockuet " << serverSocket << " listening on port " << *it << RESET << std::endl;
 	}
 	return (0);
 }
@@ -125,13 +125,22 @@ int Master::startEventLoop()
 					buffer[bytesRead] = '\0';
 					std::cout << "Received: " << buffer << std::endl;
 					//SERVING the ./html/index.html file
-					std::ifstream file("../html/index.html");
-					std::stringstream bufferr;
-					bufferr << file.rdbuf();
-					std::string file_contents = bufferr.str();
+					std::ifstream file("./html/index.html"); //PATH FROM THE EXECUTABLE.
+					//print the current working directory
+					if (!file) {
+						std::cerr << "Error opening file" << std::endl;
+						ft_error("Error opening file");
+					}
+
+					std::stringstream buffer;
+					buffer << file.rdbuf();
+					std::string file_contents = buffer.str();
+
 					const char *response_headers = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
 					send(socketToAccept, response_headers, strlen(response_headers), 0);
 					send(socketToAccept, file_contents.c_str(), file_contents.size(), 0);
+					// send(socketToAccept, response_headers, strlen(response_headers), 0);
+					// send(socketToAccept, file_contents.c_str(), file_contents.size(), 0);
 					close(socketToAccept);
 					std::cout << GREEN "Response sent" RESET << std::endl;
 				}

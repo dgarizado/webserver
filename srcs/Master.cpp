@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 18:43:19 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 19:42:20 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Master::Master()
 {
 }
 
-Master::~Master()
+Master::~Master() 
 {
 }
 
