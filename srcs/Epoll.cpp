@@ -86,6 +86,12 @@ int Master::startEventLoop()
             {
                 char buffer[1024];
                 int bytesRead = read(socketToAccept, buffer, 1024);
+
+                //HERE COMES TEST WITH REQUEST PARSER !!!!!!!!!!!!!!!!!!!!!
+                
+                Request request(buffer);
+                request.showConfig();
+
                 if (bytesRead < 0)
                     ft_error("Error reading from socket");
                 if (bytesRead == 0)
