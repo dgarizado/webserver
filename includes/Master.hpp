@@ -46,6 +46,7 @@ class Master
 		std::vector<t_server> _servers;
 		std::map<std::string, VHost> _vhostMap;
 		int _kq;
+		int _epoll_fd;
 };
 
 

@@ -24,9 +24,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include <sys/event.h> // Include this for kqueue
+// #include <sys/event.h> // Include this for kqueue
 #include <sys/time.h>  // Include this for kqueue
 #include <set>
+#include <cstring>
+#include <algorithm>
 
 #define RED "\033[31m"
 #define GREEN "\033[32m"

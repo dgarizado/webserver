@@ -20,7 +20,7 @@ NAME = webserv
 HEADERS = includes/webserv.hpp  includes/Master.hpp  includes/VHost.hpp \
 includes/FileParse.hpp
 OBJDIR = ./obj
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror #-std=c++98
 
 CLR_RMV		:= \033[0m
 RED		    := \033[1;31m
@@ -35,7 +35,7 @@ RM		    := rm -rf
 ################################################################################
 
 # SRCS =  $(wildcard srcs/*.cpp)
-SRCS = main.cpp Master.cpp  MasterNetworking.cpp utils.cpp VHost.cpp  FileParse.cpp
+SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp VHost.cpp  FileParse.cpp
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))

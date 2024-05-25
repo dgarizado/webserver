@@ -1,5 +1,6 @@
 #include "../includes/FileParse.hpp"
 
+
 int ft_err(std::string str)
 {
     std::cerr << RED << str << RESET << std::endl;
