@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
+#    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/25 20:58:39 by vcereced         ###   ########.fr        #
+#    Updated: 2024/05/25 23:09:41 by dgarizad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +18,9 @@
 NAME = webserv
 
 HEADERS = includes/webserv.hpp  includes/Master.hpp  includes/VHost.hpp \
-includes/FileParse.hpp includes/Request.hpp
+includes/FileParse.hpp includes/Request.hpp includes/Client.hpp
 OBJDIR = ./obj
-FLAGS = -Wall -Wextra -Werror #-std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98
 
 CLR_RMV		:= \033[0m
 RED		    := \033[1;31m
@@ -35,7 +35,7 @@ RM		    := rm -rf
 ################################################################################
 
 # SRCS =  $(wildcard srcs/*.cpp)
-SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp VHost.cpp  FileParse.cpp Request.cpp
+SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp VHost.cpp  FileParse.cpp Request.cpp Client.cpp
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))

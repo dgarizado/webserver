@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/25 20:57:32 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/05/25 23:10:34 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #ifndef WEBSERV_HPP
 #define WEBSERV_HPP
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
@@ -25,10 +24,13 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 // #include <sys/event.h> // Include this for kqueue
-#include <sys/time.h>  // Include this for kqueue
+#include <sys/time.h> 
 #include <set>
 #include <cstring>
 #include <algorithm>
+#include <sys/epoll.h>
+#include <fcntl.h>
+#include <iostream>
 
 #define RED "\033[31m"
 #define GREEN "\033[32m"
@@ -77,6 +79,7 @@ typedef struct s_fileParse {
 #include "VHost.hpp"
 #include "Master.hpp"
 #include "Request.hpp"
+#include "Client.hpp"
 
 int ft_error(std::string msg);
 #endif

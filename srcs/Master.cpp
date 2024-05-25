@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 19:42:20 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/25 22:17:44 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,10 @@ VHost &Master::getVHost(std::string serverName)
 				return (*it);
 		}
 	}
-	
 	return (_vhostMap[serverName]);
 }
+
+// AUXILIARY FUNCTIONS
 
 //print server names, for debugging purposes. iterating through vhosts
 void Master::printServerNames()
