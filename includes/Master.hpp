@@ -42,6 +42,7 @@ class Master
 	private:
 
 		std::vector<int> _ListenSockets;
+		std::vector<int> _clientSockets;
 		std::vector<VHost> _vhosts;
 		std::vector<t_server> _servers;
 		std::map<std::string, VHost> _vhostMap;

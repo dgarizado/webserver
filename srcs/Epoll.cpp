@@ -57,25 +57,14 @@ int Master::startEventLoop()
 
     while (true)
     {
-        int nev = epoll_wait(_epoll_fd, events, MAX_EVENTS, -1);
+        int nev = epoll_wait(_epoll_fd, events, MAX_EVENTS, 300);
         if (nev == -1)
             ft_error("Error in epoll_wait");
 
         for (int i = 0; i < nev; ++i)
         {
             int socketToAccept = events[i].data.fd;
-
-            bool isListenSocket = false;
-            std::vector<int>::iterator it = _ListenSockets.begin();
-            for (; it != _ListenSockets.end(); it++)
-            {
-                if (socketToAccept == *it)
-                {
-                    isListenSocket = true;
-                    break;
-                }
-            }
-            if (isListenSocket)
+            if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
             {
                 sockaddr_in clientAddr;
                 socklen_t clientAddrSize = sizeof(clientAddr);
@@ -84,8 +73,8 @@ int Master::startEventLoop()
                     ft_error("Error accepting connection");
                 std::cout << GREEN << "Accepted connection on socket " << socketToAccept << " from " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << RESET << std::endl;
 
-                // // Set client socket to non-blocking
-                // fcntl(clientSocket, F_SETFL, O_NONBLOCK);
+                // Set client socket to non-blocking
+                fcntl(clientSocket, F_SETFL, O_NONBLOCK);
 
                 struct epoll_event ev;
                 ev.events = EPOLLIN | EPOLLET;
@@ -93,7 +82,7 @@ int Master::startEventLoop()
                 if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, clientSocket, &ev) == -1)
                     ft_error("Error adding client socket to epoll");
             }
-            else
+            else //  A client socket is ready to read
             {
                 char buffer[1024];
                 int bytesRead = read(socketToAccept, buffer, 1024);
