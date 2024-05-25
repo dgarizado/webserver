@@ -6,7 +6,7 @@
 #    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/16 19:51:37 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/05/19 18:29:13 by dgarizad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,10 +17,10 @@
 
 NAME = webserv
 
-HEADERS = includes/webserv.hpp  includes/ConfParse.hpp includes/Master.hpp  includes/VHost.hpp \
-includes/VicParse.hpp
+HEADERS = includes/webserv.hpp  includes/Master.hpp  includes/VHost.hpp \
+includes/FileParse.hpp
 OBJDIR = ./obj
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror #-std=c++98
 
 CLR_RMV		:= \033[0m
 RED		    := \033[1;31m
@@ -35,12 +35,12 @@ RM		    := rm -rf
 ################################################################################
 
 # SRCS =  $(wildcard srcs/*.cpp)
-SRCS = main.cpp ConfParse.cpp Master.cpp utils.cpp VHost.cpp  VicParse.cpp
+SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp VHost.cpp  FileParse.cpp
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
 # OBJS = $(SRCS:srcs/%.cpp=$(OBJDIR)/%.o)
-
+OS = #HERE WE DISCOVER THE OS
 $(OBJDIR)/%.o: %.cpp $(HEADERS)
 	@mkdir -p $(@D)
 	@g++ -c $< -o $@  #$(FLAGS)

@@ -1,31 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   VHOST.hpp                                          :+:      :+:    :+:   */
+/*   VHost.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:17:12 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/16 19:11:14 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/19 19:45:07 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VHOST_HPP
 # define VHOST_HPP
 # include "webserv.hpp"
-# include "ConfParse.hpp"
-# include <set>
 
-class ConfParse;
+class FileParse;
 
 class VHost
 {
 	public:
 		VHost();
-		VHost(ConfParse &config);
+		VHost(FileParse &config);
 		~VHost();
 		VHost(VHost const &src);
 		VHost &operator=(VHost const &src);
+
+		//getters
+		t_server &getServerStruct();
+		std::string getServerName();
+		
+		//setters
+		void setServer(t_server &server);
+		//AUXILIARY FUNCTIONS
+		void printServerNames();
 
 	private:
 		//Here we will store the VHost configuration
@@ -35,8 +42,9 @@ class VHost
 		std::vector<std::string> _error_pages;
 		std::vector<std::string> _locations;
 		in_port_t _port;
+		int _listen;
 		int _max_body_size;
-		bool _auto_index;
+		bool _auto_index; 
 		bool _cgi;
 		bool _redirection;
 		std::string _cgi_path;
@@ -44,6 +52,9 @@ class VHost
 		//NETWORK
 		int _serverSocket;
 		struct sockaddr_in _serverAddr;
+
+		//THIS IS THE SERVER BLOCK STRUCTURE
+		t_server _server;
 		
 	//having a static variable for storing all the VHosts sockets in a set
 	static std::set<int> _ListenSockets;

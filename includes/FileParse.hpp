@@ -16,46 +16,18 @@
 # define MAGENTA "\033[35m"
 # define RESET "\033[0m"
 
-enum nums {
-    LISTEN = 0,
-    SERVER_NAME = 1,
-    LOCATION = 2,
-    ROOT = 0,
-    INDEX = 1
-};
-
-typedef struct s_location {
-    std::string                 uri;
-    std::string 			    root;
-    std::vector<std::string>    index;
-}t_location;
-
-typedef struct s_server {
-    std::vector<std::string>    server_name;
-    int 					    listen;
-    std::string 			    errorLogs;
-    std::string 			    workerConnections;
-	std::vector<t_location>	    locations;
-}t_server;
-
-typedef struct s_fileParse {
-    int                         test;
-	std::set<int>               ports;
-	std::string                 errorLog;
-	std::string                 workerConnections;
-    std::vector<t_server>       serverData;
-}t_fileParse;
+#include "webserv.hpp"
 
 class FileParse {
 public:
-    // // Constructor por defecto
-    FileParse(void) {}
+	// // Constructor por defecto
+	FileParse(void) {}
 
-    int loadConfigFromFile(const std::string& filename);
-    void showConfig(void);
+	int loadConfigFromFile(const std::string filename);
+	void showConfig(void);
 
-    //getter
-    t_fileParse &getStruct(void);
+	//getter
+	t_fileParse &getStruct(void);
 
 private:
 	t_fileParse configData;

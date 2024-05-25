@@ -1,4 +1,5 @@
-#include "FileParse.hpp"
+#include "../includes/FileParse.hpp"
+
 
 int ft_err(std::string str)
 {
@@ -60,7 +61,7 @@ void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss,
             }
         }while (locationBraces > 0);
         //Checks if vars are encounter inside of location block
-        if (v[ROOT] == 0 || v[INDEX] == 0)
+        if (vars[ROOT] == 0 || vars[INDEX] == 0)
             throw std::runtime_error("location block wrong");
     }
 }
@@ -108,7 +109,7 @@ int insideServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, s
             while(iss >> token)
 		    {
 			    ft_braces(serverBraces, token);
-                varServer(ref, file, iss, nServer, nLocation, token, v);
+                varServer(ref, file, iss, nServer, nLocation, token, vars);
 		    }
             if (serverBraces > 0 && std::getline(file, line))
             {
@@ -202,7 +203,7 @@ int checksBraces(std::string filename)
     int                 braces = 0;
 
     if (!file.is_open())
-        return ft_err("Error: cannot open file. ");
+        throw std::runtime_error("braces: cannot open file");
     while (std::getline(file, line))
     {
         for (size_t i = 0; i < line.size(); ++i)
@@ -215,7 +216,9 @@ int checksBraces(std::string filename)
     }
     file.close();
     if (braces != 0)
-        return -1;
+		throw std::runtime_error("braces: not match");
+	// if (braces != 0)
+    //     return -1;
     return 0;
 }
 
@@ -232,16 +235,21 @@ t_fileParse & FileParse::getStruct()
  * @brief Method to load on ifstream object the full config file. Iter line per line parsing the file
  * @return int -1 cannot open file or any exception. 0 ok.
  */
-int FileParse::loadConfigFromFile(const std::string& filename)
+int FileParse::loadConfigFromFile(const std::string filename)
 {
     std::ifstream       file(filename);
     std::string         line;
     bool                http = false;
     
-    if (checksBraces(filename) == -1)
-        return ft_err("Error: braces wrong");
+	try {
+		checksBraces(filename);
+	}catch(const std::exception& e) {
+		std::cerr << RED << "Exception: " << e.what() << RESET << std::endl;
+        return -1;
+	} 
+
     if (!file.is_open())
-        return ft_err("Error: cannot open file. ");
+        return ft_err("Error: cannasot open file. ");
     while (std::getline(file, line)) 
     {  
 		try{
