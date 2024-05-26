@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Request.hpp                                        :+:      :+:    :+:   */
+/*   RequestParser.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 17:28:48 by vcereced          #+#    #+#             */
-/*   Updated: 2024/05/25 20:54:28 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/05/26 17:01:00 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef REQUEST_HPP
-# define REQUEST_HPP
+#ifndef REQUESTPARSER_HPP
+# define REQUESTPARSER_HPP
 
 # include <string>
 # include <iostream>
@@ -26,16 +26,16 @@
 # define MAGENTA "\033[35m"
 # define RESET "\033[0m"
 
-class Request {
+class RequestParser {
 public:
 	//Constructors
-	Request(void) {}
-	Request(std::string);
-	Request(Request const &src);
-	Request &operator=(Request const &src);
+	RequestParser(void) {}
+	RequestParser(std::string);
+	RequestParser(RequestParser const &src);
+	RequestParser &operator=(RequestParser const &src);
 
 	//destructor
-	~Request() {};
+	~RequestParser() {};
 
 	int loadConfigFromRequest(const std::string );
 	void showConfig(void);
@@ -48,6 +48,8 @@ public:
 
 private:
     std::map<std::string, std::string> _requestData;
+	// std::string _URI;
+	// std::string _method;
 };
 
 #endif  // RequestParse_HPP 

@@ -62,13 +62,13 @@ int Master::setEvents()
  */
 int Master::clientAccept(int socketToAccept)
 {
-    Client client;
+    Connection client;
 	sockaddr_in clientAddr;
     socklen_t clientAddrSize = sizeof(clientAddr);
     
     int clientSocket = accept(socketToAccept, (struct sockaddr *)&clientAddr, &clientAddrSize);
     if (clientSocket < 0)
-        ft_error("Error accepting connection");
+       return(ft_error("Error accepting connection"));
     std::cout << GREEN << "Accepted connection on socket " << socketToAccept << " from " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << RESET << std::endl;
 
     // Set client socket to non-blocking
@@ -77,7 +77,7 @@ int Master::clientAccept(int socketToAccept)
     ev.events = EPOLLIN | EPOLLET;
     ev.data.fd = clientSocket;
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, clientSocket, &ev) == -1)
-        ft_error("Error adding client socket to epoll");
+        return(ft_error("Error adding client socket to epoll"));
 
     _clientSockets.push_back(clientSocket);
     client.setClientData(clientSocket, clientAddr, clientAddrSize, ev);
@@ -96,14 +96,16 @@ int Master::clientRead(int clientSocket)
     char buffer[1024];
     int bytesRead = read(clientSocket, buffer, 1024);
     if (bytesRead < 0)
-        ft_error("Error reading from socket");
+        return(ft_error("Error reading from socket")); //REMOVE CLIENT SOCKET FROM EPOLL SET AND CLOSE SOCKET!
     if (bytesRead == 0)
     {
         //Remove the client socket from the epoll set, close the socket and remove it from the clientSockets vector
         epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, clientSocket, NULL);
         close(clientSocket);
         _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), clientSocket), _clientSockets.end());
-        ft_error("Client disconnected"); //Is this an error? or just a message? ... maybe a message. HANDLE IT!!!
+        // ft_error("Client disconnected"); //Is this an error? or just a message? ... maybe a message. HANDLE IT!!!
+        std::cout << RED << "Client disconnected" << RESET << std::endl;
+        return (1); // This is not an error, it's just a message HANDLE THIS!!!
     }
     else //store the buffer in the Client object
     {
@@ -111,7 +113,7 @@ int Master::clientRead(int clientSocket)
         _clientsMap[clientSocket].setBuffer(buffer);
         //HERE COMES TEST WITH REQUEST PARSER !!!!!!!!!!!!!!!!!!!!!
                 
-                Request request(buffer);
+                RequestParser request(buffer);
                 request.showConfig();
     }
     return (0);
@@ -125,7 +127,8 @@ int Master::clientRead(int clientSocket)
  */
 int Master::processRequest(int clientSocket)
 {
-
+    //Assign VHost to the request
+    
     std::cout << "Received:\n" << _clientsMap[clientSocket].getBuffer() << std::endl;
     // SERVING the ./html/index.html file
     std::ifstream file("./html/index.html");
@@ -141,6 +144,29 @@ int Master::processRequest(int clientSocket)
     return (0);
 }
 
+
+int Master::manageConnection(int connectionSocket)
+{
+    RequestParser request;
+    
+    //read from the socket
+    if (clientRead(connectionSocket) < 0)
+        return ft_error("Error reading from client");
+    //request = _clientsMap[connectionSocket].getBuffer();
+
+    if (request.loadConfigFromRequest(_clientsMap[connectionSocket].getBuffer()) < 0)
+        return ft_error("Error loading config from request");
+
+    request.showConfig();
+
+    if (processRequest(connectionSocket) < 0)
+        return ft_error("Error processing request");
+    //parse the request
+    //create a response
+    //send the response
+    //close the connection
+    return 0;
+}
 /**
  * @brief Main event loop. If a server socket receives a connection, it will call clientAccept. 
  * If a client socket is ready to read, it will call clientRead.
@@ -167,12 +193,12 @@ int Master::startEventLoop()
                 if (clientAccept(socketToAccept) < 0)
                     ft_error("Error accepting client");
             } else //  A client socket is ready to read
-            {
-                if (clientRead(socketToAccept) < 0)
-                    ft_error("Error reading from client");
-                else if (processRequest(socketToAccept) < 0)
-                    ft_error("Error processing request");
-            }
+                manageConnection(socketToAccept); 
+            // check for a write event
+            // if (events[i].events & EPOLLOUT)
+            // {
+            //     // write to the client
+            // }
         }
     }
     return (0);

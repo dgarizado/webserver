@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.hpp                                         :+:      :+:    :+:   */
+/*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/25 22:13:18 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 18:45:17 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_HPP
-# define CLIENT_HPP
+#ifndef CONNECTION_HPP
+# define CONNECTION_HPP
 # include "webserv.hpp"
+# include "VHost.hpp"
+class VHost;
 
-class Client
-{
+class Connection
+{ 
     public:
-        Client();
-        ~Client();
-        Client(Client const &src);
-        Client &operator=(Client const &src);
+        Connection();
+        ~Connection();
+        Connection(Connection const &src);
+        Connection &operator=(Connection const &src);
 
         //GETTERS
         int getClientSocket() const;
@@ -30,6 +32,8 @@ class Client
         void setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
         void setBuffer(std::string buffer);
 
+        //DETERMINATOR
+        
     private:
         int _clientSocket;
         sockaddr_in _clientAddr;
@@ -37,7 +41,10 @@ class Client
         struct epoll_event _ev;
         std::string _buffer; //maybe a char array is better
         char _readBuffer[1024];
-        // VHost _vhost;
+        //
+        //METHOD TO PARSE THE REQUEST
+        //
+        VHost _vhost;
 };
 
 #endif

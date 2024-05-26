@@ -6,21 +6,15 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:41:19 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 18:37:31 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 19:11:29 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/webserv.hpp"
+#include "../includes/Master.hpp"
+#include "../includes/FileParse.hpp"
+#include "../includes/VHost.hpp"
 
-int createPorts(std::vector<int> &ports)
-{
-	ports.push_back(8084);
-	ports.push_back(8083);
-	ports.push_back(8082);
-	ports.push_back(8081);
-	ports.push_back(8085);
-	return (0);
-}
 
 int main(int argc, char **argv)
 {
