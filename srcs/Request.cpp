@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/05/25 21:38:39 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/05/26 14:11:50 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void userAgentLineParse(Request *ref, std::istringstream &iss)
     std::string     tokenconcated;
 
     while (iss >> token)
-        tokenconcated += token;
+        tokenconcated += " " + token;
     ref->set("HTTP_USER_AGENT", tokenconcated);
 }
 
@@ -48,7 +48,6 @@ void lineParser(Request *ref, std::string &requestLine)
     
     //Process the first toke of the line
     iss >> token;
-    std::cout << RED << "line = " << requestLine << RESET << std::endl;
     
     if(token == "GET" || token == "POST" || token == "DELETE" || token == "PUT" || token == "HEAD" )
         receivedLineParse(ref, iss, token);
