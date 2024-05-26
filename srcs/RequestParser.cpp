@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Request.cpp                                        :+:      :+:    :+:   */
+/*   RequestParser.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/05/25 21:38:39 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/05/26 17:21:58 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Request.hpp"
+#include "../includes/RequestParser.hpp"
 
 /**
  * @brief just parsing the line of Request starting by "User-Agent:" 
  */
-void userAgentLineParse(Request *ref, std::istringstream &iss)
+void userAgentLineParse(RequestParser *ref, std::istringstream &iss)
 {
     std::string     token;
     std::string     tokenconcated;
@@ -28,7 +28,7 @@ void userAgentLineParse(Request *ref, std::istringstream &iss)
 /**
  * @brief just parsing the line of Request starting by a POST/PUT/DELETE/GET" 
  */
-void receivedLineParse(Request *ref, std::istringstream &iss, std::string &token)
+void receivedLineParse(RequestParser *ref, std::istringstream &iss, std::string &token)
 {
     ref->set("REQUEST_METHOD", token);      //first token was extracted in previous funcion
     iss >> token;                           //extract next token from line in istringstream
@@ -41,14 +41,13 @@ void receivedLineParse(Request *ref, std::istringstream &iss, std::string &token
  * @brief iter the tokens of the line. it extract the first token to know
  * wich variable to set in Request's map.
  */
-void lineParser(Request *ref, std::string &requestLine)
+void lineParser(RequestParser *ref, std::string &requestLine)
 {
     std::istringstream  iss(requestLine);
     std::string         token;
     
     //Process the first toke of the line
     iss >> token;
-    std::cout << RED << "line = " << requestLine << RESET << std::endl;
     
     if(token == "GET" || token == "POST" || token == "DELETE" || token == "PUT" || token == "HEAD" )
         receivedLineParse(ref, iss, token);
@@ -91,7 +90,7 @@ void lineParser(Request *ref, std::string &requestLine)
  * This message had read before on the conexion's FD. Iter line per line parsing the message.
  * @return int -1 any exception. 0 ok.
  */
-int Request::loadConfigFromRequest(const std::string requestMessage)
+int RequestParser::loadConfigFromRequest(const std::string requestMessage)
 {
     std::istringstream  stream(requestMessage);     // Create a string stream from a string message
     std::string         line;                       // string to store a line
@@ -117,7 +116,7 @@ int Request::loadConfigFromRequest(const std::string requestMessage)
 /**
  * @brief setter of the private Request's map.  
  */
-void Request::set(std::string key, std::string value)
+void RequestParser::set(std::string key, std::string value)
 {
     _requestData[key] = value;
 }
@@ -126,7 +125,7 @@ void Request::set(std::string key, std::string value)
  * @brief return a reference of the private Request's map then can be manipulate
  * @return std::map<std::string, std::string>& 
  */
-std::map<std::string, std::string> &Request::get(void)
+std::map<std::string, std::string> &RequestParser::get(void)
 {
     return(_requestData);
 }
@@ -134,7 +133,7 @@ std::map<std::string, std::string> &Request::get(void)
 /**
  * @brief write on terminal all the content of the Request's map for debugging.
  */
-void Request::showConfig(void)
+void RequestParser::showConfig(void)
 {
     typedef std::map<std::string, std::string>::iterator it_t;
     
@@ -142,18 +141,18 @@ void Request::showConfig(void)
         std::cout << GREEN << it->first << RESET << " = " << YELLOW << it->second << RESET << std::endl;
 }
 
-Request::Request(std::string str)
+RequestParser::RequestParser(std::string str)
 {
     if (this->loadConfigFromRequest(str) == -1)
 	 	std::cerr << RED << "Error while parsing the configuration file" << RESET << std::endl;
 }
 
-Request::Request(Request const &src)
+RequestParser::RequestParser(RequestParser const &src)
 {
     *this = src;
 }
 
-Request &Request::operator=(Request const &src)
+RequestParser &RequestParser::operator=(RequestParser const &src)
 {
     if (this != &src)
     {

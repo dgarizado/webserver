@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:17:12 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 19:45:07 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 18:02:36 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class VHost
 		void setServer(t_server &server);
 		//AUXILIARY FUNCTIONS
 		void printServerNames();
+
+		//VHOST WILL HAVE THE METHODS 
 
 	private:
 		//Here we will store the VHost configuration

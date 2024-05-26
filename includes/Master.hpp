@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/25 22:03:25 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 18:34:38 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 # define MASTER_HPP
 # define MAX_CLIENTS 100
 #include "webserv.hpp"
+#include "VHost.hpp"
+#include "Connection.hpp"
 
 class VHost;
-class Client;
+class Connection;
 
 class Master
 {
@@ -35,6 +37,7 @@ class Master
 		int clientAccept(int serverSocket);
 		int clientRead(int clientSocket);
 		int processRequest(int clientSocket);
+		int manageConnection(int clientSocket);
 
 		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME
 		VHost &getVHost(std::string serverName);
@@ -50,7 +53,7 @@ class Master
 		std::vector<VHost> _vhosts;
 		std::vector<t_server> _servers;
 		std::map<std::string, VHost> _vhostMap;
-		std::map<int, Client> _clientsMap;
+		std::map<int, Connection> _clientsMap;
 		int _kq;
 		int _epoll_fd;
 };
