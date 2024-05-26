@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 18:34:38 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 18:39:29 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 # define MASTER_HPP
 # define MAX_CLIENTS 100
 #include "webserv.hpp"
+#include "FileParse.hpp"
 #include "VHost.hpp"
 #include "Connection.hpp"
+#include "RequestParser.hpp"
 
 class VHost;
 class Connection;

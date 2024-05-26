@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 18:30:26 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 18:45:17 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class Connection
         //
         //METHOD TO PARSE THE REQUEST
         //
-        VHost* _vhost;
+        VHost _vhost;
 };
 
 #endif

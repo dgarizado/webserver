@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 18:22:28 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 18:37:13 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ typedef struct s_fileParse {
 }t_fileParse;
 
 
-#include "VHost.hpp"
-#include "FileParse.hpp"
-#include "RequestParser.hpp"
-// #include "Connection.hpp"
-#include "Master.hpp"
+// #include "VHost.hpp"
+// #include "FileParse.hpp"
+// #include "RequestParser.hpp"
+// // #include "Connection.hpp"
+// #include "Master.hpp"
 
 int ft_error(std::string msg);
 #endif

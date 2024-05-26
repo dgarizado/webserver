@@ -6,13 +6,14 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:17:12 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 18:02:36 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 18:42:07 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VHOST_HPP
 # define VHOST_HPP
 # include "webserv.hpp"
+# include "FileParse.hpp"
 
 class FileParse;
 
