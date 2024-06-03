@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
+#    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/26 17:04:06 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/05/26 21:06:57 by vcereced         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,8 @@ RM		    := rm -rf
 ################################################################################
 
 # SRCS =  $(wildcard srcs/*.cpp)
-SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp VHost.cpp  FileParse.cpp RequestParser.cpp Connection.cpp
+SRCS = main.cpp Master.cpp Master2.cpp Epoll.cpp utils.cpp VHost.cpp  FileParse.cpp \
+RequestParser.cpp Connection.cpp 
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
@@ -43,7 +44,7 @@ OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
 OS = #HERE WE DISCOVER THE OS
 $(OBJDIR)/%.o: %.cpp $(HEADERS)
 	@mkdir -p $(@D)
-	@g++ -c $< -o $@  #$(FLAGS)
+	@clang++ -c $< -o $@  #$(FLAGS)
 
 
 
@@ -56,7 +57,7 @@ $(OBJDIR)/%.o: %.cpp $(HEADERS)
 all: $(NAME)
 
 $(NAME): $(OBJS) $(HEADERS)
-	@g++ -o $(NAME) $(OBJS) #$(FLAGS)
+	@clang++ -o $(NAME) $(OBJS) #$(FLAGS)
 	@echo "$(GREEN)$(NAME) executable has been created!$(CLR_RMV)"
 
 clean:

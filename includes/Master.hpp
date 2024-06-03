@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Master.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 18:39:29 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 20:46:38 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 #include "VHost.hpp"
 #include "Connection.hpp"
 #include "RequestParser.hpp"
+#include <exception>
+#include <sstream>
+#include <string>
 
 class VHost;
 class Connection;
@@ -42,8 +45,8 @@ class Master
 		int manageConnection(int clientSocket);
 
 		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME
-		VHost &getVHost(std::string serverName);
-		
+		VHost &getVHost(std::string serverName, int port);
+		VHost &assignVHost(std::string);
 
 		//AUXILIARY FUNCTIONS
 		void printServerNames();

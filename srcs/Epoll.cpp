@@ -119,49 +119,26 @@ int Master::clientRead(int clientSocket)
     return (0);
 }
 
-/**
- * @brief get the buffer from the client object and process the request. 
- * 
- * @param clientSocket 
- * @return int 
- */
-int Master::processRequest(int clientSocket)
-{
-    //Assign VHost to the request
-    
-    std::cout << "Received:\n" << _clientsMap[clientSocket].getBuffer() << std::endl;
-    // SERVING the ./html/index.html file
-    std::ifstream file("./html/index.html");
-    std::stringstream bufferr;
-    bufferr << file.rdbuf();
-    std::string file_contents = bufferr.str();
-    const char *response_headers = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-    send(clientSocket, response_headers, strlen(response_headers), 0);
-    send(clientSocket, file_contents.c_str(), file_contents.size(), 0);
-    close(clientSocket);
-    std::cout << GREEN "Response sent" RESET << std::endl;
-
-    return (0);
-}
-
-
 int Master::manageConnection(int connectionSocket)
 {
     RequestParser request;
-    
+   
     //read from the socket
     if (clientRead(connectionSocket) < 0)
         return ft_error("Error reading from client");
     //request = _clientsMap[connectionSocket].getBuffer();
 
+    //parse the request
     if (request.loadConfigFromRequest(_clientsMap[connectionSocket].getBuffer()) < 0)
         return ft_error("Error loading config from request");
 
     request.showConfig();
-
+    
+    VHost tmp = assignVHost(request.get()["HOST"]);
+    _clientsMap[connectionSocket].setVhost(tmp);
+  
     if (processRequest(connectionSocket) < 0)
         return ft_error("Error processing request");
-    //parse the request
     //create a response
     //send the response
     //close the connection

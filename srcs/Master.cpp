@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Master.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/25 22:17:44 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 20:46:14 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ Master &Master::operator=(Master const &src)
  * @param serverName 
  * @return VHost& 
  */
-VHost &Master::getVHost(std::string serverName)
+VHost &Master::getVHost(std::string serverName, int port)
 {
 	std::vector<VHost>::iterator it = _vhosts.begin();
 	for (; it != _vhosts.end(); it++)
@@ -53,12 +53,28 @@ VHost &Master::getVHost(std::string serverName)
 		std::vector<std::string>::iterator it2 = serverNames.begin();
 		for (; it2 != serverNames.end(); it2++)
 		{
-			if (*it2 == serverName)
+			if (*it2 == serverName && it->getServerStruct().port == port)
 				return (*it);
 		}
 	}
-	return (_vhostMap[serverName]);
+	throw std::runtime_error("not found VHost!"); //DEBUG MAS ADELANTE EXCEPTION CLOSE FD Y CAPTURAR PARA CONTINUAR ESCUCHANDO SIN CRASH
 }
+
+VHost &Master::assignVHost(std::string hostport)
+{
+	std::stringstream 	iss(hostport);
+	std::string 		servername;
+	std::string			tmp_port;
+	int					port;
+
+	std::getline(iss, servername, ':');
+	std::getline(iss, tmp_port, ':');
+	port = std::stoi(tmp_port);
+
+	return this->getVHost(servername, port);
+}
+
+
 
 // AUXILIARY FUNCTIONS
 

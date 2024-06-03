@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 18:45:17 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 20:55:16 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,17 @@ class Connection
         //SETTERS
         void setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
         void setBuffer(std::string buffer);
+        void setVhost(VHost vhost);
 
         //DETERMINATOR
         
     private:
         int _clientSocket;
         sockaddr_in _clientAddr;
+        char _readBuffer[1024];
         socklen_t _clientAddrSize;
         struct epoll_event _ev;
         std::string _buffer; //maybe a char array is better
-        char _readBuffer[1024];
         //
         //METHOD TO PARSE THE REQUEST
         //

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:41:19 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 19:11:29 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/05/26 20:32:34 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ int main(int argc, char **argv)
 	fileParser.showConfig();
 	master.createVHosts(fileParser);
 	// master.printServerNames();:
-	VHost &vhost = master.getVHost("www.domain2.com");
-	std::cout << "VHOST SERVER NAME: " << vhost.getServerStruct().listen << std::endl;
+	//VHost &vhost = master.getVHost("www.domain2.com");
+	//std::cout << "VHOST SERVER NAME: " << vhost.getServerStruct().listen << std::endl;
 	master.setSockets(fileParser.getStruct().ports);
 	master.setEvents();
 	master.startEventLoop();
