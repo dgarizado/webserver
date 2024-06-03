@@ -6,7 +6,7 @@
 #    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/05/26 17:04:06 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/05/26 19:32:53 by dgarizad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,10 +43,7 @@ OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
 OS = #HERE WE DISCOVER THE OS
 $(OBJDIR)/%.o: %.cpp $(HEADERS)
 	@mkdir -p $(@D)
-	@g++ -c $< -o $@  #$(FLAGS)
-
-
-
+	@clang++ -c $< -o $@  #$(FLAGS)
 
 
 ################################################################################
@@ -56,7 +53,7 @@ $(OBJDIR)/%.o: %.cpp $(HEADERS)
 all: $(NAME)
 
 $(NAME): $(OBJS) $(HEADERS)
-	@g++ -o $(NAME) $(OBJS) #$(FLAGS)
+	@clang++ -o $(NAME) $(OBJS) #$(FLAGS)
 	@echo "$(GREEN)$(NAME) executable has been created!$(CLR_RMV)"
 
 clean:
