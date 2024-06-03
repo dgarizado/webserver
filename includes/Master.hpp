@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 18:39:29 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/03 20:21:00 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ class Master
 		int manageConnection(int clientSocket);
 
 		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME
-		VHost &getVHost(std::string serverName);
+		VHost &getVHost(std::string serverName, int port);
+		VHost &assignVHost(std::string hostport);
 		
 
 		//AUXILIARY FUNCTIONS
@@ -53,7 +54,6 @@ class Master
 		std::vector<int> _ListenSockets;
 		std::vector<int> _clientSockets;
 		std::vector<VHost> _vhosts;
-		std::vector<t_server> _servers;
 		std::map<std::string, VHost> _vhostMap;
 		std::map<int, Connection> _clientsMap;
 		int _kq;

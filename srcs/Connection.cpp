@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 12:30:50 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/03 19:41:41 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,3 +63,7 @@ void Connection::setBuffer(std::string buffer)
     _buffer = buffer;
 }
 
+void Connection::setVhost(VHost vhost)
+{
+    _vhost = vhost;
+}

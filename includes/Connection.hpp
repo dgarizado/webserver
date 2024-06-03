@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/26 18:45:17 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/03 19:41:25 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Connection
         //SETTERS
         void setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
         void setBuffer(std::string buffer);
+        void setVhost(VHost vhost);
 
         //DETERMINATOR
         

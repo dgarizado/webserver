@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/25 22:17:44 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/03 20:25:35 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,24 +40,36 @@ Master &Master::operator=(Master const &src)
  * it will iterate through the _vhosts vector and through the server_name vector of each VHost object
  * to find the correct one and return it. If the server name is not found, it will return the first VHost object
 * as a default? or null? RESOLVE THIS!!!!. If servername is duplicated, it will return the first one found.
- * 
- * @param serverName 
- * @return VHost& 
+ *
+ * @param serverName
+ * @return VHost&
  */
-VHost &Master::getVHost(std::string serverName)
+VHost &Master::getVHost(std::string serverName, int port)
 {
-	std::vector<VHost>::iterator it = _vhosts.begin();
-	for (; it != _vhosts.end(); it++)
-	{
-		std::vector<std::string> serverNames = (*it).getServerStruct().server_name;
-		std::vector<std::string>::iterator it2 = serverNames.begin();
-		for (; it2 != serverNames.end(); it2++)
-		{
-			if (*it2 == serverName)
-				return (*it);
-		}
-	}
-	return (_vhostMap[serverName]);
+    std::vector<VHost>::iterator it = _vhosts.begin();
+    for (; it != _vhosts.end(); it++)
+    {
+        std::vector<std::string> serverNames = (*it).getServerStruct().server_name;
+        std::vector<std::string>::iterator it2 = serverNames.begin();
+        for (; it2 != serverNames.end(); it2++)
+        {
+            if (*it2 == serverName && it->getServerStruct().listen == port)
+                return (*it);
+        }
+    }
+    throw std::runtime_error("not found VHost!"); //DEBUG MAS ADELANTE EXCEPTION CLOSE FD Y CAPTURAR PARA CONTINUAR ESCUCHANDO SIN CRASH
+}
+
+VHost &Master::assignVHost(std::string hostport)
+{
+    std::stringstream   iss(hostport);
+    std::string         servername;
+    std::string         tmp_port;
+    int                 port;
+    std::getline(iss, servername, ':');
+    std::getline(iss, tmp_port, ':');
+	port = std::stoi(tmp_port);
+    return this->getVHost(servername, port);
 }
 
 // AUXILIARY FUNCTIONS
@@ -88,12 +100,12 @@ void Master::printServerNames()
  */
 int Master::createVHosts(FileParse &config)
 {
-	std::vector<t_server> _servers = config.getStruct().serverData;
-	if (_servers.size() == 0)
-		ft_error("No servers found in the configuration file");
+	std::vector<t_server> servers = config.getStruct().serverData;
+	if (servers.size() == 0)
+		ft_error("No servers found in the configturation file");
 	//iterate the vector and confirm that the server names are correctly stored
-	std::vector<t_server>::iterator it = _servers.begin();
-	for(; it < _servers.end(); ++it)
+	std::vector<t_server>::iterator it = servers.begin();
+	for(; it < servers.end(); ++it)
 	{
 		VHost vhost;
 		vhost.setServer(*it);
