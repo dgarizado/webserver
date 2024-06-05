@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/05/26 19:14:25 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/05 18:18:04 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void receivedLineParse(RequestParser *ref, std::istringstream &iss, std::string 
 {
     ref->set("REQUEST_METHOD", token);      //first token was extracted in previous funcion
     iss >> token;                           //extract next token from line in istringstream
-    ref->set("QUERY_STRING", token);
+    ref->set("REQUEST_URI", token); //HERE WE FIXED THE NAME FROM QUERY_STRING TO REQUEST_URI
     iss >> token;
     ref->set("SERVER_PROTOCOL", token);
 }

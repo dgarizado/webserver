@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/03 20:25:35 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/05 18:26:42 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,13 @@ VHost &Master::getVHost(std::string serverName, int port)
     throw std::runtime_error("not found VHost!"); //DEBUG MAS ADELANTE EXCEPTION CLOSE FD Y CAPTURAR PARA CONTINUAR ESCUCHANDO SIN CRASH
 }
 
+/**
+ * @brief This function 
+ * separates the hostport string into servername and port.
+ * 
+ * @param hostport 
+ * @return VHost& 
+ */
 VHost &Master::assignVHost(std::string hostport)
 {
     std::stringstream   iss(hostport);

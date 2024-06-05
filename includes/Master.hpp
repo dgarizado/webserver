@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/03 20:21:00 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/05 19:51:10 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class Master
 		int startEventLoop();
 		int clientAccept(int serverSocket);
 		int clientRead(int clientSocket);
-		int processRequest(int clientSocket);
+		int processRequest(int clientSocket, RequestParser &request);
 		int manageConnection(int clientSocket);
 
 		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME

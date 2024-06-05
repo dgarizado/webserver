@@ -119,9 +119,6 @@ int Master::clientRead(int clientSocket)
     return (0);
 }
 
-
-
-
 int Master::manageConnection(int connectionSocket)
 {
     RequestParser request;
@@ -135,7 +132,7 @@ int Master::manageConnection(int connectionSocket)
     request.showConfig();
     VHost tmp = assignVHost(request.get()["HTTP_HOST"]);
     _clientsMap[connectionSocket].setVhost(tmp);
-    if (processRequest(connectionSocket) < 0)
+    if (processRequest(connectionSocket, request) < 0)
         return ft_error("Error processing request");
     //create a response
     //send the response
@@ -168,7 +165,15 @@ int Master::startEventLoop()
                 if (clientAccept(socketToAccept) < 0)
                     ft_error("Error accepting client");
             } else //  A client socket is ready to read
-                manageConnection(socketToAccept); 
+            {
+                try {
+                    manageConnection(socketToAccept);
+                } catch (std::exception &e) {
+                    std::cerr << e.what() << std::endl;
+                    close(socketToAccept);
+                    _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
+                }
+            }
             // check for a write event
             // if (events[i].events & EPOLLOUT)
             // {

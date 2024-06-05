@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/03 19:41:25 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/05 20:27:49 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CONNECTION_HPP
 # include "webserv.hpp"
 # include "VHost.hpp"
+# include "RequestParser.hpp"
 class VHost;
 
 class Connection
@@ -34,6 +35,8 @@ class Connection
         void setVhost(VHost vhost);
 
         //DETERMINATOR
+        int uriCheck(RequestParser &request);
+        int dirCheck(std::string directory);
         
     private:
         int _clientSocket;
@@ -42,9 +45,6 @@ class Connection
         struct epoll_event _ev;
         std::string _buffer; //maybe a char array is better
         char _readBuffer[1024];
-        //
-        //METHOD TO PARSE THE REQUEST
-        //
         VHost _vhost;
 };
 
