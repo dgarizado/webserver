@@ -111,10 +111,6 @@ int Master::clientRead(int clientSocket)
     {
         buffer[bytesRead] = '\0';
         _clientsMap[clientSocket].setBuffer(buffer);
-        //HERE COMES TEST WITH REQUEST PARSER !!!!!!!!!!!!!!!!!!!!!
-                
-                RequestParser request(buffer);
-                request.showConfig();
     }
     return (0);
 }

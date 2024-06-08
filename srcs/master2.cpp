@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/05 19:50:44 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/08 13:11:34 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int Master::processRequest(int clientSocket, RequestParser &request)
 {
     //uriCheck(client);
     std::cout << MAGENTA "Processing request" << RESET << std::endl;
-    _clientsMap[clientSocket].uriCheck(request);
+    _clientsMap[clientSocket].uriCheck(request); 
     // std::cout << "Received:\n" << _clientsMap[clientSocket].getBuffer() << std::endl;
     // SERVING the ./html/index.html file
     std::ifstream file("./html/index.html");
