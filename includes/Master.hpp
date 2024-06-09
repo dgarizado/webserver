@@ -48,6 +48,7 @@ class Master
 
 		//AUXILIARY FUNCTIONS
 		void printServerNames();
+		int  servePage(Connection connection, const std::string &path);
 		
 	private:
 

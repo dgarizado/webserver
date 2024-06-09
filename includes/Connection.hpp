@@ -28,6 +28,7 @@ class Connection
         //GETTERS
         int getClientSocket() const;
         std::string getBuffer() const;
+		std::string getPath() const;
 
         //SETTERS
         void setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
@@ -38,6 +39,7 @@ class Connection
         int fixPath(std::string &path);
         int uriCheck(RequestParser &request);
         bool dirCheck(std::string directory);
+		bool fileCheck(std::string file);
         
         
     private:
@@ -47,11 +49,12 @@ class Connection
         struct epoll_event _ev;
         std::string _buffer; //maybe a char array is better
         char _readBuffer[1024];
-        std::string _directory;
-        std::string _finalPath;
-        std::string _fileName;
+        std::string _directory; //this is the location sent by the client.
+        std::string _finalPath; //this is the path with the root without the file name..
+		std::string _path; //this is the full path, including the root and the file name.
+        std::string _fileName; //this is the file name requested by the client. empty if the client requested a directory.
         std::string _queryString;
-        std::string _root;
+        std::string _root; //this is the root of the vhost.
         VHost _vhost;
 };
 

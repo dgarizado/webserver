@@ -129,7 +129,8 @@ int Master::manageConnection(int connectionSocket)
     VHost tmp = assignVHost(request.get()["HTTP_HOST"]);
     _clientsMap[connectionSocket].setVhost(tmp);
     if (processRequest(connectionSocket, request) < 0)
-        return ft_error("Error processing request");
+		throw std::runtime_error("Error processing request");
+        // return ft_error("Error processing request");
     //create a response
     //send the response
     //close the connection
