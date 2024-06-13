@@ -29,6 +29,7 @@ class Connection
         int getClientSocket() const;
         std::string getBuffer() const;
 		std::string getPath() const;
+		int getStatusCode() const;
 
         //SETTERS
         void setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
@@ -55,6 +56,7 @@ class Connection
         std::string _fileName; //this is the file name requested by the client. empty if the client requested a directory.
         std::string _queryString;
         std::string _root; //this is the root of the vhost.
+		int _statusCode = 200;
         VHost _vhost;
 };
 

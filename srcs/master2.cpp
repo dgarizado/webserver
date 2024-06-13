@@ -19,6 +19,18 @@ int Master::servePage(Connection connection, const std::string &path)
 	std::stringstream bufferr;
 	bufferr << file.rdbuf();
 	std::string file_contents = bufferr.str();
+	//print status code
+	std::cout << "Status code: " << connection.getStatusCode() << std::endl;
+	//NEED TO IMPROVE FOR OTHER STATUS CODES. FIX THIS.
+	if (connection.getStatusCode() == 200)
+	{
+		std::cout << GREEN "Serving page" RESET << std::endl;
+		const char *response_headers = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+		send(connection.getClientSocket(), response_headers, strlen(response_headers), 0);
+		send(connection.getClientSocket(), file_contents.c_str(), file_contents.size(), 0);
+		return (0);
+	}
+	std::cout << RED "Error in servePage" RESET << std::endl;
 	const char *response_headers = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n";
 	send(connection.getClientSocket(), response_headers, strlen(response_headers), 0);
 	send(connection.getClientSocket(), file_contents.c_str(), file_contents.size(), 0);
@@ -42,16 +54,7 @@ int Master::processRequest(int clientSocket, RequestParser &request)
 		return (-1);
 	}
 	servePage(_clientsMap[clientSocket], _clientsMap[clientSocket].getPath());
-    // std::cout << "Received:\n" << _clientsMap[clientSocket].getBuffer() << std::endl;
-    // SERVING the ./html/index.html file
-    // std::ifstream file("./html/index.html");
-    // std::stringstream bufferr;
-    // bufferr << file.rdbuf();
-    // std::string file_contents = bufferr.str();
-    // const char *response_headers = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
-    // send(clientSocket, response_headers, strlen(response_headers), 0);
-    // send(clientSocket, file_contents.c_str(), file_contents.size(), 0);
-    close(clientSocket);
+    // close(clientSocket);
     std::cout << GREEN "Response sent" RESET << std::endl;
 
     return (0);

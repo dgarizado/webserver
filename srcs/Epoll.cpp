@@ -70,7 +70,7 @@ int Master::clientAccept(int socketToAccept)
     if (clientSocket < 0)
        return(ft_error("Error accepting connection"));
     std::cout << GREEN << "Accepted connection on socket " << socketToAccept << " from " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << RESET << std::endl;
-
+	std::cout << "Client socket: " << clientSocket << std::endl;
     // Set client socket to non-blocking
     fcntl(clientSocket, F_SETFL, O_NONBLOCK);
     struct epoll_event ev;
@@ -78,7 +78,7 @@ int Master::clientAccept(int socketToAccept)
     ev.data.fd = clientSocket;
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, clientSocket, &ev) == -1)
         return(ft_error("Error adding client socket to epoll"));
-
+	
     _clientSockets.push_back(clientSocket);
     client.setClientData(clientSocket, clientAddr, clientAddrSize, ev);
     _clientsMap[clientSocket] = client;
@@ -146,9 +146,10 @@ int Master::startEventLoop()
 {
     const int MAX_EVENTS = 64;
     struct epoll_event events[MAX_EVENTS];
-
+	int i = 1;
     while (true)
     {
+		std::cout << "Loop " << i++ << std::endl;
         int nev = epoll_wait(_epoll_fd, events, MAX_EVENTS, 300); 
         if (nev == -1)
             ft_error("Error in epoll_wait");
@@ -157,20 +158,40 @@ int Master::startEventLoop()
         {
             int socketToAccept = events[i].data.fd;
 
-            if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
-            {
-                if (clientAccept(socketToAccept) < 0)
-                    ft_error("Error accepting client");
-            } else //  A client socket is ready to read
-            {
-                try {
-                    manageConnection(socketToAccept);
-                } catch (std::exception &e) {
-                    std::cerr << e.what() << std::endl;
-                    close(socketToAccept);
-                    _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
-                }
-            }
+			// check for a read event in _clientSockets first.
+			if (std::find(_clientSockets.begin(), _clientSockets.end(), socketToAccept) != _clientSockets.end())
+			{ 
+			//print the client socket
+			std::cout << "Client socket to read: " << socketToAccept << std::endl;
+				try {
+					manageConnection(socketToAccept);
+				} catch (std::exception &e) {
+					std::cerr << e.what() << std::endl;
+					close(socketToAccept);
+					_clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
+				}
+			}
+			else if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
+			{
+				if (clientAccept(socketToAccept) < 0)
+
+					ft_error("Error accepting client");
+			}
+
+            // if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
+            // {
+            //     if (clientAccept(socketToAccept) < 0)
+            //         ft_error("Error accepting client");
+            // } else //  A client socket is ready to read
+            // {
+            //     try {
+            //         manageConnection(socketToAccept);
+            //     } catch (std::exception &e) {
+            //         std::cerr << e.what() << std::endl;
+            //         close(socketToAccept);
+            //         _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
+            //     }
+            // }
             // check for a write event
             // if (events[i].events & EPOLLOUT)
             // {

@@ -54,6 +54,11 @@ std::string Connection::getPath() const
 	return _path;
 }
 
+int Connection::getStatusCode() const
+{
+	return _statusCode;
+}
+
 void Connection::setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev)
 {
     _clientSocket = clientSocket;
@@ -90,8 +95,10 @@ bool Connection::fileCheck(std::string file)
 	if (f.good())
 	{
 		std::cout << GREEN "File found: 200!" RESET << std::endl;
+		_statusCode = 200;
 		return (true);
 	}
+	_statusCode = 404;
 	std::cout << RED "File not found: 404!" RESET << std::endl;
 	return (false);
 }
@@ -111,11 +118,13 @@ bool Connection::dirCheck(std::string directory)
         {
             std::cout << MAGENTA "Location found:" RESET <<  it->uri << std::endl;
             _root = it->root;
+			_statusCode = 200;
             return (true);
         }
     }
     // std::cout << RED "Location not found: 404!" RESET << directory << std::endl;
-    return (false);
+    _statusCode = 404;
+	return (false);
 }
 
 /**
@@ -139,7 +148,8 @@ int Connection::fixPath(std::string &path)
     else
     { //MAYBE THIS IS NOT NEEDED. IF THE DIRECTORY IS NOT FOUND, THE PATH WILL BE THE ROOT?
         std::cout << RED "Path not found: 404!" RESET << std::endl;
-        return (404);
+        _statusCode = 404;
+		return (404);
     }
     return (0);
 }
