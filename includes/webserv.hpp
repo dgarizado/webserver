@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/05 19:50:55 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/13 20:36:15 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 #define MAGENTA "\033[35m"
 #define CYAN "\033[36m"
 #define RESET "\033[0m"
-
+#define PINK "\033[95m"
 
 enum nums {
 	LISTEN = 0,

@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/08 15:13:28 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/13 20:46:37 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,14 @@ Connection &Connection::operator=(Connection const &src)
         _clientAddrSize = src._clientAddrSize;
         _ev = src._ev;
         _buffer = src._buffer;
-        // _vhost = src._vhost;
+        _directory = src._directory;
+        _finalPath = src._finalPath;
+        _path = src._path;
+        _fileName = src._fileName;
+        _queryString = src._queryString;
+        _root = src._root;
+        _statusCode = src._statusCode;
+        _vhost = src._vhost;
     }
     return (*this);
 }

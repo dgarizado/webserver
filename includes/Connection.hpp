@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/08 15:06:42 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/13 20:29:20 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class Connection
         std::string _fileName; //this is the file name requested by the client. empty if the client requested a directory.
         std::string _queryString;
         std::string _root; //this is the root of the vhost.
-		int _statusCode = 200;
+		int _statusCode ;
         VHost _vhost;
 };
 

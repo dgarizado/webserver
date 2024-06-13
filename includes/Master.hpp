@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/05 19:51:10 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/13 20:43:01 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Master
 
 		//AUXILIARY FUNCTIONS
 		void printServerNames();
-		int  servePage(Connection connection, const std::string &path);
+		int  servePage(Connection &connection, const std::string &path);
 		
 	private:
 
