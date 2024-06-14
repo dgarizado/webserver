@@ -1,5 +1,9 @@
 #include "../includes/Master.hpp"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+
 
 int Master::setSockets(std::set<int> &ports)
 {

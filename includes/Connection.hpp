@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/14 21:44:41 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/14 21:56:15 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 # include "webserv.hpp"
 # include "VHost.hpp"
 # include "RequestParser.hpp"
+# include <sys/stat.h>
+# include <exception>
+# include <ctime>
+# include <dirent.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 class VHost;
 
 class Connection
@@ -46,6 +53,10 @@ class Connection
         bool endsWith(const std::string &str, const std::string &ending);
         std::string getMimeType(const std::string &path);
         int servePage(const std::string &path);
+
+    
+        std::string genAutoIndex(std::string route);
+        std::string genRelativeRoute(std::string route);
         
     private:
         int _clientSocket;
