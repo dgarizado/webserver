@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/05 20:27:49 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/14 21:48:57 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 # include "webserv.hpp"
 # include "VHost.hpp"
 # include "RequestParser.hpp"
+# include <sys/stat.h>
+# include <exception>
+# include <ctime>
+# include <dirent.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 class VHost;
 
 class Connection
@@ -37,6 +44,10 @@ class Connection
         //DETERMINATOR
         int uriCheck(RequestParser &request);
         int dirCheck(std::string directory);
+
+    
+        std::string genAutoIndex(std::string route);
+        std::string genRelativeRoute(std::string route);
         
     private:
         int _clientSocket;
