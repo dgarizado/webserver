@@ -144,12 +144,10 @@ int Master::manageConnection(int connectionSocket)
  */
 int Master::startEventLoop()
 {
-    const int MAX_EVENTS = 64;
+    const int MAX_EVENTS = 64; //THIS HAS TO BE DEFINED!!
     struct epoll_event events[MAX_EVENTS];
-	int i = 1;
     while (true)
     {
-		std::cout << "Loop " << i++ << std::endl;
         int nev = epoll_wait(_epoll_fd, events, MAX_EVENTS, 300); 
         if (nev == -1)
             ft_error("Error in epoll_wait");
@@ -161,8 +159,8 @@ int Master::startEventLoop()
 			// check for a read event in _clientSockets first.
 			if (std::find(_clientSockets.begin(), _clientSockets.end(), socketToAccept) != _clientSockets.end())
 			{ 
-			//print the client socket
-			std::cout << "Client socket to read: " << socketToAccept << std::endl;
+			    //print the client socket
+			    std::cout << "Client socket to read: " << socketToAccept << std::endl;
 				try {
 					manageConnection(socketToAccept);
 				} catch (std::exception &e) {

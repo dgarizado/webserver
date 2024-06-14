@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/13 20:46:37 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/14 21:39:15 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,5 +214,54 @@ int Connection::uriCheck(RequestParser &request)
 	if (fileCheck(_path) == false)
 		return (404);
     //fix the path with the root of the location.
+    return (0);
+}
+
+bool Connection::endsWith(const std::string& str, const std::string& ending) {
+    if (ending.size() > str.size()) {
+        return false;
+    }
+    return std::equal(ending.rbegin(), ending.rend(), str.rbegin());
+}
+
+std::string Connection::getMimeType(const std::string &path)
+{
+	if (endsWith(path, ".html")) {
+        return "text/html";
+    } else if (endsWith(path, ".css")) {
+        return "text/css";
+    } else if (endsWith(path, ".jpg") || endsWith(path, ".jpeg")) {
+        return "image/jpeg";
+    } else if (endsWith(path, ".png")) {
+        return "image/png";
+    } else {
+        // Default to application/octet-stream for unknown types
+        return "application/octet-stream";
+    }
+}
+
+int Connection::servePage(const std::string &path)
+{
+    std::ifstream file(path);
+    std::stringstream bufferr;
+    bufferr << file.rdbuf();
+    std::string file_contents = bufferr.str();
+
+    std::cout << "Status code: " << _statusCode << std::endl;
+    //NEED TO IMPROVE FOR OTHER STATUS CODES. FIX THIS.
+    if (_statusCode == 200)
+    {
+        std::cout << GREEN "Serving page" RESET << std::endl;
+        std::string mime_type = getMimeType(path);
+        std::string response_headers = "HTTP/1.1 200 OK\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(file_contents.size()) + "\r\n\r\n";
+        send(_clientSocket, response_headers.c_str(), response_headers.size(), 0);
+        send(_clientSocket, file_contents.c_str(), file_contents.size(), 0);
+
+        return (0);
+    }
+    std::cout << RED "Error in servePage" RESET << std::endl;
+    const char *response_headers = "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n";
+    send(_clientSocket, response_headers, strlen(response_headers), 0);
+    send(_clientSocket, file_contents.c_str(), file_contents.size(), 0);
     return (0);
 }

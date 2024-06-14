@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/13 20:29:20 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/14 21:44:41 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,11 @@ class Connection
         int uriCheck(RequestParser &request);
         bool dirCheck(std::string directory);
 		bool fileCheck(std::string file);
-        
+
+        //SERVE PAGE
+        bool endsWith(const std::string &str, const std::string &ending);
+        std::string getMimeType(const std::string &path);
+        int servePage(const std::string &path);
         
     private:
         int _clientSocket;
