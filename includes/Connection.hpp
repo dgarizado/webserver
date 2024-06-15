@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 14:39:55 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/15 20:42:27 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,9 @@ class Connection
         std::string getBuffer() const;
 		std::string getPath() const;
 		int         getStatusCode() const;
+        bool        getAutoIndex() const;
+        std::string getFileName() const;
+        std::string getFinalPath() const;
 
         //SETTERS
         void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
@@ -49,11 +52,15 @@ class Connection
         bool        dirCheck(std::string directory);
 		bool        fileCheck(std::string file);
         bool        methodCheck(RequestParser &request);
+        int         requestCheck(RequestParser &request);
+        bool        setIndex();
+        int         setDefaultIndex(void);
 
         //SERVE PAGE
         bool        endsWith(const std::string &str, const std::string &ending);
         std::string getMimeType(const std::string &path);
         int         servePage(const std::string &path);
+        void        serveErrorPage(void);
 
     
         std::string genAutoIndex(std::string route);
@@ -65,12 +72,13 @@ class Connection
         socklen_t                   _clientAddrSize;
         struct epoll_event          _ev;
         std::string                 _buffer; //maybe a char array is better
-        t_location                  _location;
-        std::string                 _directory; //this is the location sent by the client.
-        std::string                 _finalPath; //this is the path with the root without the file name..
-		std::string                 _path; //this is the full path, including the root and the file name.
-        std::string                 _fileName; //this is the file name requested by the client. empty if the client requested a directory.
+		std::string                 _requestedPath; //this is the full path, including the root and the file name.
         std::string                 _queryString;
+        std::string                 _requestedPathNoFile; //this is the location sent by the client.
+        std::string                 _requestedLocation;
+        t_location                  _location;
+        std::string                 _finalPath; //this is the path with the root without the file name..
+        std::string                 _fileName; //this is the file name requested by the client. empty if the client requested a directory.
         std::string                 _root; //this is the root of the vhost.
 		int                         _statusCode ;
         VHost _vhost;

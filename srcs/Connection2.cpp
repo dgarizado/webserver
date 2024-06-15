@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection2.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/14 22:22:27 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/15 18:32:23 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,8 @@ std::string genRowName(struct dirent *entry)
     if (entry->d_type == DT_DIR)
         html = html + "<a href=\"" + entry->d_name + "\\\">" + entry->d_name + "\\" + "</a>";
     else if (entry->d_type == DT_REG)
-        html = html + "<a href=" + "\"" + entry->d_name + "\">" + entry->d_name + "</a>";
-    html += "</td>";
-
+        html = html + "<p" + "\"" + entry->d_name + "\">" + entry->d_name + "</p>";
+    
     return html;
 }
 
@@ -116,7 +115,7 @@ std::string genRowsAutoIndex(std::string path)
     return html;
 }
 
-std::string genAutoIndex(std::string path)
+std::string Connection::genAutoIndex(std::string path)
 {
     std::string response_header;
     std::string response_body_begin;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 15:26:23 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/15 21:06:54 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ Connection &Connection::operator=(Connection const &src)
         _clientAddrSize = src._clientAddrSize;
         _ev = src._ev;
         _buffer = src._buffer;
-        _directory = src._directory;
+        _requestedPathNoFile = src._requestedPathNoFile;
         _finalPath = src._finalPath;
-        _path = src._path;
+        _requestedPath = src._requestedPath;
         _fileName = src._fileName;
         _queryString = src._queryString;
         _root = src._root;
@@ -58,12 +58,27 @@ std::string Connection::getBuffer() const
 
 std::string Connection::getPath() const
 {
-	return _path;
+	return _requestedPath;
 }
 
 int Connection::getStatusCode() const
 {
 	return _statusCode;
+}
+
+bool Connection::getAutoIndex() const
+{
+    return _location.autoIndex;
+}
+
+std::string Connection::getFileName() const
+{
+    return _fileName;
+}
+
+std::string Connection::getFinalPath() const
+{
+    return _finalPath;
 }
 
 void Connection::setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev)
@@ -84,14 +99,58 @@ void Connection::setVhost(VHost vhost)
     _vhost = vhost;
 }
 
+bool Connection::setIndex()
+{
+    
+    return (true);
+}
+
+bool isIndex(std::string path)
+{
+    std::cerr << RED << "DEBUG BEFORE ACCESS " << path << RESET << std::endl;
+    if (access(path.c_str(), F_OK)  != -1)
+    {
+        std::cerr << RED << "DEBUG AFTER ACCESSS " << path << RESET << std::endl;
+        return true;
+    }
+    return false;
+
+}
+
+int Connection::setDefaultIndex(void)
+{
+    std::vector<std::string>::iterator it = _location.index.begin();
+    
+    for (; it != _location.index.end(); it++)
+    {
+        std::string tmpPath = _requestedPath;
+        tmpPath += *it;
+        if (isIndex(tmpPath))
+        {
+            _requestedPath = tmpPath;
+            return 200;
+        }
+    }
+    std::cerr << RED << "SetDefaultIndex not found valid index: no exist/permissions" << RESET << std::endl;
+    _statusCode = 404;
+    return 404;
+}
 
 bool Connection::fileCheck(std::string file)
 {
-	if (_fileName.empty() == true)
+    
+    if (_fileName.empty() == true )
 	{
+        if (_location.autoIndex == true)
+            return (true);
+        
+        if ( setDefaultIndex() == 404)
+            return (false);
+        
 		std::cout << YELLOW "No file requested, serving index or autoindex" RESET << std::endl;
-		_path += "/index.html"; //THIS IS HARDCODED! MANAGE THIS with the autoindex or index directive.
-		return (true);
+		//_requestedPath += "index.html"; //THIS IS HARDCODED! MANAGE THIS with the autoindex or index directive.
+		std::cout << BLUE << "Requested path after filecheck: " << _requestedPath << std::endl;
+        return (true);
 	}
 	std::cout << BLUE "File requested: " RESET << file << std::endl;
 	std::ifstream f(file.c_str());
@@ -104,6 +163,16 @@ bool Connection::fileCheck(std::string file)
 	_statusCode = 404;
 	std::cout << RED "File not found: 404!" RESET << std::endl;
 	return (false);
+}
+
+int Connection::requestCheck(RequestParser &request)
+{
+	if (this->uriCheck(request) != 200 || this->methodCheck(request) == false)
+	{
+		this->serveErrorPage();
+		return -1;
+	}
+	return 0;
 }
 
 /**
@@ -140,14 +209,16 @@ bool Connection::dirCheck(std::string directory)
  */
 int Connection::fixPath(std::string &path)
 {
-    size_t found = path.find(_directory);
+
+    std::cout<< "Searching: " << _requestedLocation << "inside of : " << path << std::endl;
+    size_t found = path.find(_requestedLocation);
     if (path == "/" && _fileName.empty() == false)
 	{
 		_root += "/";
 	}
     if (found != std::string::npos)
     {
-        path.replace(found, _directory.length(), _root);
+        path.replace(found, _requestedLocation.length(), _root);
     }
     else
     { //MAYBE THIS IS NOT NEEDED. IF THE DIRECTORY IS NOT FOUND, THE PATH WILL BE THE ROOT?
@@ -169,11 +240,15 @@ bool Connection::methodCheck(RequestParser &request)
 {
     std::string method = request.get()["REQUEST_METHOD"];
 
+    std::cout << "HERE " << std::endl;
+    std::cout << _location.allowedMethods[GET] << std::endl;
+
     if (_location.allowedMethods[GET]    && method == "GET")    return true;
     if (_location.allowedMethods[POST]   && method == "POST") 	return true;
     if (_location.allowedMethods[PUT]    && method == "PUT") 	return true;
    	if (_location.allowedMethods[DELETE] && method == "DELETE") return true;
     //if not allowed method requested 
+    _statusCode = 405;
     return false;
 }
 
@@ -186,35 +261,38 @@ bool Connection::methodCheck(RequestParser &request)
  */
 int Connection::uriCheck(RequestParser &request)
 {
+    std::cout << RED << "------------------------------------------------" << RESET << std::endl;
     std::string uri = request.get()["REQUEST_URI"];
     std::string::size_type pos;
 
     std::stringstream   iss(uri);
-    std::getline(iss, _path, '?');
+    std::getline(iss, _requestedPath, '?');
     std::getline(iss, _queryString, '?');
 	
-    std::cout << BLUE "_Path: " RESET << _path << std::endl;
+    std::cout << BLUE "_requestedPath: " RESET << _requestedPath << std::endl;
     std::cout << BLUE "Query: " RESET << _queryString << std::endl;
 
-    pos = _path.rfind('/');
-    _directory = _path.substr(0, pos);
-    _fileName = pos == std::string::npos ? _path : _path.substr(pos + 1);
+    pos = _requestedPath.rfind('/');
+    _requestedPathNoFile = _requestedPath.substr(0, pos);
+    _fileName = pos == std::string::npos ? _requestedPath : _requestedPath.substr(pos + 1);
     //if the _filename does not have an extension, it is a directory. recomplete the directory path
     if (_fileName.find('.') == std::string::npos)
     {
-        _directory = _path;
+        _requestedPathNoFile = _requestedPath;
         _fileName = "";
     }
-	if (_directory == "")
-		_directory = "/";
-    std::cout << BLUE "Directory: " RESET << _directory << std::endl;
-    //get just the first part of the _directory
-    pos = _directory.find('/', 1);
-    _finalPath = _directory;
-    _directory = _directory.substr(0, pos);
-    std::cout << BLUE "Location is: " RESET << _directory << std::endl;
+    
+	if (_requestedPathNoFile == "")
+		_requestedPathNoFile = "/";
+        
+    std::cout << BLUE "requestPathNoFile: " RESET << _requestedPathNoFile << std::endl;
+    //get just the first part of the _requestedPathNoFile
+    pos = _requestedPathNoFile.find('/', 1);
+    _finalPath = _requestedPathNoFile;
+   _requestedLocation = _requestedPathNoFile.substr(0, pos);
+    std::cout << BLUE "Requested Location is: " RESET << _requestedLocation << std::endl;
     std::cout << BLUE "_Filename: " RESET << _fileName << std::endl;
-    if (dirCheck(_directory) == true)
+    if (dirCheck(_requestedLocation) == true)
         std::cout << GREEN "Directory found: 200!" RESET << std::endl;
     else
     {
@@ -223,14 +301,21 @@ int Connection::uriCheck(RequestParser &request)
     }
     //print the root of the location
     std::cout << BLUE "Root: " RESET << _root << std::endl;
-    if (fixPath(_finalPath) == 404 || fixPath(_path) == 404)
+    if (fixPath(_finalPath) == 404 || fixPath(_requestedPath) == 404)
 		return (404);
     std::cout << BLUE "Path fixed: " RESET << _finalPath << std::endl;
-	std::cout << BLUE "full Path fixed: " RESET << _path << std::endl;
-	if (fileCheck(_path) == false)
+	std::cout << BLUE "full Path fixed: " RESET << _requestedPath << std::endl;
+    if (_fileName.empty())
+    {
+        _finalPath+= "/";
+        _requestedPath+= "/";
+    }
+	if (fileCheck(_requestedPath) == false)
 		return (404);
     //fix the path with the root of the location.
-    return (0);
+    
+    std::cout << RED << "------------------------------------------------" << RESET << std::endl;
+    return (200);
 }
 
 bool Connection::endsWith(const std::string& str, const std::string& ending) {
@@ -254,6 +339,14 @@ std::string Connection::getMimeType(const std::string &path)
         // Default to application/octet-stream for unknown types
         return "application/octet-stream";
     }
+}
+
+void Connection::serveErrorPage(void)
+{
+	if (_statusCode == 404)
+		this->servePage("./html/errorPages/404.html");
+	else if (_statusCode == 405)
+		this->servePage("./html/errorPages/405.html");
 }
 
 int Connection::servePage(const std::string &path)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Master.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 15:40:03 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/15 17:46:21 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 #include "VHost.hpp"
 #include "Connection.hpp"
 #include "RequestParser.hpp"
+#include <sys/types.h>
+#include <sys/socket.h>
+
 
 class VHost;
 class Connection;
@@ -39,6 +42,7 @@ class Master
 		int clientAccept(int serverSocket);
 		int clientRead(int clientSocket);
 		int processRequest(Connection &connection, RequestParser &request);
+		
 		int manageConnection(Connection &connection);
 
 		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME
