@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/14 21:39:15 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/14 23:10:32 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,9 @@ bool Connection::dirCheck(std::string directory)
     std::vector<t_location> locations = _vhost.getServerStruct().locations;
     for (std::vector<t_location>::iterator it = locations.begin(); it != locations.end(); it++)
     {
-        if (it->uri == directory)
+        if (it->location == directory)
         {
-            std::cout << MAGENTA "Location found:" RESET <<  it->uri << std::endl;
+            std::cout << MAGENTA "Location found:" RESET <<  it->location << std::endl;
             _root = it->root;
 			_statusCode = 200;
             return (true);
@@ -196,7 +196,7 @@ int Connection::uriCheck(RequestParser &request)
     pos = _directory.find('/', 1);
     _finalPath = _directory;
     _directory = _directory.substr(0, pos);
-    std::cout << BLUE "DirectoryParsed: " RESET << _directory << std::endl;
+    std::cout << BLUE "Location is: " RESET << _directory << std::endl;
     std::cout << BLUE "_Filename: " RESET << _fileName << std::endl;
     if (dirCheck(_directory) == true)
         std::cout << GREEN "Directory found: 200!" RESET << std::endl;

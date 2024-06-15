@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master2.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/13 21:21:27 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/14 23:02:56 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int Master::processRequest(int clientSocket, RequestParser &request)
 		_clientsMap[clientSocket].servePage("./html/errorPages/404.html");
 		return (-1);
 	}
+	
 	_clientsMap[clientSocket].servePage(_clientsMap[clientSocket].getPath());
 	
     // close(clientSocket); //THIS IS IMPORTANT TO DEFINE!!

@@ -15,15 +15,40 @@ void ft_braces(int &braces, std::string &token)
         braces--;
 }
 
-void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token, int *varsCheck)
+void setDefaultValuesLocation(t_location &ref)
 {
-    if (token == "root" && (varsCheck[ROOT] = 1))
+    ref.autoIndex               = false;//default value of autoIndex
+    ref.allowedMethods[GET]     = true;
+    ref.allowedMethods[POST]    = true;
+    ref.allowedMethods[PUT]     = true;
+    ref.allowedMethods[DELETE]  = true;
+}
+
+void setNotAllowedMethod(t_location &ref, std::istringstream &iss)
+{
+	std::string token;
+
+	while (iss >> token)
+	{
+		token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+
+		if 		(token == "GET") 	ref.allowedMethods[GET] 	= false;
+    	else if (token == "POST") 	ref.allowedMethods[POST] 	= false;
+    	else if (token == "PUT") 	ref.allowedMethods[PUT] 	= false;
+   		else if (token == "DELETE") ref.allowedMethods[DELETE] 	= false;
+		else throw std::invalid_argument("not valid method " + token);
+	}
+}
+
+void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token, bool *vars)
+{
+    if (token == "root" && (vars[ROOT] = true))
     {
         iss >> token; 
         token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
         ref->getStruct().serverData[nServer].locations[nLocation].root = token;
     }
-    else if (token == "index" && (varsCheck[INDEX] = 1))
+    else if (token == "index" && (vars[INDEX] = true))
     {
         while (iss >> token)
         {
@@ -31,12 +56,21 @@ void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLo
             ref->getStruct().serverData[nServer].locations[nLocation].index.push_back(token);
         }
     }
+    else if (token == "autoindex")
+    {
+        iss >> token;
+        token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+        if (token == "on" && (vars[AUTOINDEX] = true))
+            ref->getStruct().serverData[nServer].locations[nLocation].autoIndex = true;
+    }
+	else if (token == "limit_except")
+		setNotAllowedMethod(ref->getStruct().serverData[nServer].locations[nLocation], iss);
 }
 
 void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
 {
     int 	        locationBraces = 0;
-    int             vars[2] = {0, 0};//to markdown the vars to find
+    bool            vars[TOTAL_LOCATION] = {false, false, false};//to markdown the vars to find
     std::string     line;
     t_location      empty;
 
@@ -45,10 +79,11 @@ void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss,
         //push a empty t_location into locations vector
         nLocation++;
         ref->getStruct().serverData[nServer].locations.push_back(empty);
-        //register the uri
+        //register the location
         iss >> token;
-        ref->getStruct().serverData[nServer].locations[nLocation].uri = token;
-       do{
+        ref->getStruct().serverData[nServer].locations[nLocation].location = token;
+        setDefaultValuesLocation(ref->getStruct().serverData[nServer].locations[nLocation]);
+        do{
             while(iss >> token)
 		    {
 			    ft_braces(locationBraces, token);
@@ -60,17 +95,20 @@ void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss,
                 iss.str(line);
             }
         }while (locationBraces > 0);
+
         //Checks if vars are encounter inside of location block
-        if (vars[ROOT] == 0 || vars[INDEX] == 0)
-            throw std::runtime_error("location block wrong");
+        if (vars[AUTOINDEX] == true && vars[ROOT] == false)
+            throw std::runtime_error("location block wrong, autoindex missing root");
+        else if (vars[AUTOINDEX] == false && (vars[ROOT] == false || vars[INDEX] == false) )
+            throw std::runtime_error("location block wrong, missing index or root");
     }
 }
 
-void varServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token, int *varsCheck)
+void varServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token, bool *vars)
 {
     int port;
 
-    if (token == "listen" && (varsCheck[LISTEN] = 1))
+    if (token == "listen" && (vars[LISTEN] = true))
     {
         iss >> token;
         token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
@@ -78,7 +116,7 @@ void varServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, int
         ref->getStruct().ports.insert(port);
         ref->getStruct().serverData[nServer].listen = port;
     }
-    else if (token == "server_name" && (varsCheck[SERVER_NAME] = 1))
+    else if (token == "server_name" && (vars[SERVER_NAME] = true))
     {
        while (iss >> token)
         {
@@ -86,7 +124,7 @@ void varServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, int
             ref->getStruct().serverData[nServer].server_name.push_back(token);
         }
     }
-    else if (token == "location" && (varsCheck[LOCATION] = 1))
+    else if (token == "location" && (vars[LOCATION] = true))
         insideLocation(ref, file, iss, nServer, nLocation, token);
 }
 
@@ -96,7 +134,7 @@ int insideServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, s
     int             nLocation = -1;
     int 	        serverBraces = 0;
 	int 		    encounter = -1;
-    int             vars[3] = {0, 0, 0};//to markdown the vars to find
+    bool            vars[TOTAL_SERVER] = {false, false, false};//to markdown the vars to find
     std::string     line;
     t_server        empty;
 
@@ -118,7 +156,7 @@ int insideServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, s
             }
         }while (serverBraces > 0);
         //Checks if vars are encounter inside of server block
-        if (vars[LISTEN] == 0 || vars[SERVER_NAME] == 0 || vars[LOCATION] == 0)
+        if (vars[LISTEN] == false || vars[SERVER_NAME] == false || vars[LOCATION] == false)
             throw std::runtime_error("Server block wrong");
     }
     return encounter;
@@ -269,8 +307,7 @@ int FileParse::loadConfigFromFile(const std::string filename)
 
 void FileParse::showConfig(void)
 {
-    std::cout << "/errorLogs\t\t\t= " << this->getStruct().errorLog << std::endl; //DELETEEEEEE!!
-    std::cout << "/workerConnections\t\t= " << this->getStruct().workerConnections << std::endl; //DELETEEEEEEEEEEE!!
+
     std::cout << "/ports\t\t\t\t= " ;
     for (std::set<int>::iterator it = this->configData.ports.begin(); it != this->configData.ports.end(); ++it) {std::cout << *it << " ";} std::cout << std::endl;
     std::cout << "/serverData/ " << std::endl;
@@ -280,10 +317,12 @@ void FileParse::showConfig(void)
         std::cout << "\t   /listen\t\t= " << it->listen << std::endl;
         for (std::vector<t_location>::iterator itLoc = it->locations.begin(); itLoc != it->locations.end(); ++itLoc) {
             std::cout << "\t   /location/" << std::endl;
-            std::cout << "\t\t    /uri\t= " << itLoc->uri << std::endl;
+            std::cout << "\t\t    /location\t= " << itLoc->location << std::endl;
             std::cout << "\t\t    /root\t= " << itLoc->root << std::endl;
             std::cout << "\t\t    /index\t= ";
             for (std::vector<std::string>::iterator itIndex = itLoc->index.begin(); itIndex != itLoc->index.end(); ++itIndex) {std::cout << *itIndex << " "; } std::cout << std::endl;
+            std::cout << "\t\t    /autoindex\t= " << itLoc->autoIndex << std::endl;
+            std::cout << "\t\t    /methods\t= " << "GET:" << itLoc->allowedMethods[GET] << " POST:" << itLoc->allowedMethods[POST] << " PUT:" << itLoc->allowedMethods[PUT] << " DELETE:" << itLoc->allowedMethods[DELETE] << std::endl;
         }
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     }
