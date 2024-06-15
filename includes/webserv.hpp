@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/13 20:36:15 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/15 14:21:22 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,34 @@
 #define RESET "\033[0m"
 #define PINK "\033[95m"
 
-enum nums {
-	LISTEN = 0,
-	SERVER_NAME = 1,
-	LOCATION = 2,
-	ROOT = 0,
-	INDEX = 1
+enum location {
+	ROOT,
+	INDEX,
+	AUTOINDEX,
+	TOTAL_LOCATION
+};
+
+enum server {
+	LISTEN,
+	SERVER_NAME,
+	LOCATION,
+	TOTAL_SERVER
+};
+
+enum methods {
+	GET,
+	POST,
+	PUT,
+	DELETE,
+	TOTAL_METHODS
 };
 
 typedef struct s_location {
-	std::string					uri;
+	std::string					location;
 	std::string					root;
 	std::vector<std::string>	index;
+	bool						autoIndex;
+	bool						allowedMethods[TOTAL_METHODS];
 }t_location;
 
 typedef struct s_server {
