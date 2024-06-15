@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/14 21:39:15 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/15 14:45:09 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,6 @@ bool Connection::fileCheck(std::string file)
 		return (true);
 	}
 	std::cout << BLUE "File requested: " RESET << file << std::endl;
-	//print the working directory
-	char cwd[1024];
-	getcwd(cwd, sizeof(cwd));
-	std::cout << BLUE "Current working dir: " RESET << cwd << std::endl;
 	std::ifstream f(file.c_str());
 	if (f.good())
 	{
@@ -124,6 +120,7 @@ bool Connection::dirCheck(std::string directory)
         if (it->uri == directory)
         {
             std::cout << MAGENTA "Location found:" RESET <<  it->uri << std::endl;
+            _location = *it;
             _root = it->root;
 			_statusCode = 200;
             return (true);
@@ -159,6 +156,28 @@ int Connection::fixPath(std::string &path)
 		return (404);
     }
     return (0);
+}
+
+/**
+ * @brief This function checks if the method sent by the client is 
+ * allowed in the serverblock.
+ * @param request 
+ * @return true 
+ * @return false 
+ */
+bool Connection::methodCheck(RequestParser &request)
+{
+    std::string method = request.get()["REQUEST_METHOD"];
+    return (true);
+    /*
+    if (_location.allowedMethods[method] == true)
+    {
+        std::cout << MAGENTA "Method" << method << "allowed!, continue" << std::endl;
+                
+    } else {
+        std::cout << RED "Method " << method << "not allowed 405!" << std::endl;
+    }
+    */
 }
 
 /**
