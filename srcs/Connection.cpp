@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 15:08:12 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/15 15:26:23 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ bool Connection::dirCheck(std::string directory)
     {
         if (it->location == directory)
         {
-            std::cout << MAGENTA "Location found:" RESET <<  it->uri << std::endl;
+            std::cout << MAGENTA "Location found:" RESET <<  it->location << std::endl;
             _location = *it;
             _root = it->root;
 			_statusCode = 200;
@@ -168,16 +168,13 @@ int Connection::fixPath(std::string &path)
 bool Connection::methodCheck(RequestParser &request)
 {
     std::string method = request.get()["REQUEST_METHOD"];
-    return (true);
-    /*
-    if (_location.allowedMethods[method] == true)
-    {
-        std::cout << MAGENTA "Method" << method << "allowed!, continue" << std::endl;
-                
-    } else {
-        std::cout << RED "Method " << method << "not allowed 405!" << std::endl;
-    }
-    */
+
+    if (_location.allowedMethods[GET]    && method == "GET")    return true;
+    if (_location.allowedMethods[POST]   && method == "POST") 	return true;
+    if (_location.allowedMethods[PUT]    && method == "PUT") 	return true;
+   	if (_location.allowedMethods[DELETE] && method == "DELETE") return true;
+    //if not allowed method requested 
+    return false;
 }
 
 /**

@@ -119,20 +119,20 @@ int Master::clientRead(int clientSocket)
     return (0);
 }
 
-int Master::manageConnection(int connectionSocket)
+int Master::manageConnection(Connection &connection)
 {
     RequestParser request;
     //read from the socket
-    if (clientRead(connectionSocket) < 0)
+    if (clientRead(connection.getClientSocket()) < 0)
         return ft_error("Error reading from client");
     //request = _clientsMap[connectionSocket].getBuffer();
     //parse the request
-    if (request.loadConfigFromRequest(_clientsMap[connectionSocket].getBuffer()) < 0)
+    if (request.loadConfigFromRequest(connection.getBuffer()) < 0)
         return ft_error("Error loading config from request");
     request.showConfig();
     VHost tmp = assignVHost(request.get()["HTTP_HOST"]);
-    _clientsMap[connectionSocket].setVhost(tmp);
-    if (processRequest(connectionSocket, request) < 0)
+    connection.setVhost(tmp);
+    if (processRequest(connection, request) < 0)
 		throw std::runtime_error("Error processing request");
         // return ft_error("Error processing request");
     //create a response
@@ -166,7 +166,7 @@ int Master::startEventLoop()
 			    //print the client socket
 			    std::cout << "Client socket to read: " << socketToAccept << std::endl;
 				try {
-					manageConnection(socketToAccept);
+					manageConnection(_clientsMap[socketToAccept]);
 				} catch (std::exception &e) {
 					std::cerr << e.what() << std::endl;
 					close(socketToAccept);
