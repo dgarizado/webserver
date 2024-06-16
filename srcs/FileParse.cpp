@@ -15,6 +15,26 @@ void ft_braces(int &braces, std::string &token)
         braces--;
 }
 
+// void checkVarsLocation(t_location &refLocation, bool *vars)
+// {
+//     if (vars[AUTOINDEX] == true && vars[ROOT] == false)//provional no chekeado comportamieto en upload, cgi. .html
+//     {
+//         throw std::runtime_error("location autoindex block missing root");
+//     }
+//     else if (refLocation.location == "/scripts" && (vars[AUTOINDEX] == true || vars[ROOT] == false || vars[INDEX] == true) )
+//     {
+//         throw std::runtime_error("location scripts block wrong, missing root or autoindex/index on");
+//     }
+//     else if (refLocation.location != "/" && vars[AUTOINDEX] == false && (vars[ROOT] == false || vars[INDEX] == false) )
+//     {
+//         throw std::runtime_error("location scripts block wrong, missing index or root");
+//     }
+//     else if (refLocation.location == "/upload" && ( vars[AUTOINDEX] == false || vars[ROOT] == false) )
+//     {
+//         throw std::runtime_error("location upload block wrong, missing root");
+//     }
+// }
+
 void setDefaultValuesLocation(t_location &ref)
 {
     ref.autoIndex               = false;//default value of autoIndex
@@ -65,9 +85,11 @@ void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLo
     }
 	else if (token == "limit_except")
 		setNotAllowedMethod(ref->getStruct().serverData[nServer].locations[nLocation], iss);
+
 }
 
-void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
+
+void insideLocation(FileParse *ref, std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
 {
     int 	        locationBraces = 0;
     bool            vars[TOTAL_LOCATION] = {false, false, false};//to markdown the vars to find
@@ -96,11 +118,9 @@ void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss,
             }
         }while (locationBraces > 0);
 
-        //Checks if vars are encounter inside of location block
-        if (vars[AUTOINDEX] == true && vars[ROOT] == false)
-            throw std::runtime_error("location block wrong, autoindex missing root");
-        else if (vars[AUTOINDEX] == false && (vars[ROOT] == false || vars[INDEX] == false) )
-            throw std::runtime_error("location block wrong, missing index or root");
+        //Checks if vars are encounter properly inside of location block
+       // t_location &refLocation = ref->getStruct().serverData[nServer].locations[nLocation];
+        //checkVarsLocation(refLocation, vars);
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 13:31:22 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 20:58:37 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@
 # include <exception>
 # include <ctime>
 # include <dirent.h>
-#include <stdio.h>
-#include <stdlib.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <cstdlib>
 
 class VHost;
 
@@ -40,6 +41,7 @@ class Connection
         bool        getAutoIndex() const;
         std::string getFileName() const;
         std::string getFinalPath() const;
+        std::string getQueryString() const;
 
         //SETTERS
         void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
@@ -62,9 +64,11 @@ class Connection
         int         servePage(const std::string &path);
         void        serveErrorPage(void);  
         std::string genResponsePage(std::string path);
+        std::string genResponseCgi(std::string filePath, RequestParser &request);
+        std::string genResponseAutoIndex(std::string path);
 
     
-        std::string genAutoIndex(std::string route);
+        //std::string genAutoIndex(std::string route);
         std::string genRelativeRoute(std::string route);
         
     private:

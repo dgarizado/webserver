@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 14:47:48 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 21:36:49 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,11 @@ std::string Connection::getFinalPath() const
     return _finalPath;
 }
 
+std::string Connection::getQueryString() const
+{
+    return _queryString;
+}
+
 void Connection::setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev)
 {
     _clientSocket = clientSocket;
@@ -107,20 +112,23 @@ bool Connection::setIndex()
 
 bool isIndex(std::string path)
 {
-    std::cerr << RED << "DEBUG BEFORE ACCESS " << path << RESET << std::endl;
+
     if (access(path.c_str(), F_OK)  != -1)
-    {
-        std::cerr << RED << "DEBUG AFTER ACCESSS " << path << RESET << std::endl;
         return true;
-    }
     return false;
 
 }
-
+/**
+ * @brief If uri comes with no file, looks to set the default index of conf file.
+ * if uri comes with a script like ".py" it will be ignored.
+ * 
+ * @return int 
+ */
 int Connection::setDefaultIndex(void)
 {
     std::vector<std::string>::iterator it = _location.index.begin();
     
+
     for (; it != _location.index.end(); it++)
     {
         std::string tmpPath = _requestedPath;
@@ -348,8 +356,10 @@ void Connection::serveErrorPage(void)
 
 	else if (_statusCode == 405)
 		response = this->genResponsePage(path + "405.html");
+    else if (_statusCode == 500)
+		response = this->genResponsePage(path + "500.html");//TODAVIA NO EXISTE INTERNAL ERROR
     
-    send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
+    send(this->getClientSocket(), response.c_str(), response.size(), 0);
 }
 
 int Connection::servePage(const std::string &path)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection2.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/16 11:59:59 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/16 19:32:56 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,8 @@ std::string genRowName(struct dirent *entry)
 {
     std::string html;
     
-    if (entry->d_type == DT_DIR)
-    {
-        std::cout << "adding this to html: " << "<a href=\"" << entry->d_name << "\\\">" << entry->d_name << "\\" << "</a>" << "\n";
+    if (entry->d_type == DT_DIR)  
         html = html + "<a href=\"" + entry->d_name + "\\\">" + entry->d_name + "\\" + "</a>";
-    }
     else if (entry->d_type == DT_REG)
         html = html + "<p" + "\"" + entry->d_name + "\">" + entry->d_name + "</p>";
     
@@ -102,7 +99,7 @@ std::string genRowsAutoIndex(std::string path)
 
     if (dp == NULL) {
         perror("opendir");
-        return "fallo estupido humano";
+        return "fallo estupido humano";//thow ??
     }
 
     while ((entry = readdir(dp)))
@@ -118,14 +115,12 @@ std::string genRowsAutoIndex(std::string path)
     return html;
 }
 
-std::string Connection::genAutoIndex(std::string path)
+std::string genAutoIndex(std::string path)
 {
-    std::string response_header;
     std::string response_body_begin;
     std::string response_body_middle;
     std::string response_body_end;
 
-    response_header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
     response_body_begin = R"(
     <!DOCTYPE html>
     <html>
@@ -171,8 +166,22 @@ std::string Connection::genAutoIndex(std::string path)
         </body>
     </html>)";
 
-    return response_header + response_body_begin + response_body_middle + response_body_end;
+    return response_body_begin + response_body_middle + response_body_end;
 }
+
+std::string Connection::genResponseAutoIndex(std::string path)
+{
+    std::string     response_header;
+    std::string     response_body;
+    long            size;
+
+    response_body   = genAutoIndex(path);
+    size            = response_body.size();
+    response_header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+    
+    return response_header + response_body;
+}
+
 
 std::string genRelativeRoute(std::string uri)
 {
