@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection2.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/15 18:32:23 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 11:59:59 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ std::string genRowName(struct dirent *entry)
     std::string html;
     
     if (entry->d_type == DT_DIR)
+    {
+        std::cout << "adding this to html: " << "<a href=\"" << entry->d_name << "\\\">" << entry->d_name << "\\" << "</a>" << "\n";
         html = html + "<a href=\"" + entry->d_name + "\\\">" + entry->d_name + "\\" + "</a>";
+    }
     else if (entry->d_type == DT_REG)
         html = html + "<p" + "\"" + entry->d_name + "\">" + entry->d_name + "</p>";
     

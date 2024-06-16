@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 21:06:54 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 11:46:06 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,9 +239,6 @@ int Connection::fixPath(std::string &path)
 bool Connection::methodCheck(RequestParser &request)
 {
     std::string method = request.get()["REQUEST_METHOD"];
-
-    std::cout << "HERE " << std::endl;
-    std::cout << _location.allowedMethods[GET] << std::endl;
 
     if (_location.allowedMethods[GET]    && method == "GET")    return true;
     if (_location.allowedMethods[POST]   && method == "POST") 	return true;
