@@ -19,6 +19,12 @@ body {
     max-width: 500px;
 }
 
+.button-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
 h1 {
     font-size: 2.5em;
     margin-bottom: 20px;
@@ -29,18 +35,21 @@ p {
     margin-bottom: 40px;
 }
 
-a button {
+a button, label {
     background-color: #0f82c9;
     color: #f4f4f4;
     padding: 15px 30px;
-    font-size: 1.2em;
+    font-size: 1.5em;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 150px; 
+    text-align: center;
+    margin: 0 10px;
 }
 
-a button:hover {
+a button:hover, label:hover {
     background-color: hsl(107, 46%, 33%);
 }
 
@@ -51,16 +60,6 @@ input[type="file"] {
 /* Style the label as a button */
 label {
     display: inline-block;
-    background-color: #0f82c9;
-    color: #f4f4f4;
-    padding: 15px 30px;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 20px; /* Add some space above the label */
+    width: 150px; /* Set a fixed width */
+    text-align: center; /* Center the text */
 }
-
-label:hover {
-    background-color: hsl(107, 46%, 33%);

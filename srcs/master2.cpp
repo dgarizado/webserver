@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master2.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 20:05:38 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 11:54:08 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int Master::processRequest(Connection &connection, RequestParser &request)
 	{
 		std::string response = connection.genAutoIndex(connection.getFinalPath()) ;
 		send(connection.getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
+		close(connection.getClientSocket());
 	}
 	else
 	{

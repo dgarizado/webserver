@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 12:40:37 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/16 12:46:57 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,9 +239,6 @@ int Connection::fixPath(std::string &path)
 bool Connection::methodCheck(RequestParser &request)
 {
     std::string method = request.get()["REQUEST_METHOD"];
-
-    std::cout << "HERE " << std::endl;
-    std::cout << _location.allowedMethods[GET] << std::endl;
 
     if (_location.allowedMethods[GET]    && method == "GET")    return true;
     if (_location.allowedMethods[POST]   && method == "POST") 	return true;
