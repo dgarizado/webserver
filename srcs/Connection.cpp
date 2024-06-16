@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 11:46:06 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/16 14:37:57 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ int Connection::fixPath(std::string &path)
 
 /**
  * @brief This function checks if the method sent by the client is 
- * allowed in the serverblock.
+ * allowed in the serverblock. 
  * @param request 
  * @return true 
  * @return false 
