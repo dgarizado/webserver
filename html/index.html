@@ -11,9 +11,12 @@
         <div class="button-container">
             <a href="victor.html"><button>Victor's Page</button></a>
             <a href="mostrar/"><button>Mostrar</button></a>
-            <label for="fileUpload">Upload a File</label>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="fileUpload">Select a File</label>
+                <input type="file" id="fileUpload" name="fileUpload" />
+                <button type="submit">Upload File</button>
+            </form>
         </div>
-        <input type="file" id="fileUpload" />
     </div>
 </body>
 </html>

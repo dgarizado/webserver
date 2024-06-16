@@ -44,9 +44,9 @@ a button, label {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 150px; 
     text-align: center;
     margin: 0 10px;
+    box-sizing: border-box; /* Add this line */
 }
 
 a button:hover, label:hover {
@@ -60,6 +60,6 @@ input[type="file"] {
 /* Style the label as a button */
 label {
     display: inline-block;
-    width: 150px; /* Set a fixed width */
     text-align: center; /* Center the text */
+    box-sizing: border-box; /* Add this line */
 }
