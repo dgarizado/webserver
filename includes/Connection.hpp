@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 20:42:27 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 13:31:22 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ class Connection
         bool        endsWith(const std::string &str, const std::string &ending);
         std::string getMimeType(const std::string &path);
         int         servePage(const std::string &path);
-        void        serveErrorPage(void);
+        void        serveErrorPage(void);  
+        std::string genResponsePage(std::string path);
 
     
         std::string genAutoIndex(std::string route);

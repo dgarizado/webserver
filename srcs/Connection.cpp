@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 12:46:57 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/16 13:57:20 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,10 +340,16 @@ std::string Connection::getMimeType(const std::string &path)
 
 void Connection::serveErrorPage(void)
 {
+    std::string path = "./html/errorPages/";
+    std::string response;
+    
 	if (_statusCode == 404)
-		this->servePage("./html/errorPages/404.html");
+        response = this->genResponsePage(path + "404.html");
+
 	else if (_statusCode == 405)
-		this->servePage("./html/errorPages/405.html");
+		response = this->genResponsePage(path + "405.html");
+    
+    send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
 }
 
 int Connection::servePage(const std::string &path)
@@ -360,6 +366,8 @@ int Connection::servePage(const std::string &path)
         std::cout << GREEN "Serving page" RESET << std::endl;
         std::string mime_type = getMimeType(path);
         std::string response_headers = "HTTP/1.1 200 OK\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(file_contents.size()) + "\r\n\r\n";
+        std::cerr << std::endl << GREEN << response_headers << RESET << std::endl;
+        std::cerr << std::endl << GREEN << file_contents << RESET << std::endl;
         send(_clientSocket, response_headers.c_str(), response_headers.size(), 0);
         send(_clientSocket, file_contents.c_str(), file_contents.size(), 0);
 

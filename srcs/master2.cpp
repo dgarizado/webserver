@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master2.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 11:54:08 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/16 14:20:38 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,22 +28,27 @@ int isAutoIndex(Connection &connection)
  */
 int Master::processRequest(Connection &connection, RequestParser &request)
 {
-	
     std::cout << MAGENTA "Processing request" << RESET << std::endl;
 	
+    std::string response;
+    std::string path;
+
 	if (connection.requestCheck(request) == -1)
 		return -1;
 	
 	if (isAutoIndex(connection))
 	{
-		std::string response = connection.genAutoIndex(connection.getFinalPath()) ;
-		send(connection.getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
-		close(connection.getClientSocket());
+        path     = connection.getFinalPath();
+		response = connection.genAutoIndex(path);
+		send(connection.getClientSocket(), response.c_str(), response.size(), 0);
 	}
-	else
+	else (is)
 	{
-		connection.servePage(connection.getPath());
+        path     = connection.getPath();
+        response = connection.genResponsePage(path);
+        send(connection.getClientSocket(), response.c_str(), response.size(), 0);
 	}
+
 	
 
 	
