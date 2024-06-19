@@ -6,31 +6,34 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 10:19:40 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/19 17:06:27 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 21:17:16 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Connection.hpp"
 
-
-t_location getLocationVHost(Connection *ref, std::string uriRequested)
+t_location Connection::getLocationVHost(Connection *ref, std::string uriRequested)
 {
     std::vector<t_location> locations;
     std::string             locationName;
     t_location              empty;
     
-    locations = ref->getServerStruct().locations;
+    locations = this->getServerStruct().locations;
     locationName = extractLocationUriStr(uriRequested);
 
     for (std::vector<t_location>::iterator it = locations.begin(); it != locations.end(); it++)
     {
         if (it->location == locationName)
+        {
+            this->_statusCode = 200;
             return *it;
+        }
     }
     
     empty.location = "NULL";
     return empty;
 }
+
 std::string catEndSlashStr(std::string str)
 {
     if (!str.empty() && str.back() != '/')
@@ -60,13 +63,14 @@ std::string locationSwapedRoot(Connection *ref, std::string uriRequested)
     return (uriRequested);
 }
 
-// void Connection::setFlags(void)
-// {
-//     if (this->getLocation()->autoIndex == true)
-//         this->_autoIndex = true;
-//     else
-//         this->_autoIndex = false;
-// }
+std::string cleanPathQuery(std::string path, std::string query)
+{
+    if (query.empty() == false)
+    {
+        path.replace(path.find(query) - 1, query.length() + 1, "");// start -1 because Query dont have the '?', length + 1 to count the '?'
+    }
+    return path;
+}
 
 void Connection::requestParse(RequestParser &request)
 {
@@ -75,15 +79,25 @@ void Connection::requestParse(RequestParser &request)
     
     uriRequested = request.get()["REQUEST_URI"];
     
-    this->_location = getLocationVHost(this, uriRequested);
+    this->_location = this->getLocationVHost(this, uriRequested);
 
     if (this->_location.location == "NULL" && (_statusCode = 404))
     {
-		this->serveErrorPage();
+        std::cerr << "DEBUG location == NULL status code: " << _statusCode <<  std::endl;
+		//this->serveErrorPage();
         throw std::runtime_error("location requested wrong: " + uriRequested);
     }
 
+    std::cout << "path raw:  " << uriRequested << std::endl;
     this->_path = locationSwapedRoot(this, uriRequested);
+    this->_fileName = extractFileNameStr(uriRequested);
+    this->_queryString = extractQueryStr(uriRequested);
+    this->_path = cleanPathQuery(this->_path, this->_queryString);
+   
+    std::cout << "filename: " << this->_fileName << std::endl;
+    std::cout << "query:  " << this->_queryString << std::endl;
+    std::cout << "path cleaned:  " << this->_path << std::endl;
+ 
     
 	if (this->_path.empty() && (_statusCode = 404))
 	{
@@ -99,8 +113,7 @@ void Connection::requestParse(RequestParser &request)
         throw std::runtime_error("location requested method not allowed: " + method);
 	}
     
-    this->_fileName = extractFileNameStr(uriRequested);
-    this->_queryString = extractQueryStr(uriRequested);
    
+    // std::cout << GREEN << "FILENAME= " << this->_fileName << RESET << std::endl;
     //this->setFlags();
 }

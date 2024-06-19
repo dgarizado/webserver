@@ -136,8 +136,8 @@ int Master::manageConnection(Connection &connection)
     connection = VHostAssigned;         //post-herencia, clase BASE de Connection con la clase Base asignada
 
     this->processRequest(connection, request);
-    //msg = this->processRequest(connection, request);
-	
+
+ 	
     //send msg
 
 
@@ -174,7 +174,7 @@ int Master::startEventLoop()
 				try {
 					manageConnection(_clientsMap[socketToAccept]);
 				} catch (std::exception &e) {
-					std::cerr << "manageConnection: " << e.what() << std::endl;
+					std::cerr << RED << "manageConnection: " << e.what() << RESET << std::endl;
 					close(socketToAccept);
 					_clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
 				}

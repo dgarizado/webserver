@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 17:01:24 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 18:34:15 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@ int ft_error(std::string msg)
 {
 	std::cerr << YELLOW << msg << RESET << std::endl;
 	return (-1);
+}
+
+bool endsWith(const std::string& str, const std::string& ending) {
+    if (ending.size() > str.size()) {
+        return false;
+    }
+    return std::equal(ending.rbegin(), ending.rend(), str.rbegin());
 }
 
 std::string extractFileNameStr(std::string uri)

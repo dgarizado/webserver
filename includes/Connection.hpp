@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 17:28:10 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 21:16:49 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Connection : public VHost
         t_location  getLocation() const;
         std::string getFileName() const;
         std::string getValidDefaultIndex(void);
+        t_location  getLocationVHost(Connection *ref, std::string uriRequested);
 
 
         //SETTERS
@@ -49,30 +50,22 @@ class Connection : public VHost
 
 
         //DETERMINATOR
-        int         fixPath(std::string &path);
-        int         uriCheck(RequestParser &request);
-        bool        dirCheck(std::string directory);
-		bool        fileCheck(std::string file);
         bool        methodCheck(std::string method);
-        void         requestParse(RequestParser &request);
-        bool        setIndex();
+        void        requestParse(RequestParser &request);
         int         setDefaultIndex(void);
 
         //SERVE PAGE
-        bool        endsWith(const std::string &str, const std::string &ending);
+   
         std::string getMimeType(const std::string &path);
-        int         servePage(const std::string &path);
         void        serveErrorPage(void);  
         std::string genBodyHTTP(std::string filePath);
+        std::string genHeaderHTTP(std::string bodyHTTP, std::string filePath);
         std::string genResponse(void);
-        std::string genResponsePage(std::string path);
-        std::string genResponseDefaultIndexPage(void);
+        std::string genBodyAutoIndex(std::string route);
+        std::string genPathDefaultIndex(void);
+
     
-        std::string genAutoIndex(std::string route);
-        std::string genRelativeRoute(std::string route);
 
-
-        void setFlags(void);
         
     private:
         int                         _clientSocket;
@@ -80,17 +73,11 @@ class Connection : public VHost
         socklen_t                   _clientAddrSize;
         struct epoll_event          _ev;
         std::string                 _buffer; //maybe a char array is better
-//		std::string                 _requestedPath; //this is the full path, including the root and the file name.
-        // std::string                 _requestedPathNoFile; //this is the location sent by the client.
-        // std::string                 _requestedLocation;
+
         t_location                  _location;
         std::string                 _queryString;
-        std::string                 _path;
         std::string                 _fileName;
-        //bool                        _autoIndex;
-   //     std::string                 _finalPath; //this is the path with the root without the file name..
-    //    std::string                 _fileName; //this is the file name requested by the client. empty if the client requested a directory.
-     //   std::string                 _root; //this is the root of the vhost.
+        std::string                 _path;
 		int                         _statusCode ;
 
 };

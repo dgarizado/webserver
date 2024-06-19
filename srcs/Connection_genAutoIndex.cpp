@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Connection2.cpp                                    :+:      :+:    :+:   */
+/*   Connection_genAutoIndex.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/16 11:59:59 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:27:10 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,14 +118,12 @@ std::string genRowsAutoIndex(std::string path)
     return html;
 }
 
-std::string Connection::genAutoIndex(std::string path)
+std::string Connection::genBodyAutoIndex(std::string path)
 {
-    std::string response_header;
     std::string response_body_begin;
     std::string response_body_middle;
     std::string response_body_end;
 
-    response_header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
     response_body_begin = R"(
     <!DOCTYPE html>
     <html>
@@ -171,10 +169,6 @@ std::string Connection::genAutoIndex(std::string path)
         </body>
     </html>)";
 
-    return response_header + response_body_begin + response_body_middle + response_body_end;
+    return response_body_begin + response_body_middle + response_body_end;
 }
 
-std::string genRelativeRoute(std::string uri)
-{
-    return "." + uri;
-}

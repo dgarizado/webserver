@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 17:39:06 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 20:48:38 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,27 +40,13 @@ int Master::processRequest(Connection &connection, RequestParser &request)
         response = connection.genResponse();
     }catch(std::exception &e) {
         connection.serveErrorPage();
-       throw std::runtime_error("gen Response: " + std::string(e.what()));
+       throw std::runtime_error("genResponse: " + std::string(e.what()));
     }
 	
+    std::cout << GREEN <<  "MESSAGE HTTP TO SENT\n------------\n" << response << RESET << std::endl;
     send(connection.getClientSocket(), response.c_str(), response.size(), 0);
-	
-	// if (isAutoIndex(connection))
-	// {
-    //     path     = connection.getFinalPath();
-	// 	response = connection.genAutoIndex(path);
-	// 	send(connection.getClientSocket(), response.c_str(), response.size(), 0);
-	// }
-	// else
-	// {
-    //     path     = connection.getPath();
-    //     response = connection.genResponsePage(path);
-    //     send(connection.getClientSocket(), response.c_str(), response.size(), 0);
-	// }
-
-	
-    //close(clientSocket); //THIS IS IMPORTANT TO DEFINE!!
-    std::cout << GREEN "Response sent" RESET << std::endl;
+    close(connection.getClientSocket());// IMPORTANT TO DEFINE!! ?????????
+    std::cout << GREEN "----------------------------\nResponse sent" RESET << std::endl;
 
     return (0);
 }
