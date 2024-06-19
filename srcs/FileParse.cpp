@@ -97,10 +97,10 @@ void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss,
         }while (locationBraces > 0);
 
         //Checks if vars are encounter inside of location block
-        if (vars[AUTOINDEX] == true && vars[ROOT] == false)
-            throw std::runtime_error("location block wrong, autoindex missing root");
-        else if (vars[AUTOINDEX] == false && (vars[ROOT] == false || vars[INDEX] == false) )
-            throw std::runtime_error("location block wrong, missing index or root");
+        // if (vars[AUTOINDEX] == true && vars[ROOT] == false)
+        //     throw std::runtime_error("location block wrong, autoindex missing root");
+        // else if (vars[AUTOINDEX] == false && (vars[ROOT] == false || vars[INDEX] == false) )
+        //     throw std::runtime_error("location block wrong, missing index or root");
     }
 }
 

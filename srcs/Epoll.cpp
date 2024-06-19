@@ -121,20 +121,26 @@ int Master::clientRead(int clientSocket)
 
 int Master::manageConnection(Connection &connection)
 {
-    RequestParser request;
-    //read from the socket
-    if (clientRead(connection.getClientSocket()) < 0)
+    RequestParser   request;
+    VHost           VHostAssigned;
+
+    if (this->clientRead(connection.getClientSocket()) < 0)  //read from the socket
         return ft_error("Error reading from client");
-    //request = _clientsMap[connectionSocket].getBuffer();
-    //parse the request
+
     if (request.loadConfigFromRequest(connection.getBuffer()) < 0)
         return ft_error("Error loading config from request");
     request.showConfig();
-    VHost tmp = assignVHost(request.get()["HTTP_HOST"]);
-    connection.setVhost(tmp);
-    if (processRequest(connection, request) < 0)
-		throw std::runtime_error("Error processing request");
-        // return ft_error("Error processing request");
+
+    VHostAssigned = this->assignVHost(request.get()["HTTP_HOST"]);
+
+    connection = VHostAssigned;         //post-herencia, clase BASE de Connection con la clase Base asignada
+
+    this->processRequest(connection, request);
+    //msg = this->processRequest(connection, request);
+	
+    //send msg
+
+
     //create a response
     //send the response
     //close the connection
@@ -168,7 +174,7 @@ int Master::startEventLoop()
 				try {
 					manageConnection(_clientsMap[socketToAccept]);
 				} catch (std::exception &e) {
-					std::cerr << e.what() << std::endl;
+					std::cerr << "manageConnection: " << e.what() << std::endl;
 					close(socketToAccept);
 					_clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
 				}

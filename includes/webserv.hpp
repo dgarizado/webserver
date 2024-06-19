@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 14:21:22 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:13:52 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,10 @@ typedef struct s_fileParse {
 // // #include "Connection.hpp"
 // #include "Master.hpp"
 
+//UTILS
 int ft_error(std::string msg);
+std::string extractLocationUriStr(std::string uri);
+std::string extractFileNameStr(std::string uri);
+std::string extractQueryStr(std::string uri);
+
 #endif

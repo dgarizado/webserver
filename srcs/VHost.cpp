@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   VHost.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:11:51 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/05/19 18:23:50 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/19 09:33:55 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/VHost.hpp"
 
-VHost::VHost(): _server_name("default VISTRO")
+VHost::VHost()
 {
 	// std::cout << "\nONE VHOST HAS BORN!" << std::endl;
 }
@@ -39,8 +39,6 @@ VHost &VHost::operator=(VHost const &src)
 	
 	if (this != &src)
 	{
-		//copy the attributes here
-		_server_name = src._server_name;
 		_server = src._server;
 	}
 	return (*this);

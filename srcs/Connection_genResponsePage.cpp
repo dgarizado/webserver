@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Connection3.cpp                                    :+:      :+:    :+:   */
+/*   Connection_genResponsePage.cpp                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/16 14:12:04 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 14:31:29 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ std::string Connection::genResponsePage(std::string filePath)
     std::string         response;
     long                size;
     
-    if (!file) {
-        throw std::runtime_error("Cannot open file: " + filePath);
+    if (!file){
         _statusCode = 404;
+        std::cout << RED << "genResponsePage: Cannot open file: " << filePath <<  RESET << std::endl;
     }
 
     buffer << file.rdbuf();
@@ -36,10 +36,7 @@ std::string Connection::genResponsePage(std::string filePath)
     if (_statusCode == 200)
         response  = "HTTP/1.1 200 OK\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
     else if (_statusCode == 404)
-    {
-        std::cout << RED "ERRORR WUAAAAAAAAAAAA!" RESET << std::endl;
         response  = "HTTP/1.1 404 Not Found\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    }
     else if (_statusCode == 405)
         response  = "HTTP/1.1 Method Not Allowed\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
 
@@ -48,3 +45,40 @@ std::string Connection::genResponsePage(std::string filePath)
     return response;
 }
 
+std::string Connection::genResponseDefaultIndexPage(void)
+{
+    
+}
+
+std::string Connection::genResponse(void)
+{
+    std::vector<std::string>    defaultIndex;
+    std::string                 response;
+    std::string                 file;
+    bool                        autoIndex;
+
+    file = this->_file;
+    defaultIndex = this->getLocation()->index;
+    autoIndex = this->getLocation()->autoIndex;
+    
+    if (file.empty() == false)
+    {
+        response = genResponsePage(this->_path);
+    }
+    else if (defaultIndex.empty() == false)
+    {
+        response = genResponseDefaultIndexPage();
+    }
+    // else if (autoIndex == true)
+    // {
+        
+    // }
+    // else
+    // {
+    //     this->_statusCode = 404;//ni idea del error aqui!!!!!!!!!!!!!!
+    //     this->serveErrorPage();
+    // }
+    
+
+    
+}
