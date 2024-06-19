@@ -6,7 +6,7 @@
 #    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/06/19 12:55:09 by vcereced         ###   ########.fr        #
+#    Updated: 2024/06/19 15:19:08 by vcereced         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ RM		    := rm -rf
 
 # SRCS =  $(wildcard srcs/*.cpp)
 SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp VHost.cpp  FileParse.cpp RequestParser.cpp Connection.cpp \
-	   master_processRequest.cpp Connection_genAutoIndex.cpp Connection_genResponsePage.cpp Connection_requestCheck.cpp
+	   master_processRequest.cpp Connection_genAutoIndex.cpp Connection_genResponse.cpp Connection_requestCheck.cpp
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))

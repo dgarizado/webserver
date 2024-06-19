@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 13:24:55 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:01:24 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ std::string extractLocationUriStr(std::string uri)
         prefix = "/";  
     else
         prefix = uri;               // En caso de que no se encuentre otra barra y un ".format", asumir que todo es el prefijo
-
-    std::cout << "Prefix: " << prefix << std::endl;   
+ 
     return prefix;
 
 }

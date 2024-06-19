@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 12:05:42 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:24:48 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,29 +66,25 @@ std::string Connection::getBuffer() const
     return _buffer;
 }
 
-t_location  *Connection::getLocation() const
+t_location  Connection::getLocation() const
 {
     return _location;
 }
-// std::string Connection::getPath() const
-// {
-// 	return _requestedPath;
-// }
+std::string Connection::getPath() const
+{
+	return _path;
+}
 
 int Connection::getStatusCode() const
 {
 	return _statusCode;
 }
 
-bool Connection::getAutoIndex() const
-{
-    return _location->autoIndex;
-}
 
-// std::string Connection::getFileName() const
-// {
-//     return _fileName;
-// }
+std::string Connection::getFileName() const
+{
+    return _fileName;
+}
 
 // std::string Connection::getFinalPath() const
 // {
@@ -243,10 +239,10 @@ bool Connection::setIndex()
  */
 bool Connection::methodCheck(std::string method)
 {
-    if (_location->allowedMethods[GET]    && method == "GET")    return true;
-    if (_location->allowedMethods[POST]   && method == "POST") 	return true;
-    if (_location->allowedMethods[PUT]    && method == "PUT") 	return true;
-   	if (_location->allowedMethods[DELETE] && method == "DELETE") return true;
+    if (_location.allowedMethods[GET]    && method == "GET")    return true;
+    if (_location.allowedMethods[POST]   && method == "POST") 	return true;
+    if (_location.allowedMethods[PUT]    && method == "PUT") 	return true;
+   	if (_location.allowedMethods[DELETE] && method == "DELETE") return true;
 
     return false;
 }
@@ -327,6 +323,8 @@ bool Connection::endsWith(const std::string& str, const std::string& ending) {
 std::string Connection::getMimeType(const std::string &path)
 {
 	if (endsWith(path, ".html")) {
+        return "text/html";
+    } else if (endsWith(path, ".py")) {
         return "text/html";
     } else if (endsWith(path, ".css")) {
         return "text/css";

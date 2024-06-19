@@ -6,26 +6,30 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 10:19:40 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/19 14:25:47 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:06:27 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Connection.hpp"
 
 
-t_location *getLocationVHost(Connection *ref, std::string uriRequested)
+t_location getLocationVHost(Connection *ref, std::string uriRequested)
 {
-    std::vector<t_location> locations = ref->getServerStruct().locations;
-    std::string locationName;
-
+    std::vector<t_location> locations;
+    std::string             locationName;
+    t_location              empty;
+    
+    locations = ref->getServerStruct().locations;
     locationName = extractLocationUriStr(uriRequested);
 
     for (std::vector<t_location>::iterator it = locations.begin(); it != locations.end(); it++)
     {
         if (it->location == locationName)
-            return &(*it);
+            return *it;
     }
-    return nullptr;
+    
+    empty.location = "NULL";
+    return empty;
 }
 std::string catEndSlashStr(std::string str)
 {
@@ -45,7 +49,7 @@ std::string locationSwapedRoot(Connection *ref, std::string uriRequested)
     location = extractLocationUriStr(uriRequested);
     location = catEndSlashStr(location);
 
-    root = ref->getLocation()->root;
+    root = ref->getLocation().root;
     if (root.empty())
         return "";
     root = catEndSlashStr(root);
@@ -72,8 +76,8 @@ void Connection::requestParse(RequestParser &request)
     uriRequested = request.get()["REQUEST_URI"];
     
     this->_location = getLocationVHost(this, uriRequested);
-    
-    if (!_location && (_statusCode = 404))
+
+    if (this->_location.location == "NULL" && (_statusCode = 404))
     {
 		this->serveErrorPage();
         throw std::runtime_error("location requested wrong: " + uriRequested);
@@ -95,10 +99,8 @@ void Connection::requestParse(RequestParser &request)
         throw std::runtime_error("location requested method not allowed: " + method);
 	}
     
-    this->_file = extractFileNameStr(uriRequested);
+    this->_fileName = extractFileNameStr(uriRequested);
     this->_queryString = extractQueryStr(uriRequested);
    
-    std::cerr << "debug: file: " << extractFileNameStr(uriRequested) << "query: " << extractQueryStr(uriRequested) << std::endl;
-    
     //this->setFlags();
 }
