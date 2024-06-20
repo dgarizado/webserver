@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 18:34:24 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 10:16:29 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 #include <sys/epoll.h>
 #include <fcntl.h>
 #include <iostream>
+#include <cstdio>
 
 #define RED "\033[31m"
 #define GREEN "\033[32m"
@@ -104,5 +105,6 @@ std::string extractLocationUriStr(std::string uri);
 std::string extractFileNameStr(std::string uri);
 std::string extractQueryStr(std::string uri);
 bool        endsWith(const std::string &str, const std::string &ending);
+std::string readOutputCgi(std::string filePath);
 
 #endif

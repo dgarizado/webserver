@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 21:16:49 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 10:18:35 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,16 @@ class Connection : public VHost
    
         std::string getMimeType(const std::string &path);
         void        serveErrorPage(void);  
-        std::string genBodyHTTP(std::string filePath);
-        std::string genHeaderHTTP(std::string bodyHTTP, std::string filePath);
-        std::string genResponse(void);
+        std::string genBodyCgi(std::string filePath, RequestParser &request);
+        std::string genBodyFile(std::string filePath);
+        std::string genBodyHTTP(std::string filePath, RequestParser &request);
         std::string genBodyAutoIndex(std::string route);
+        std::string genHeaderHTTP(std::string bodyHTTP, std::string filePath);
+        std::string genResponse(RequestParser &request);
         std::string genPathDefaultIndex(void);
+
+
+        int setVarsEnviroment(RequestParser &request);
 
     
 

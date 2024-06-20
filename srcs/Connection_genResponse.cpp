@@ -6,33 +6,11 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/19 21:21:15 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 10:04:07 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Connection.hpp"
-
-std::string Connection::genBodyHTTP(std::string filePath)
-{
-    std::ifstream       file(filePath);
-    std::stringstream   buffer;
-    std::string         file_content;
-    
-    if (endsWith(filePath, "py"))
-        
-    
-    if (!file){
-        _statusCode = 404;
-        throw std::runtime_error("genBodyHTTP: Cannot open file:" + filePath);
-    }
-    buffer << file.rdbuf();
-    file_content = buffer.str();
-    
-    this->_statusCode = 200;
-    return file_content;
-    
-}
-
 
 std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath)
 {
@@ -86,14 +64,44 @@ std::string Connection::genPathDefaultIndex(void)
     
     defaultPath += getValidDefaultIndex();
     
-    //this->_path = defaultPath;
-    
-   // responseHTTP = genBodyHTTP(defaultPath);
-
     return defaultPath;
 }
 
-std::string Connection::genResponse(void)
+
+
+
+std::string Connection::genBodyFile(std::string filePath)
+{
+    std::ifstream       file(filePath);
+    std::stringstream   buffer;
+    std::string         responseHTTP_body;
+
+    if (!file){
+        this->_statusCode = 404;
+        throw std::runtime_error("genBodyHTTP: Cannot open file:" + filePath);
+    }
+    
+    buffer << file.rdbuf();
+    responseHTTP_body = buffer.str();
+    
+    this->_statusCode = 200;
+    
+    return responseHTTP_body;
+}
+
+std::string Connection::genBodyHTTP(std::string filePath, RequestParser &request)
+{
+    std::string         responseHTTP_body;
+    
+    if (endsWith(filePath, "py"))
+        responseHTTP_body = genBodyCgi(filePath, request);
+    else
+        responseHTTP_body = genBodyFile(filePath);
+    
+    return responseHTTP_body;
+}
+
+std::string Connection::genResponse(RequestParser &request)
 {
     std::vector<std::string>    defaultIndexs;
     std::string                 responseHTTP_header;
@@ -108,12 +116,12 @@ std::string Connection::genResponse(void)
     
     if (fileName.empty() == false)
     {
-        responseHTTP_body = genBodyHTTP(this->_path);
+        responseHTTP_body = genBodyHTTP(this->_path, request);
     }  
     else if (defaultIndexs.empty() == false)
     {
         this->_path = genPathDefaultIndex();
-        responseHTTP_body = genBodyHTTP(this->_path);
+        responseHTTP_body = genBodyHTTP(this->_path, request);
     }
     else if (autoIndex == true)
     {

@@ -119,33 +119,6 @@ int Master::clientRead(int clientSocket)
     return (0);
 }
 
-int Master::manageConnection(Connection &connection)
-{
-    RequestParser   request;
-    VHost           VHostAssigned;
-
-    if (this->clientRead(connection.getClientSocket()) < 0)  //read from the socket
-        return ft_error("Error reading from client");
-
-    if (request.loadConfigFromRequest(connection.getBuffer()) < 0)
-        return ft_error("Error loading config from request");
-    request.showConfig();
-
-    VHostAssigned = this->assignVHost(request.get()["HTTP_HOST"]);
-
-    connection = VHostAssigned;         //post-herencia, clase BASE de Connection con la clase Base asignada
-
-    this->processRequest(connection, request);
-
- 	
-    //send msg
-
-
-    //create a response
-    //send the response
-    //close the connection
-    return 0;
-}
 /**
  * @brief Main event loop. If a server socket receives a connection, it will call clientAccept. 
  * If a client socket is ready to read, it will call clientRead.

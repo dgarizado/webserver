@@ -1,20 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   master_processRequest.cpp                          :+:      :+:    :+:   */
+/*   master_manageConnection.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 20:48:38 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 10:02:33 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Master.hpp"
-
-
-
-
 
 
 /**
@@ -37,7 +33,7 @@ int Master::processRequest(Connection &connection, RequestParser &request)
     }
     
 	try{
-        response = connection.genResponse();
+        response = connection.genResponse(request);
     }catch(std::exception &e) {
         connection.serveErrorPage();
        throw std::runtime_error("genResponse: " + std::string(e.what()));
@@ -49,4 +45,26 @@ int Master::processRequest(Connection &connection, RequestParser &request)
     std::cout << GREEN "----------------------------\nResponse sent" RESET << std::endl;
 
     return (0);
+}
+
+int Master::manageConnection(Connection &connection)
+{
+    RequestParser   request;
+    VHost           VHostAssigned;
+
+    if (this->clientRead(connection.getClientSocket()) < 0)  //read from the socket
+        return ft_error("Error reading from client");
+
+    if (request.loadConfigFromRequest(connection.getBuffer()) < 0)
+        return ft_error("Error loading config from request");
+        
+    request.showConfig();
+
+    VHostAssigned = this->assignVHost(request.get()["HTTP_HOST"]);
+
+    connection = VHostAssigned;         //post-herencia, clase BASE de Connection con la clase Base asignada
+
+    this->processRequest(connection, request);
+
+    return 0;
 }

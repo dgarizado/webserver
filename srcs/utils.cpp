@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 18:34:15 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 10:15:29 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,29 @@ std::string extractLocationUriStr(std::string uri)
  
     return prefix;
 
+}
+
+std::string readOutputCgi(std::string filePath)
+{
+    FILE* pipe = popen(filePath.c_str(), "r");
+    if (!pipe) {
+        std::cerr << "Error al abrir el pipe para ejecutar el comando\n";
+        return "ERROR";
+    }
+
+    // Buffer para almacenar la salida del comando
+    char buffer[1024];
+    std::string result = "";
+
+    // Leer la salida del comando línea por línea
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+    }
+
+    // Cerrar el pipe
+    pclose(pipe);
+
+    // Imprimir la salida del comando
+    std::cout << "Resultado del comando:\n" << result << "\n";
+    return result;
 }
