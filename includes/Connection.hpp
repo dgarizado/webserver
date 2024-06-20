@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 10:18:35 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 11:39:37 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ class Connection : public VHost
         std::string getValidDefaultIndex(void);
         t_location  getLocationVHost(Connection *ref, std::string uriRequested);
 
-
         //SETTERS
         void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
         void        setBuffer(std::string buffer);
@@ -52,6 +51,7 @@ class Connection : public VHost
         //DETERMINATOR
         bool        methodCheck(std::string method);
         void        requestParse(RequestParser &request);
+        void        requestCheck(RequestParser &request);
         int         setDefaultIndex(void);
 
         //SERVE PAGE

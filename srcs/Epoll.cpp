@@ -95,12 +95,13 @@ int Master::clientAccept(int socketToAccept)
  * @param clientSocket 
  * @return int 
  */
-int Master::clientRead(int clientSocket)
+void Master::clientRead(int clientSocket)
 {
     char buffer[1024];
     int bytesRead = read(clientSocket, buffer, 1024);
     if (bytesRead < 0)
-        return(ft_error("Error reading from socket")); //REMOVE CLIENT SOCKET FROM EPOLL SET AND CLOSE SOCKET!
+        throw std::runtime_error("clientRead: Error reading from socket");  //REMOVE CLIENT SOCKET FROM EPOLL SET AND CLOSE SOCKET!
+
     if (bytesRead == 0)
     {
         //Remove the client socket from the epoll set, close the socket and remove it from the clientSockets vector
@@ -109,14 +110,13 @@ int Master::clientRead(int clientSocket)
         _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), clientSocket), _clientSockets.end());
         // ft_error("Client disconnected"); //Is this an error? or just a message? ... maybe a message. HANDLE IT!!!
         std::cout << RED << "Client disconnected" << RESET << std::endl;
-        return (1); // This is not an error, it's just a message HANDLE THIS!!!
+         // This is not an error, it's just a message HANDLE THIS!!!
     }
     else //store the buffer in the Client object
     {
         buffer[bytesRead] = '\0';
         _clientsMap[clientSocket].setBuffer(buffer);
-    }
-    return (0);
+    } 
 }
 
 /**
@@ -147,7 +147,7 @@ int Master::startEventLoop()
 				try {
 					manageConnection(_clientsMap[socketToAccept]);
 				} catch (std::exception &e) {
-					std::cerr << RED << "manageConnection: " << e.what() << RESET << std::endl;
+					std::cerr << RED << "startEventLoop: " << e.what() << RESET << std::endl;
 					close(socketToAccept);
 					_clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
 				}

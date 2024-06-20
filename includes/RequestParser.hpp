@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParser.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 17:28:48 by vcereced          #+#    #+#             */
-/*   Updated: 2024/05/26 17:01:00 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/20 10:47:01 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,13 @@ class RequestParser {
 public:
 	//Constructors
 	RequestParser(void) {}
-	RequestParser(std::string);
 	RequestParser(RequestParser const &src);
 	RequestParser &operator=(RequestParser const &src);
 
 	//destructor
 	~RequestParser() {};
 
-	int loadConfigFromRequest(const std::string );
+	void loadConfigFromRequest(const std::string );
 	void showConfig(void);
 
 	//setter
@@ -48,8 +47,6 @@ public:
 
 private:
     std::map<std::string, std::string> _requestData;
-	// std::string _URI;
-	// std::string _method;
 };
 
 #endif  // RequestParse_HPP 

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 17:46:21 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 11:10:31 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ class Master
 		int setEvents();
 		int startEventLoop();
 		int clientAccept(int serverSocket);
-		int clientRead(int clientSocket);
-		int processRequest(Connection &connection, RequestParser &request);
+		void clientRead(int clientSocket);
+		void processRequest(Connection &connection, RequestParser &request);
 		
-		int manageConnection(Connection &connection);
+		void manageConnection(Connection &connection);
 
 		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME
 		VHost &getVHost(std::string serverName, int port);

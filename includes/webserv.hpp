@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 10:16:29 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 11:24:01 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <cstdio>
+#include <iomanip> 
 
 #define RED "\033[31m"
 #define GREEN "\033[32m"
@@ -106,5 +107,6 @@ std::string extractFileNameStr(std::string uri);
 std::string extractQueryStr(std::string uri);
 bool        endsWith(const std::string &str, const std::string &ending);
 std::string readOutputCgi(std::string filePath);
+void 		showParamsConsole(std::string &, std::string &, std::string &, std::string &, std::string &);
 
 #endif

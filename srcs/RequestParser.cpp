@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/19 20:13:54 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 10:46:55 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,27 +90,21 @@ void lineParser(RequestParser *ref, std::string &requestLine)
  * This message had read before on the conexion's FD. Iter line per line parsing the message.
  * @return int -1 any exception. 0 ok.
  */
-int RequestParser::loadConfigFromRequest(const std::string requestMessage)
+void RequestParser::loadConfigFromRequest(const std::string requestMessage)
 {
     std::istringstream  stream(requestMessage);     // Create a string stream from a string message
     std::string         line;                       // string to store a line
  
     if ( requestMessage.empty() )
-    {
-	    std::cerr << RED << "Error: loadConfigFromFile is empty" << RESET << std::endl;
-        return -1;    
-    }
+        throw std::runtime_error("loadConfigFromRequest: is empty");
         
     while (std::getline(stream, line))              //Extract line per line till reach EOF
     {  
 		try{
             lineParser(this, line);                 //Parse line per line 
-        }catch(const std::exception& e) {
-			std::cerr << RED << "Exception: " << e.what() << RESET << std::endl;
-            return -1;    
-        }
+        }catch (const std::exception& e) {
+            throw std::runtime_error("loadConfigFromRequest: lineParser: " + std::string(e.what()));}
     }
-    return 0;  
 }
 
 /**
@@ -141,12 +135,6 @@ void RequestParser::showConfig(void)
     for (it_t it = this->get().begin(); it != this->get().end(); ++it)
         std::cout << GREEN << it->first << RESET << " = " << YELLOW << it->second << RESET << std::endl;
      std::cout << GREEN <<  "-------------------------\n" << RESET << std::endl;
-}
-
-RequestParser::RequestParser(std::string str)
-{
-    if (this->loadConfigFromRequest(str) == -1)
-	 	std::cerr << RED << "Error while parsing the configuration file" << RESET << std::endl;
 }
 
 RequestParser::RequestParser(RequestParser const &src)

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 10:15:29 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 11:32:59 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,24 @@ std::string readOutputCgi(std::string filePath)
     // Imprimir la salida del comando
     std::cout << "Resultado del comando:\n" << result << "\n";
     return result;
+}
+
+void showParamsConsole(std::string &uriRequested, std::string &pathSwapedWithQuery, std::string &path, std::string &fileName, std::string &queryString)
+{
+    const int colWidth = 30;
+
+    std::cout << MAGENTA << std::left     // print headers of columns
+                         << std::setw(colWidth) << "Uri Requested"
+                         << std::setw(colWidth) << "Path Swaped With Query"
+                         << std::setw(colWidth) << "_Path"
+                         << std::setw(colWidth) << "_FileName"
+                         << std::setw(colWidth) << "_queryString" << "\n";
+
+    std::cout << std::string(colWidth * 5, '-') << "\n";  // print separator
+
+    std::cout << std::setw(colWidth) << uriRequested        // print values
+              << std::setw(colWidth) << pathSwapedWithQuery
+              << std::setw(colWidth) << path
+              << std::setw(colWidth) << fileName
+              << std::setw(colWidth) << queryString << RESET << std::endl;
 }

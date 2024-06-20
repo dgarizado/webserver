@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Master.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/05 18:26:42 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/20 10:48:03 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ VHost &Master::getVHost(std::string serverName, int port)
                 return (*it);
         }
     }
-    throw std::runtime_error("not found VHost!"); //DEBUG MAS ADELANTE EXCEPTION CLOSE FD Y CAPTURAR PARA CONTINUAR ESCUCHANDO SIN CRASH
+    throw std::runtime_error("getVHost: not found VHost!"); //DEBUG MAS ADELANTE EXCEPTION CLOSE FD Y CAPTURAR PARA CONTINUAR ESCUCHANDO SIN CRASH
 }
 
 /**

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 10:04:07 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 11:47:56 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ std::string Connection::getValidDefaultIndex(void)
         }
     }
     this->_statusCode = 404;
-    throw std::runtime_error("getValidDefaultIndex: not valid index" );
+    throw std::runtime_error("getValidDefaultIndex: not any index found");
     return "";
 }
 
@@ -67,14 +67,11 @@ std::string Connection::genPathDefaultIndex(void)
     return defaultPath;
 }
 
-
-
-
 std::string Connection::genBodyFile(std::string filePath)
 {
+    std::string         responseHTTP_body;
     std::ifstream       file(filePath);
     std::stringstream   buffer;
-    std::string         responseHTTP_body;
 
     if (!file){
         this->_statusCode = 404;
@@ -106,15 +103,12 @@ std::string Connection::genResponse(RequestParser &request)
     std::vector<std::string>    defaultIndexs;
     std::string                 responseHTTP_header;
     std::string                 responseHTTP_body;
-    std::string                 fileName;
     bool                        autoIndex;
 
-    fileName = this->_fileName;
     defaultIndexs = this->getLocation().index;
     autoIndex = this->getLocation().autoIndex;
 
-    
-    if (fileName.empty() == false)
+    if (this->_fileName.empty() == false)
     {
         responseHTTP_body = genBodyHTTP(this->_path, request);
     }  
@@ -127,9 +121,7 @@ std::string Connection::genResponse(RequestParser &request)
     {
        responseHTTP_body = genBodyAutoIndex(this->_path);
     }
-    
-    std::cout << "path que entra a generar  GEN RESPONSE HTTP: " << this->_path << std::endl;
     responseHTTP_header = genHeaderHTTP(responseHTTP_body, this->_path);
-     std::cout << "header HTTP creado: " << responseHTTP_header << std::endl;
+
     return responseHTTP_header + responseHTTP_body;
 }
