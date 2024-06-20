@@ -12,46 +12,34 @@
 
  #include "../includes/Connection.hpp"
 
-int Connection::setVarsEnviroment(RequestParser &request)//mixing objects its not good but works 
+void Connection::setVarsEnviroment(RequestParser &request)//mixing objects its not good but works 
 {
     const char *value;
     if (request.get()["REQUEST_METHOD"] == "GET") //mixing objects its not good but works 
     {
         value = this->_queryString.c_str();
         if (setenv("QUERY_STRING", value, 1) != 0)
-        {
-            std::cerr << "Error al establecer la variable de entorno QUERY_STRING\n";
-            return -1;
-        }
+            throw std::runtime_error("setVarsEnviroment: QUERY_STRING error");
         
         value = request.get()["REQUEST_METHOD"].c_str();
         setenv("REQUEST_METHOD", value, 1);
         if (setenv("REQUEST_METHOD", value, 1) != 0)
-        {
-            std::cerr << "Error al establecer la variable de entorno REQUEST_METHOD\n";
-            return -1;
-        }
+            throw std::runtime_error("setVarsEnviroment: REQUEST_METHOD error");
     }
-    return 0;   
 }
 
 std::string Connection::genBodyCgi(std::string filePath, RequestParser &request)
 {
-    std::cerr << YELLOW << "DEBUG filePath= " << filePath << RESET << std::endl;
-  //  std::string response_header;
     std::string response_body;
     long        size;
     
-    if (setVarsEnviroment(request) == -1)
-    {
+    try{
+        setVarsEnviroment(request);
+        response_body = readOutputCgi(filePath);
+    }catch(std::exception &e) {
         _statusCode = 500;
-        this->serveErrorPage();
+        throw std::runtime_error("genBodyCgi: " + std::string(e.what()));
     }
 
-    response_body = readOutputCgi(filePath);
-  //  size            = response_body.size();
-   // response_header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    
     return response_body;
-    
 }

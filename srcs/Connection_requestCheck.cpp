@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 10:19:40 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 11:37:25 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 19:37:15 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,8 @@ t_location Connection::getLocationVHost(Connection *ref, std::string uriRequeste
 std::string catEndSlashStr(std::string str)
 {
     if (!str.empty() && str.back() != '/')
-    {
         str += "/";
-    }
     return str;
-        
 }
 
 std::string locationSwapedRoot(Connection *ref, std::string uriRequested)
@@ -86,9 +83,9 @@ void Connection::requestParse(RequestParser &request)
         throw std::runtime_error("requestParse: location requested wrong: " + uriRequested);
     }
 
-    pathSwapedWithQuery = locationSwapedRoot(this, uriRequested);
     this->_fileName = extractFileNameStr(uriRequested);
     this->_queryString = extractQueryStr(uriRequested);
+    pathSwapedWithQuery = locationSwapedRoot(this, uriRequested);
     this->_path = cleanPathQuery(pathSwapedWithQuery, this->_queryString);
    
     showParamsConsole(uriRequested, pathSwapedWithQuery, this->_path, this->_fileName, this->_queryString);

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 11:24:01 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 20:37:21 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #define WEBSERV_HPP
 
 #include <string>
+#include <array>
 #include <vector>
 #include <map>
 #include <fstream>
@@ -33,7 +34,8 @@
 #include <fcntl.h>
 #include <iostream>
 #include <cstdio>
-#include <iomanip> 
+#include <iomanip>
+#include <sys/wait.h>
 
 #define RED "\033[31m"
 #define GREEN "\033[32m"
@@ -44,12 +46,7 @@
 #define RESET "\033[0m"
 #define PINK "\033[95m"
 
-enum location {
-	ROOT,
-	INDEX,
-	AUTOINDEX,
-	TOTAL_LOCATION
-};
+#define MAX_EVENTS 64 //IMPORATNTEEEEE PARA EL SUBJECTTTTTTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 enum server {
 	LISTEN,
@@ -76,29 +73,17 @@ typedef struct s_location {
 
 typedef struct s_server {
     std::vector<std::string>	server_name;
-    std::string					serverName;
     int 						listen;
     int 						port;
-    std::string					errorLogs;
-    std::string					workerConnections;
     std::vector<t_location>		locations;
 
 } t_server;
 
 typedef struct s_fileParse {
-	int							test;
 	std::set<int>				ports;
-	std::string					errorLog;
-	std::string					workerConnections;
 	std::vector<t_server>		serverData;
 }t_fileParse;
 
-
-// #include "VHost.hpp"
-// #include "FileParse.hpp"
-// #include "RequestParser.hpp"
-// // #include "Connection.hpp"
-// #include "Master.hpp"
 
 //UTILS
 int 		ft_error(std::string msg);
@@ -108,5 +93,7 @@ std::string extractQueryStr(std::string uri);
 bool        endsWith(const std::string &str, const std::string &ending);
 std::string readOutputCgi(std::string filePath);
 void 		showParamsConsole(std::string &, std::string &, std::string &, std::string &, std::string &);
+void 		showParamsConsoleHTTP(std::string , size_t , int, int, bool);
+void 		printWaitConsole(void);
 
 #endif

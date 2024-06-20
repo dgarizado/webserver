@@ -6,7 +6,7 @@
 #    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/06/20 09:48:51 by vcereced         ###   ########.fr        #
+#    Updated: 2024/06/20 19:19:01 by vcereced         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ RM		    := rm -rf
 ################################################################################
 
 # SRCS =  $(wildcard srcs/*.cpp)
-SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp Connection_genResponseCgi.cpp VHost.cpp  FileParse.cpp RequestParser.cpp Connection.cpp \
+SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp utils_readCgi.cpp Connection_genResponseCgi.cpp VHost.cpp  FileParse.cpp RequestParser.cpp Connection.cpp \
 	   master_manageConnection.cpp Connection_genAutoIndex.cpp Connection_genResponse.cpp Connection_requestCheck.cpp
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp

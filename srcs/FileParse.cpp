@@ -40,15 +40,15 @@ void setNotAllowedMethod(t_location &ref, std::istringstream &iss)
 	}
 }
 
-void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token, bool *vars)
+void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
 {
-    if (token == "root" && (vars[ROOT] = true))
+    if (token == "root" )
     {
         iss >> token; 
         token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
         ref->getStruct().serverData[nServer].locations[nLocation].root = token;
     }
-    else if (token == "index" && (vars[INDEX] = true))
+    else if (token == "index")
     {
         while (iss >> token)
         {
@@ -60,7 +60,7 @@ void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLo
     {
         iss >> token;
         token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
-        if (token == "on" && (vars[AUTOINDEX] = true))
+        if (token == "on" )
             ref->getStruct().serverData[nServer].locations[nLocation].autoIndex = true;
     }
 	else if (token == "limit_except")
@@ -70,7 +70,6 @@ void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLo
 void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
 {
     int 	        locationBraces = 0;
-    bool            vars[TOTAL_LOCATION] = {false, false, false};//to markdown the vars to find
     std::string     line;
     t_location      empty;
 
@@ -87,7 +86,7 @@ void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss,
             while(iss >> token)
 		    {
 			    ft_braces(locationBraces, token);
-                varLocation(ref, iss, nServer, nLocation, token, vars);
+                varLocation(ref, iss, nServer, nLocation, token);
 		    }
             if (locationBraces > 0 && std::getline(file, line))
             {
@@ -192,22 +191,6 @@ int insideHttp(FileParse *ref, std::ifstream &file, std::istringstream &iss, std
 	return encounter;
 }
 
-/**
- * @brief set the variables outside of HTTP block
- */
-void outsideHttp(FileParse *ref, std::istringstream &iss, std::string &token)
-{
-    if (token == "error_log" && iss >> token)
-    {
-        token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
-        ref->getStruct().errorLog = token;
-    }
-    else if (token == "worker_connections" && iss >> token)
-    {
-        token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
-        ref->getStruct().workerConnections = token;
-    }
-}
 
 /**
  * @brief iter the tokens of the line, then call to function according to server block or not.
@@ -219,8 +202,6 @@ int lineParser(FileParse *ref, std::ifstream &file, std::string &line)
    
     //Process the first toke of the line
     iss >> token;
-    outsideHttp(ref, iss, token);//MAY DELETE CUZ DONT NEED VARS OUTSIDE OF HTTP SERVERS
-
     return (insideHttp(ref, file, iss, token));//jump into if "http"
 }
 

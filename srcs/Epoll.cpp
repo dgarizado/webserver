@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Epoll.cpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
+/*   Updated: 2024/06/20 20:50:18 by vcereced         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/Master.hpp"
 
 #include <stdio.h>
@@ -73,8 +85,7 @@ int Master::clientAccept(int socketToAccept)
     int clientSocket = accept(socketToAccept, (struct sockaddr *)&clientAddr, &clientAddrSize);
     if (clientSocket < 0)
        return(ft_error("Error accepting connection"));
-    std::cout << GREEN << "Accepted connection on socket " << socketToAccept << " from " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << RESET << std::endl;
-	std::cout << "Client socket: " << clientSocket << std::endl;
+    std::cout << GREEN << "Client socket: " << clientSocket << " accepted connection on listen socket " << socketToAccept << " from " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port) << RESET << std::endl;
     // Set client socket to non-blocking
     fcntl(clientSocket, F_SETFL, O_NONBLOCK);
     struct epoll_event ev;
@@ -119,6 +130,37 @@ void Master::clientRead(int clientSocket)
     } 
 }
 
+void Master::manageConnections(struct epoll_event *events, int nev)
+{
+    int socketToAccept;
+    
+    for (int i = 0; i < nev; ++i)
+    {
+        socketToAccept = events[i].data.fd;
+
+        if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
+        {
+            if (clientAccept(socketToAccept) < 0)
+                ft_error("Error accepting client");
+        }
+        // check for a read event in _clientSockets first.
+        else if (std::find(_clientSockets.begin(), _clientSockets.end(), socketToAccept) != _clientSockets.end())
+        { 
+            //print the client socket
+            std::cout << "Client socket: " << socketToAccept << " being managed..." << std::endl;
+            try {
+                manageConnection(_clientsMap[socketToAccept]);
+            } catch (std::exception &e) {
+                std::cerr << RED << "startEventLoop: " << e.what() << RESET << std::endl;
+                //close(socketToAccept);//???????????????????????????????????????????????????????????????????
+                //_clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());//??????????????????????????????????
+            }
+            close(socketToAccept);//???????????????????????????????????????????''
+            _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());//?????????????
+        }
+    }
+}
+
 /**
  * @brief Main event loop. If a server socket receives a connection, it will call clientAccept. 
  * If a client socket is ready to read, it will call clientRead.
@@ -127,37 +169,22 @@ void Master::clientRead(int clientSocket)
  */
 int Master::startEventLoop()
 {
-    const int MAX_EVENTS = 64; //THIS HAS TO BE DEFINED!!
     struct epoll_event events[MAX_EVENTS];
+    int nev;
+
     while (true)
     {
-        int nev = epoll_wait(_epoll_fd, events, MAX_EVENTS, 300); 
+        printWaitConsole();
+        nev = epoll_wait(_epoll_fd, events, MAX_EVENTS, 300); 
+        
         if (nev == -1)
             ft_error("Error in epoll_wait");
+        else
+            manageConnections(events, nev);
+    }
+    return (0);
+}
 
-        for (int i = 0; i < nev; ++i)
-        {
-            int socketToAccept = events[i].data.fd;
-
-			// check for a read event in _clientSockets first.
-			if (std::find(_clientSockets.begin(), _clientSockets.end(), socketToAccept) != _clientSockets.end())
-			{ 
-			    //print the client socket
-			    std::cout << "Client socket to read: " << socketToAccept << std::endl;
-				try {
-					manageConnection(_clientsMap[socketToAccept]);
-				} catch (std::exception &e) {
-					std::cerr << RED << "startEventLoop: " << e.what() << RESET << std::endl;
-					close(socketToAccept);
-					_clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
-				}
-			}
-			else if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
-			{
-				if (clientAccept(socketToAccept) < 0)
-
-					ft_error("Error accepting client");
-			}
 
             // if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
             // {
@@ -178,7 +205,3 @@ int Master::startEventLoop()
             // {
             //     // write to the client
             // }
-        }
-    }
-    return (0);
-}

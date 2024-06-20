@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 11:10:31 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 20:38:48 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class Master
 		void processRequest(Connection &connection, RequestParser &request);
 		
 		void manageConnection(Connection &connection);
+		void manageConnections(struct epoll_event *events, int nev);
 
 		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME
 		VHost &getVHost(std::string serverName, int port);

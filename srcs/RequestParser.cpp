@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 10:46:55 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 21:02:02 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void RequestParser::showConfig(void)
 {
     typedef std::map<std::string, std::string>::iterator it_t;
     
-    std::cout << GREEN <<  "HTTP REQUEST RECEIVED\n-------------------------" << RESET << std::endl;
+    std::cout << GREEN <<  "\n  <----------- HTTP REQUEST RECEIVED" << RESET << std::endl;
     for (it_t it = this->get().begin(); it != this->get().end(); ++it)
         std::cout << GREEN << it->first << RESET << " = " << YELLOW << it->second << RESET << std::endl;
      std::cout << GREEN <<  "-------------------------\n" << RESET << std::endl;

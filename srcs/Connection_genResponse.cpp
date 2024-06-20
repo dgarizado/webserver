@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 11:47:56 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:48:03 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,21 @@ std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath
     std::string         mime_type;
     std::string         response_header;
     long                size;
-    
+    long                statusCode;
     
     mime_type = this->getMimeType(filePath);//para python ???????????????????
-    size      = bodyHTTP.size();
+    statusCode = this->getStatusCode();
+    size = bodyHTTP.size();
 
-    std::cout << "generando cabezera: _stausCode" <<_statusCode << std::endl;
-
-    if (_statusCode == 200)
+    if (statusCode == 200)
         response_header  = "HTTP/1.1 200 OK\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    else if (_statusCode == 404)
+    else if (statusCode == 404)
         response_header  = "HTTP/1.1 404 Not Found\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    else if (_statusCode == 405)
-        response_header  = "HTTP/1.1 Method Not Allowed\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+    else if (statusCode == 405)
+        response_header  = "HTTP/1.1 405 Method Not Allowed\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+    else if (statusCode == 500)
+        response_header  = "HTTP/1.1 500 Internal Server Error\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
 
-     std::cout << "generando cabezera: response header: " <<response_header << std::endl;
     return response_header;
 }
 
@@ -75,7 +75,7 @@ std::string Connection::genBodyFile(std::string filePath)
 
     if (!file){
         this->_statusCode = 404;
-        throw std::runtime_error("genBodyHTTP: Cannot open file:" + filePath);
+        throw std::runtime_error("genBodyFile: Cannot open file:" + filePath);
     }
     
     buffer << file.rdbuf();

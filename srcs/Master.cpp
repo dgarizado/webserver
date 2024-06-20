@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 10:48:03 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 19:34:44 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ VHost &Master::getVHost(std::string serverName, int port)
                 return (*it);
         }
     }
-    throw std::runtime_error("getVHost: not found VHost!"); //DEBUG MAS ADELANTE EXCEPTION CLOSE FD Y CAPTURAR PARA CONTINUAR ESCUCHANDO SIN CRASH
+    throw std::runtime_error("getVHost: not found VHost!");
 }
 
 /**
@@ -109,7 +109,8 @@ int Master::createVHosts(FileParse &config)
 {
 	std::vector<t_server> servers = config.getStruct().serverData;
 	if (servers.size() == 0)
-		ft_error("No servers found in the configturation file");
+		throw std::runtime_error("No servers found in the configturation file");
+
 	//iterate the vector and confirm that the server names are correctly stored
 	std::vector<t_server>::iterator it = servers.begin();
 	for(; it < servers.end(); ++it)

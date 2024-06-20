@@ -6,12 +6,11 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 12:06:14 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 19:39:26 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Master.hpp"
-
 
 void Connection::requestCheck(RequestParser &request)
 {
@@ -35,33 +34,6 @@ void Connection::requestCheck(RequestParser &request)
 	}
 }
 
-void showParamsConsoleHTTP(std::string responseStr, size_t sizeResponse, int clientSocket, int statusCode)
-{
-     // Definir el ancho para cada columna
-    const int colWidth = 20;
-
-    // Imprimir los encabezados de las columnas
-    std::cout << std::left  // Alinear el texto a la izquierda
-              << std::setw(colWidth) << "Status Code"
-              << std::setw(colWidth) << "Client Socket"
-              << std::setw(colWidth) << "Size ResponseHTTP" << "\n";
-
-    // Imprimir una línea separadora
-    std::cout << std::string(colWidth * 3, '-') << "\n";
-
-    // Imprimir los valores
-    std::cout << std::setw(colWidth) << statusCode
-              << std::setw(colWidth) << clientSocket
-              << std::setw(colWidth) << sizeResponse << "\n";
-
-    // Imprimir el mensaje de respuesta HTTP
-    std::cout << "\nResponse Message:\n" << responseStr << "\n";
-
-    // Imprimir información adicional de la conexión
-    std::cout << "\nConnection Information:\n" << "Client Socket: " << clientSocket << "\n";
-}
-
-
 /**
  * @brief get the buffer from the client object and process the request. 
  * 
@@ -80,11 +52,10 @@ void Master::processRequest(Connection &connection, RequestParser &request)
     }catch(std::exception &e) {
         throw std::runtime_error("processRequest: " + std::string(e.what()));
     }
-    
     send(connection.getClientSocket(), response.c_str(), response.size(), 0);
     //close(connection.getClientSocket());// IMPORTANT TO DEFINE!! ????????????????????????????????????????????????????
-    std::cout << GREEN <<  "MSG HTTP SENT TO--> " << connection.getClientSocket() << " client Sock\n----------------------------\n" RESET << std::endl;
-    showParamsConsoleHTTP(response, response.size(), connection.getClientSocket(), connection.getStatusCode());
+
+    showParamsConsoleHTTP(response, response.size(), connection.getClientSocket(), connection.getStatusCode(), false);
 }
 
 void Master::manageConnection(Connection &connection)

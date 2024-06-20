@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 21:08:51 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:53:15 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,13 +131,12 @@ std::string Connection::getMimeType(const std::string &path)//????????? default 
 {
     std::string mime;
     
-    std::cout << GREEN <<  "GEWT MIME path\n-------------------------\n" << path << RESET << std::endl;
 	if (endsWith(path, ".html")) {
         mime = "text/html";
     } else if (endsWith(path, ".py")) {
         mime = "text/html";
-    //} //else if (endsWith(path, "/")) {
-        //mime = "text/html";
+    } else if (endsWith(path, "/")) {
+        mime = "text/html";
     } else if (endsWith(path, ".css")) {
         mime = "text/css";
     } else if (endsWith(path, ".jpg") || endsWith(path, ".jpeg")) {
@@ -148,10 +147,9 @@ std::string Connection::getMimeType(const std::string &path)//????????? default 
         mime = "image/x-icon";
     } else {
         // Default to application/octet-stream for unknown types
-       // mime = "application/octet-stream";
-        mime = "text/html";//???????
+       mime = "application/octet-stream";
+        //mime = "text/html";//???????
     }
-    std::cout << GREEN <<  "GEWT MIME\n-------------------------\n" << mime << RESET << std::endl;
     return mime;
 }
 
@@ -163,20 +161,21 @@ void Connection::serveErrorPage(void)
     std::string         response_header;
     std::string         response_body;
     
-	if (_statusCode == 404)
+	if (this->getStatusCode() == 404)
         path += "404.html";
-	else if (_statusCode == 405)
+	else if (this->getStatusCode() == 405)
         path += "405.html";
+    else if (this->getStatusCode() == 500)
+        path += "500.html";
 
     std::ifstream       file(path);
     buffer << file.rdbuf();
     
     response_body = buffer.str();
-    std::cout << "path que entra a generar HTTP: " << path << std::endl;
     response_header = genHeaderHTTP(response_body, path);
     response = response_header + response_body;
     
-    std::cout << GREEN <<  "MESSAGE HTTP ERROR TO SENT\n-------------------------\n" << response << RESET << std::endl;
     send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
-    std::cout << GREEN "----------------------------\nResponse sent" RESET << std::endl;
+//    std::cout << GREEN << response << RESET << std::endl;
+    showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), true);
 }
