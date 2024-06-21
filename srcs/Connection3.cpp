@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection3.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/16 14:12:04 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 17:45:38 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ std::string Connection::genResponsePage(std::string filePath)
         response  = "HTTP/1.1 Method Not Allowed\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
 
     response += file_content;
-    std::cerr << std::endl << GREEN << response << RESET << std::endl;
     return response;
 }
 

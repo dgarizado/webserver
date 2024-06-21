@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/15 14:21:22 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 18:29:34 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@
 #define CYAN "\033[36m"
 #define RESET "\033[0m"
 #define PINK "\033[95m"
+#define BRIGHT_YELLOW "\033[93m"
+#define BRIGHT_CYAN "\033[96m"
 
 enum location {
 	ROOT,

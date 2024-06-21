@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 14:47:48 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 18:07:09 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,11 @@ std::string Connection::getFinalPath() const
     return _finalPath;
 }
 
+int Connection::getMethod() const
+{
+    return _method;
+}
+
 void Connection::setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev)
 {
     _clientSocket = clientSocket;
@@ -139,12 +144,12 @@ int Connection::setDefaultIndex(void)
 bool Connection::fileCheck(std::string file)
 {
     
-    if (_fileName.empty() == true )
+    if (_fileName.empty() == true)
 	{
         if (_location.autoIndex == true)
             return (true);
         
-        if ( setDefaultIndex() == 404)
+        if (setDefaultIndex() == 404)
             return (false);
         
 		std::cout << YELLOW "No file requested, serving index or autoindex" RESET << std::endl;
@@ -231,7 +236,8 @@ int Connection::fixPath(std::string &path)
 
 /**
  * @brief This function checks if the method sent by the client is 
- * allowed in the serverblock. 
+ * allowed in the serverblock. Also sets the method of the request in 
+ * the connection object.
  * @param request 
  * @return true 
  * @return false 
@@ -240,10 +246,14 @@ bool Connection::methodCheck(RequestParser &request)
 {
     std::string method = request.get()["REQUEST_METHOD"];
 
-    if (_location.allowedMethods[GET]    && method == "GET")    return true;
-    if (_location.allowedMethods[POST]   && method == "POST") 	return true;
-    if (_location.allowedMethods[PUT]    && method == "PUT") 	return true;
-   	if (_location.allowedMethods[DELETE] && method == "DELETE") return true;
+    if (_location.allowedMethods[GET]    && method == "GET")
+        return(_method = GET, true);
+    if (_location.allowedMethods[POST]   && method == "POST")
+        return(_method = POST, true);
+    if (_location.allowedMethods[PUT]    && method == "PUT")
+        return(_method = PUT, true);
+   	if (_location.allowedMethods[DELETE] && method == "DELETE")
+        return(_method = DELETE, true);
     //if not allowed method requested 
     _statusCode = 405;
     return false;
@@ -307,7 +317,7 @@ int Connection::uriCheck(RequestParser &request)
         _finalPath+= "/";
         _requestedPath+= "/";
     }
-	if (fileCheck(_requestedPath) == false)
+	if (request.get()["REQUEST_METHOD"] != "POST"  && fileCheck(_requestedPath) == false)
 		return (404);
     //fix the path with the root of the location.
     

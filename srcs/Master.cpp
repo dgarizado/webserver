@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/05 18:26:42 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/16 21:00:23 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ VHost &Master::assignVHost(std::string hostport)
     int                 port;
     std::getline(iss, servername, ':');
     std::getline(iss, tmp_port, ':');
+	std::cout << "stoi at assignVHost" << std::endl;
 	port = std::stoi(tmp_port);
     return this->getVHost(servername, port);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 13:31:22 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/18 19:01:57 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class Connection
         bool        getAutoIndex() const;
         std::string getFileName() const;
         std::string getFinalPath() const;
+        int         getMethod() const;
 
         //SETTERS
         void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
@@ -82,7 +83,9 @@ class Connection
         std::string                 _fileName; //this is the file name requested by the client. empty if the client requested a directory.
         std::string                 _root; //this is the root of the vhost.
 		int                         _statusCode ;
+        int                         _method;
         VHost _vhost;
+        RequestParser               _request;
 };
 
 #endif

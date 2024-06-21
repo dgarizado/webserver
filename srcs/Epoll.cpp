@@ -97,8 +97,8 @@ int Master::clientAccept(int socketToAccept)
  */
 int Master::clientRead(int clientSocket)
 {
-    char buffer[1024];
-    int bytesRead = read(clientSocket, buffer, 1024);
+    char buffer[6048];
+    int bytesRead = read(clientSocket, buffer, 6048);
     if (bytesRead < 0)
         return(ft_error("Error reading from socket")); //REMOVE CLIENT SOCKET FROM EPOLL SET AND CLOSE SOCKET!
     if (bytesRead == 0)
@@ -115,16 +115,24 @@ int Master::clientRead(int clientSocket)
     {
         buffer[bytesRead] = '\0';
         _clientsMap[clientSocket].setBuffer(buffer);
+        //print the buffer
+        std::cout << BRIGHT_CYAN  <<"Buffer: \n" << buffer << std::endl;
     }
     return (0);
 }
 
 int Master::manageConnection(Connection &connection)
 {
-    RequestParser request;
+    RequestParser &request = connection.getRequest();
+    int clientReadValue;
     //read from the socket
-    if (clientRead(connection.getClientSocket()) < 0)
+
+    if ((clientReadValue = clientRead(connection.getClientSocket())) < 0)
         return ft_error("Error reading from client");
+    if (clientReadValue == 1)
+        return (0);
+    // if (clientRead(connection.getClientSocket()) < 0)
+    //     return ft_error("Error reading from client");
     //request = _clientsMap[connectionSocket].getBuffer();
     //parse the request
     if (request.loadConfigFromRequest(connection.getBuffer()) < 0)

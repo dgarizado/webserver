@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master2.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/16 14:48:50 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/16 20:39:39 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@ int Master::processRequest(Connection &connection, RequestParser &request)
 	if (connection.requestCheck(request) == -1)
 		return -1;
 	
+	if (connection.getMethod() == POST)
+	{
+		std::cout << BRIGHT_YELLOW "POST method" RESET << std::endl;
+		//print the request
+		return (0)	;
+	}
+		
 	if (isAutoIndex(connection))
 	{
         path     = connection.getFinalPath();

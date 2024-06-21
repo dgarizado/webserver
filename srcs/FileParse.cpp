@@ -112,6 +112,7 @@ void varServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, int
     {
         iss >> token;
         token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+        std::cout << "stoi at varServer" << std::endl;
         port = std::stoi(token); //if error it throw exception
         ref->getStruct().ports.insert(port);
         ref->getStruct().serverData[nServer].listen = port;
