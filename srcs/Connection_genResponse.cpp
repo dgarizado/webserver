@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 14:43:13 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/22 00:15:32 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath
 
     if (statusCode == 200)
         response_header  = "HTTP/1.1 200 OK\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+    else if (statusCode == 204)
+        response_header  = "HTTP/1.1 204 No Content\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
     else if (statusCode == 400)
         response_header  = "HTTP/1.1 400 Bad Request\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
     else if (statusCode == 403)
@@ -165,6 +167,8 @@ std::string Connection::genResponse(RequestParser &request)
         return genResponseGET(request);
    // else if (method == "POST")
     //    response = genResponsePOST(request);
+     else if (method == "DELETE")
+       return genResponseDELETE(request);
     else
         throw ServerException("genResponse: method not configured: " + method, 400);
 }

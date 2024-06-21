@@ -21,7 +21,7 @@ void setDefaultValuesLocation(t_location &ref)
     ref.allowedMethods[GET]     = true;
     ref.allowedMethods[POST]    = true;
     ref.allowedMethods[PUT]     = true;
-    ref.allowedMethods[DELETE]  = true;
+    ref.allowedMethods[DELETE]  = false;
 }
 
 void setNotAllowedMethod(t_location &ref, std::istringstream &iss)
@@ -36,6 +36,22 @@ void setNotAllowedMethod(t_location &ref, std::istringstream &iss)
     	else if (token == "POST") 	ref.allowedMethods[POST] 	= false;
     	else if (token == "PUT") 	ref.allowedMethods[PUT] 	= false;
    		else if (token == "DELETE") ref.allowedMethods[DELETE] 	= false;
+		else throw std::invalid_argument("not valid method " + token);
+	}
+}
+
+void setAllowedMethod(t_location &ref, std::istringstream &iss)
+{
+    std::string token;
+
+	while (iss >> token)
+	{
+		token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+
+		if 		(token == "GET") 	ref.allowedMethods[GET] 	= true;
+    	else if (token == "POST") 	ref.allowedMethods[POST] 	= true;
+    	else if (token == "PUT") 	ref.allowedMethods[PUT] 	= true;
+   		else if (token == "DELETE") ref.allowedMethods[DELETE] 	= true;
 		else throw std::invalid_argument("not valid method " + token);
 	}
 }
@@ -63,8 +79,10 @@ void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLo
         if (token == "on" )
             ref->getStruct().serverData[nServer].locations[nLocation].autoIndex = true;
     }
-	else if (token == "limit_except")
+	else if (token == "not_allow")
 		setNotAllowedMethod(ref->getStruct().serverData[nServer].locations[nLocation], iss);
+    else if (token == "allow")
+        setAllowedMethod(ref->getStruct().serverData[nServer].locations[nLocation], iss);
 }
 
 void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
