@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:41:19 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/03 19:40:47 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/21 12:27:47 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,24 @@ int main(int argc, char **argv)
 {
 	FileParse fileParser;
 	Master master;
+	std::string path;
 	
 	if (argc > 2)
 		return (ft_error("Bad arguments, use: ./webserv [config_file]"));
-	if (argc == 2 )
-	{
-		std::cout << GREEN << "Parsing configuration file" << RESET << std::endl;
-		if (fileParser.loadConfigFromFile(argv[1]) == -1)
-			return (ft_error("Error while parsing the configuration file"));
-	} 
-	else
-	{
-		std::cout << GREEN << "Usign Default config file: ./config/default.conf"<< RESET<< std::endl;
-		if (fileParser.loadConfigFromFile("./config/default.com") == -1)
-			return (ft_error("Error while parsing the configuration file"));
+		
+	try{
+		if (argc == 2 )
+			path = argv[1];
+		else
+			path = "./config/default.com";
+			
+		std::cout << GREEN << "Parsing configuration file: " << path << RESET<< std::endl;
+		fileParser.loadConfigFromFile(path);
+	} catch (std::exception &e){
+		return ft_error("Exception: main: "+ std::string(e.what()));
 	}
+
+		
 	//1. Parse the configuration file
 	//QUESTIONS: 
 	// 			 Q1:WHAT HAPPENS IF A SERVERBLOCK HAS MULTIPLE SERVER NAMES?

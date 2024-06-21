@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 10:19:40 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 19:37:15 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 10:55:29 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,9 @@ void Connection::requestParse(RequestParser &request)
 
     if (this->_location.location == "NULL")
     {
-        this->_statusCode = 404;
-        throw std::runtime_error("requestParse: location requested wrong: " + uriRequested);
+        throw ServerException("requestParse: location requested wrong: " + uriRequested, 404);
+        //this->_statusCode = 404;
+        //throw std::runtime_error("requestParse: location requested wrong: " + uriRequested);
     }
 
     this->_fileName = extractFileNameStr(uriRequested);

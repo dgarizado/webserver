@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 18:48:03 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:43:13 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,12 @@ std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath
 
     if (statusCode == 200)
         response_header  = "HTTP/1.1 200 OK\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+    else if (statusCode == 400)
+        response_header  = "HTTP/1.1 400 Bad Request\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+    else if (statusCode == 403)
+        response_header  = "HTTP/1.1 403 Forbidden\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
     else if (statusCode == 404)
-        response_header  = "HTTP/1.1 404 Not Found\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+        response_header  = "HTTP/1.1 404 Not Found<\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
     else if (statusCode == 405)
         response_header  = "HTTP/1.1 405 Method Not Allowed\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
     else if (statusCode == 500)
@@ -50,8 +54,9 @@ std::string Connection::getValidDefaultIndex(void)
             return *it;
         }
     }
-    this->_statusCode = 404;
-    throw std::runtime_error("getValidDefaultIndex: not any index found");
+    //this->_statusCode = 404;
+    throw ServerException("getValidDefaultIndex: not any index found ", 404);
+   // throw std::runtime_error("getValidDefaultIndex: not any index found");
     return "";
 }
 
@@ -67,16 +72,37 @@ std::string Connection::genPathDefaultIndex(void)
     return defaultPath;
 }
 
+std::ifstream openFile(std::string filePath)
+{
+    if (access(filePath.c_str(), F_OK) == -1)
+        throw ServerException("openFile: not found: " + filePath, 404);
+    if (access(filePath.c_str(), R_OK) == -1)
+        throw ServerException("openFile: Permision not allowed: " + filePath, 403);
+    
+    std::ifstream       file(filePath);
+    if (!file)
+        throw ServerException("openFile: internal error: " + filePath, 500);
+    
+    return file;
+}
+
+
 std::string Connection::genBodyFile(std::string filePath)
 {
     std::string         responseHTTP_body;
-    std::ifstream       file(filePath);
+    std::ifstream       file;
     std::stringstream   buffer;
 
-    if (!file){
-        this->_statusCode = 404;
-        throw std::runtime_error("genBodyFile: Cannot open file:" + filePath);
+    try{
+       file = openFile(filePath);
+    } catch (const ServerException &e) {
+        throw ServerException("genBodyFile: " + std::string(e.what()), e.getCode());
     }
+    // if (!file){
+    //    // this->_statusCode = 404;
+    //   //  throw std::runtime_error("genBodyFile: Cannot open file:" + filePath);
+    //     throw ServerException("genBodyFile: " + std::string(strerror(errno) + filePath), 404);
+    // }
     
     buffer << file.rdbuf();
     responseHTTP_body = buffer.str();
@@ -98,7 +124,7 @@ std::string Connection::genBodyHTTP(std::string filePath, RequestParser &request
     return responseHTTP_body;
 }
 
-std::string Connection::genResponse(RequestParser &request)
+std::string Connection::genResponseGET(RequestParser &request)
 {
     std::vector<std::string>    defaultIndexs;
     std::string                 responseHTTP_header;
@@ -121,7 +147,24 @@ std::string Connection::genResponse(RequestParser &request)
     {
        responseHTTP_body = genBodyAutoIndex(this->_path);
     }
+    else
+        throw ServerException("genResponse: not default index and autoindex defined ", 404);
+        
     responseHTTP_header = genHeaderHTTP(responseHTTP_body, this->_path);
 
     return responseHTTP_header + responseHTTP_body;
+}
+
+std::string Connection::genResponse(RequestParser &request)
+{
+    std::string method;
+    std::string response;
+    
+    method = request.get()["REQUEST_METHOD"];
+    if (method == "GET")
+        return genResponseGET(request);
+   // else if (method == "POST")
+    //    response = genResponsePOST(request);
+    else
+        throw ServerException("genResponse: method not configured: " + method, 400);
 }

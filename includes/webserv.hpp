@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 09:33:58 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:21:57 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@
 #define PINK "\033[95m"
 
 #define MAX_EVENTS 64 //IMPORATNTEEEEE PARA EL SUBJECTTTTTTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#define BUFFER	   1000//IMPORTANTEEEEEEEEEEEEEEEEEEE LIMITEEEEEEE DE LECTURAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!
 
 enum server {
 	LISTEN,
@@ -87,10 +88,10 @@ typedef struct s_fileParse {
 class ServerException : public std::exception {
 public:
     ServerException(const std::string& msg, int c) : message(msg), code(c) {}
-	ServerException(const std::string& msg) : message(msg), code(0) {}
+	//ServerException(const std::string& msg) : message(msg), code(0) {}
 
     // Sobrescribir el método what() para proporcionar un mensaje de error
-    const char* what() const noexcept override {
+    const char* what()  const throw() {
         return message.c_str();
     }
 

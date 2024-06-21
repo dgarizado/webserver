@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 18:53:15 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:23:45 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,11 @@ void Connection::setBuffer(std::string buffer)
     _buffer = buffer;
 }
 
+void Connection::setStatusCode(int statusCode)
+{
+    _statusCode = statusCode;
+}
+
 
 
 
@@ -161,7 +166,11 @@ void Connection::serveErrorPage(void)
     std::string         response_header;
     std::string         response_body;
     
-	if (this->getStatusCode() == 404)
+    if (this->getStatusCode() == 400)
+        path += "400.html";
+    else if (this->getStatusCode() == 403)
+        path += "403.html";
+	else if (this->getStatusCode() == 404)
         path += "404.html";
 	else if (this->getStatusCode() == 405)
         path += "405.html";

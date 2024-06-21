@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 08:50:08 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:13:18 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-
 
 int Master::setSockets(std::set<int> &ports)
 {
@@ -101,66 +99,48 @@ int Master::clientAccept(int socketToAccept)
     return (0);
 }
 
-/**
- * @brief Here we read from the client socket and store the buffer in the Client object.
- * 
- * @param clientSocket 
- * @return int 
- */
-void Master::clientRead(int clientSocket)
+void Master::deleteConnection(int SocketAccepted)
 {
-    char buffer[2048];//????????????????????????????????????????????limitante para el upload???????????????
-    int bytesRead = read(clientSocket, buffer, 2048);
-    if (bytesRead < 0)
-        throw std::runtime_error("clientRead: Error reading from socket");  //REMOVE CLIENT SOCKET FROM EPOLL SET AND CLOSE SOCKET!
-
-    if (bytesRead == 0)
-    {
-        //Remove the client socket from the epoll set, close the socket and remove it from the clientSockets vector
-        epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, clientSocket, NULL);
-        close(clientSocket);
-        _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), clientSocket), _clientSockets.end());
-        // ft_error("Client disconnected"); //Is this an error? or just a message? ... maybe a message. HANDLE IT!!!
-        std::cout << RED << "Client disconnected" << RESET << std::endl;
-         // This is not an error, it's just a message HANDLE THIS!!!
-    }
-    else //store the buffer in the Client object
-    {
-        buffer[bytesRead] = '\0';
-        _clientsMap[clientSocket].setBuffer(buffer);
-    } 
+    epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, SocketAccepted, NULL);
+    close(SocketAccepted);
+    _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), SocketAccepted), _clientSockets.end());
 }
 
 void Master::manageConnections(struct epoll_event *events, int nev)
 {
-    int socketToAccept;
+    int     socketToAccept;
+    bool    toAccept;
+    bool    toManage;
     
     for (int i = 0; i < nev; ++i)
     {
         socketToAccept = events[i].data.fd;
-
-        if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
+        toAccept = std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end();
+        toManage = std::find(_clientSockets.begin(), _clientSockets.end(), socketToAccept) != _clientSockets.end();
+        
+        if (toAccept)
         {
-            if (clientAccept(socketToAccept) < 0)
+            if (this->clientAccept(socketToAccept) < 0)
                 ft_error("Error accepting client");
         }
-        else if (std::find(_clientSockets.begin(), _clientSockets.end(), socketToAccept) != _clientSockets.end())
+        else if (toManage)
         { 
             std::cout << "Client socket: " << socketToAccept << " being managed..." << std::endl;
             try {
-                manageConnection(_clientsMap[socketToAccept]);
-            } catch (std::exception &e) {
-                std::cerr << RED << "startEventLoop: " << e.what() << RESET << std::endl;
+                this->manageConnection(_clientsMap[socketToAccept]);
+            } catch (const ServerException &e) {
+                
+                std::cerr << RED << "ServerException: startEventLoop: " << e.what() << " -> " << e.getCode() << RESET << std::endl;
+                _clientsMap[socketToAccept].setStatusCode(e.getCode());
                 _clientsMap[socketToAccept].serveErrorPage();
+                
+            } catch (const std::exception &e) {
+                
+                std::cerr << RED << "ServerException: startEventLoop: " + std::string(e.what()) << RESET << std::endl;
+                
             }
-            std::cout << "Client socket: " << socketToAccept << " being disconected and erased..." << std::endl;
-            close(socketToAccept);//???????????????????????????????????????????''
-            _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());//?????????????
-
-            //epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, socketToAccept, NULL);
-            //close(socketToAccept);
-            //_clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
-
+            std::cout << "Client socket: " << socketToAccept << " being disconected and deleted..." << std::endl;
+            this->deleteConnection(socketToAccept);
         }
     }
 }
@@ -189,24 +169,3 @@ int Master::startEventLoop()
     }
     return (0);
 }
-
-
-            // if (std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end())
-            // {
-            //     if (clientAccept(socketToAccept) < 0)
-            //         ft_error("Error accepting client");
-            // } else //  A client socket is ready to read
-            // {
-            //     try {
-            //         manageConnection(socketToAccept);
-            //     } catch (std::exception &e) {
-            //         std::cerr << e.what() << std::endl;
-            //         close(socketToAccept);
-            //         _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), socketToAccept), _clientSockets.end());
-            //     }
-            // }
-            // check for a write event
-            // if (events[i].events & EPOLLOUT)
-            // {
-            //     // write to the client
-            // }

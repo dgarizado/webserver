@@ -216,7 +216,7 @@ int checksBraces(std::string filename)
     int                 braces = 0;
 
     if (!file.is_open())
-        throw std::runtime_error("braces: cannot open file");
+        throw std::runtime_error("checksBraces: " +  std::string(strerror(errno))+ " " + filename);
     while (std::getline(file, line))
     {
         for (size_t i = 0; i < line.size(); ++i)
@@ -229,9 +229,7 @@ int checksBraces(std::string filename)
     }
     file.close();
     if (braces != 0)
-		throw std::runtime_error("braces: not match");
-	// if (braces != 0)
-    //     return -1;
+		throw std::runtime_error("checksBraces: braces not match");
     return 0;
 }
 
@@ -248,36 +246,31 @@ t_fileParse & FileParse::getStruct()
  * @brief Method to load on ifstream object the full config file. Iter line per line parsing the file
  * @return int -1 cannot open file or any exception. 0 ok.
  */
-int FileParse::loadConfigFromFile(const std::string filename)
+void FileParse::loadConfigFromFile(const std::string filename)
 {
     std::ifstream       file(filename);
     std::string         line;
     bool                http = false;
     
 	try {
+        
 		checksBraces(filename);
-	}catch(const std::exception& e) {
-		std::cerr << RED << "Exception: " << e.what() << RESET << std::endl;
-        return -1;
-	} 
-
-    if (!file.is_open())
-        return ft_err("Error: cannasot open file. ");
-    while (std::getline(file, line)) 
-    {  
-		try{
+        if (!file.is_open())
+            throw std::runtime_error(std::string(strerror(errno)) + " " + filename);
+        while (std::getline(file, line)) 
+        {  
             if (lineParser(this, file, line) == 1)//Parse line per line
                 http = true; 
-        }catch(const std::exception& e) {
-			std::cerr << RED << "Exception: " << e.what() << RESET << std::endl;
-            return -1;    
         }
-    }
-    file.close();
 
-    if (http == false)
-        return ft_err("error: not found http block");
-    return 0;
+        file.close();
+        
+        if (http == false)
+            throw std::runtime_error("not found http block " + filename);
+
+	}catch(const std::exception& e) {
+        throw std::runtime_error("loadConfigFromFile: " +  std::string(e.what()));
+	} 
 }
 
 void FileParse::showConfig(void)

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:19:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 19:31:42 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:18:32 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void dupAndCloseFd(int *pipefd)
     
     if (dup2(pipefd[1], STDOUT_FILENO) == -1) {
         std::cerr << "dup2 failed: " << std::endl;
+        close(pipefd[1]);
         _exit(EXIT_FAILURE);
     }
     close(pipefd[1]);
@@ -33,18 +34,24 @@ std::string readOutputCgi(std::string filePath)
     int                     status;
     
     if (pipe(pipefd) == -1)
-        throw std::runtime_error("readOutputCgi: cannot create pipe");
+        throw ServerException("readOutputCgi: cannot create pipe:  " + std::string(strerror(errno)), 500);
 
     pid = fork();
     if (pid == -1)
-        throw std::runtime_error("readOutputCgi: fork failed");
+    {
+        close(pipefd[1]);
+        close(pipefd[0]);
+        throw ServerException("readOutputCgi: fork failed:  " + std::string(strerror(errno)), 500); 
+    }
 
     if (pid == 0) { // Child process
         dupAndCloseFd(pipefd);
         execl(filePath.c_str(), filePath.c_str(), (char *)nullptr);
         std::cerr << "execl failed: " << std::endl;
         _exit(EXIT_FAILURE);
-    }else { // Father process
+    }
+    else // Father process
+    { 
         close(pipefd[1]);
         while ((bytesRead = read(pipefd[0], buffer.data(), buffer.size())) > 0)
             result.append(buffer.data(), bytesRead);
@@ -52,8 +59,7 @@ std::string readOutputCgi(std::string filePath)
 
         waitpid(pid, &status, 0);
         if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-            throw std::runtime_error("readOutputCgi: command failed");
-
+            throw ServerException("readOutputCgi: command failed:  " + std::string(strerror(errno)), 500);
         return result;
     }
 }

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 20:38:48 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:08:43 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ class Master
 		int createVHosts(FileParse &config);
 		
 		//NETWORK METHODS
-		int setSockets(std::set<int> &ports);
-		int setEvents();
-		int startEventLoop();
-		int clientAccept(int serverSocket);
-		void clientRead(int clientSocket);
+		int  setSockets(std::set<int> &ports);
+		int  setEvents();
+		int  startEventLoop();
+		int  clientAccept(int serverSocket);
+		void deleteConnection(int SocketAccepted);
 		void processRequest(Connection &connection, RequestParser &request);
 		
 		void manageConnection(Connection &connection);

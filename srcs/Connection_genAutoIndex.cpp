@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 09:14:09 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 12:21:39 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ std::string genRowName(struct dirent *entry)
         html = html + "<a href=\"" + entry->d_name + "\\\">" + entry->d_name + "\\" + "</a>";
     }
     else if (entry->d_type == DT_REG)
-        html = html + "<p" + "\"" + entry->d_name + "\">" + entry->d_name + "</p>";
+        html = html + "<a href=\"" + entry->d_name + "\">" + entry->d_name + "</a>";
     
     return html;
 }
@@ -77,7 +77,8 @@ std::string genRowAutoIndex(struct dirent *entry, std::string filePath)
     struct stat fileStat;
 
     if (stat(filePath.c_str(), &fileStat) < 0)
-        throw std::runtime_error(filePath);
+        throw ServerException("genRowAutoIndex: " + std::string(strerror(errno)), 500);
+      //  throw std::runtime_error(filePath);
 
     html += "<tr>";
     html += "<td>";
@@ -101,16 +102,17 @@ std::string genRowsAutoIndex(std::string path)
     DIR             *dp = opendir(path.c_str());
 
     if (dp == NULL) {
-        
-        throw std::runtime_error("genRowsAutoIndex: opendir: " + std::string(strerror(errno)));
+        throw ServerException("genRowsAutoIndex: opendir: " + std::string(strerror(errno)), 404);
+       // throw std::runtime_error("genRowsAutoIndex: opendir: " + std::string(strerror(errno)));
     }
 
     while ((entry = readdir(dp)))
     {
         try {
             html += genRowAutoIndex(entry, path + entry->d_name);
-        } catch (const std::exception &e) {
-            std::cerr << "genRowsAutoIndex: genRowAutoIndex: stats of file " << std::string(e.what()) << '\n';
+        } catch (const ServerException &e) {
+            throw ServerException("genRowsAutoIndex: " + std::string(e.what()), e.getCode());
+            //std::cerr << "genRowsAutoIndex: genRowAutoIndex: stats of file " << std::string(e.what()) << '\n';
         }
     }
     closedir(dp);

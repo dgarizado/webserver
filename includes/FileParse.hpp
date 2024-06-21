@@ -23,7 +23,7 @@ public:
 	// // Constructor por defecto
 	FileParse(void) {}
 
-	int loadConfigFromFile(const std::string filename);
+	void loadConfigFromFile(const std::string filename);
 	void showConfig(void);
 
 	//getter

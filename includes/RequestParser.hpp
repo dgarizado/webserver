@@ -6,13 +6,13 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 17:28:48 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 10:47:01 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 10:19:19 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REQUESTPARSER_HPP
 # define REQUESTPARSER_HPP
-
+# include "webserv.hpp"
 # include <string>
 # include <iostream>
 # include <sstream>

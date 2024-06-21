@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 18:18:26 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:39:22 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class Connection : public VHost
         Connection &operator=(Connection const &src);
         Connection &operator=(VHost &src);
 
+        void readFromSocket();
+
         //GETTERS
         int         getClientSocket() const;
         std::string getBuffer() const;
@@ -46,6 +48,7 @@ class Connection : public VHost
         //SETTERS
         void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
         void        setBuffer(std::string buffer);
+        void        setStatusCode(int statusCode);
 
 
         //DETERMINATOR
@@ -65,6 +68,7 @@ class Connection : public VHost
         std::string genHeaderHTTP(std::string bodyHTTP, std::string filePath);
         std::string genResponse(RequestParser &request);
         std::string genPathDefaultIndex(void);
+        std::string genResponseGET(RequestParser &request);
 
 
         void setVarsEnviroment(RequestParser &request);
