@@ -20,13 +20,11 @@ void Connection::setVarsEnviroment(RequestParser &request)//mixing objects its n
         value = this->_queryString.c_str();
         if (setenv("QUERY_STRING", value, 1) != 0)
             throw ServerException("setVarsEnviroment: QUERY_STRING error: " + std::string(strerror(errno)), 500);
-            //throw std::runtime_error("setVarsEnviroment: QUERY_STRING error");
         
         value = request.get()["REQUEST_METHOD"].c_str();
         setenv("REQUEST_METHOD", value, 1);
         if (setenv("REQUEST_METHOD", value, 1) != 0)
             throw ServerException("setVarsEnviroment: REQUEST_METHOD error: " + std::string(strerror(errno)), 500);
-            //throw std::runtime_error("setVarsEnviroment: REQUEST_METHOD error");
     }
 }
 
@@ -40,8 +38,6 @@ std::string Connection::genBodyCgi(std::string filePath, RequestParser &request)
         response_body = readOutputCgi(filePath);
     }catch(ServerException &e) {
         throw ServerException("genBodyCgi: " + std::string(e.what()), e.getCode());
-       // _statusCode = 500;
-        //throw std::runtime_error("genBodyCgi: " + std::string(e.what()));
     }
 
     return response_body;

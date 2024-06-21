@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 20:29:09 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 21:20:42 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ void Master::manageConnections(struct epoll_event *events, int nev)
             } catch (const std::exception &e) {
                 
                 std::cerr << RED << "ServerException: startEventLoop: " + std::string(e.what()) << RESET << std::endl;
-                
+
             }
             std::cout << "Client socket: " << socketToAccept << " being disconected and deleted..." << std::endl;
             this->deleteConnection(socketToAccept);
