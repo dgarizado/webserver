@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 14:08:35 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:54:40 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ void Master::manageConnection(Connection &connection)
 
     try{
         connection.readFromSocket();
-
         buffer = connection.getBuffer();
         request.loadConfigFromRequest(buffer);
 

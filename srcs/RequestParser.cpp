@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 12:23:19 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 14:53:28 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,17 @@ void receivedLineParse(RequestParser *ref, std::istringstream &iss, std::string 
     ref->set("SERVER_PROTOCOL", token);
 }
 
+void contenTypeParse(RequestParser *ref, std::istringstream &iss)
+{
+    std::string     token;
+    std::string     tokenconcated;
+
+    while (iss >> token)
+        tokenconcated += token;
+    ref->set("CONTENT_TYPE", tokenconcated);
+}
+
+
 /**
  * @brief iter the tokens of the line. it extract the first token to know
  * wich variable to set in Request's map.
@@ -53,6 +64,8 @@ void lineParser(RequestParser *ref, std::string &requestLine)
         receivedLineParse(ref, iss, token);
     else if (token == "User-Agent:")
         userAgentLineParse(ref, iss);
+    else if (token == "Content-Type:")
+        contenTypeParse(ref, iss);
     else if (token == "Host:" && iss >> token)
         ref->set("HTTP_HOST", token);
     else if (token == "Accept:" && iss >> token)
@@ -61,8 +74,6 @@ void lineParser(RequestParser *ref, std::string &requestLine)
         ref->set("HTTP_ACCEPT_LANGUAGE", token);
     else if (token == "Accept-Encoding:" && iss >> token)
         ref->set("HTTP_ACCEPT_ENCODING", token);    
-    else if (token == "Content-Type:" && iss >> token)
-        ref->set("CONTENT_TYPE", token);
     else if (token == "Content-Length:" && iss >> token)
         ref->set("CONTENT_LENGTH", token);
     else if (token == "DNT:" && iss >> token)
