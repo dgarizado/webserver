@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 14:08:43 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 20:32:41 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class Master
 		int  startEventLoop();
 		int  clientAccept(int serverSocket);
 		void deleteConnection(int SocketAccepted);
-		void processRequest(Connection &connection, RequestParser &request);
+		//void processRequest(Connection &connection, RequestParser &request);
 		
 		void manageConnection(Connection &connection);
 		void manageConnections(struct epoll_event *events, int nev);

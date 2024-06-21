@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 14:39:22 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 20:33:14 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,26 +69,22 @@ class Connection : public VHost
         std::string genResponse(RequestParser &request);
         std::string genPathDefaultIndex(void);
         std::string genResponseGET(RequestParser &request);
-
-
         void setVarsEnviroment(RequestParser &request);
 
-    
+        void processRequest(RequestParser &request);
 
-        
+
     private:
         int                         _clientSocket;
         sockaddr_in                 _clientAddr;
         socklen_t                   _clientAddrSize;
         struct epoll_event          _ev;
         std::string                 _buffer; //maybe a char array is better
-
         t_location                  _location;
         std::string                 _queryString;
         std::string                 _fileName;
         std::string                 _path;
-		int                         _statusCode ;
-
+		int                         _statusCode;
 };
 
 #endif

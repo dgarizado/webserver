@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 14:54:40 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 20:33:05 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,22 +43,22 @@ void Connection::requestCheck(RequestParser &request)
  * @param clientSocket 
  * @return int 
  */
-void Master::processRequest(Connection &connection, RequestParser &request)
+void Connection::processRequest(RequestParser &request)
 {
     std::string response;
 
     std::cout << MAGENTA "PROCESSING REQUEST..." << RESET << std::endl;
     try{
-        connection.requestParse(request);
-        connection.requestCheck(request);
-        response = connection.genResponse(request);
+        this->requestParse(request);
+        this->requestCheck(request);
+        response = this->genResponse(request);
     }catch(const ServerException &e) {
         throw ServerException("processRequest: " + std::string(e.what()), e.getCode());
     }
-    send(connection.getClientSocket(), response.c_str(), response.size(), 0);
-    //close(connection.getClientSocket());// IMPORTANT TO DEFINE!! ???????????????????????????????????????????????????? CREO QUE NO: ES AL SALIR DE MANAGE CONNECTION PUES FINALIZO AUNQUE ES LO MISMO HAY QUE AGRUPAR las acciones de LIMPIAR LOS VECTOR FDS
+    send(this->getClientSocket(), response.c_str(), response.size(), 0);
+    //close(this->getClientSocket());// IMPORTANT TO DEFINE!! ???????????????????????????????????????????????????? CREO QUE NO: ES AL SALIR DE MANAGE CONNECTION PUES FINALIZO AUNQUE ES LO MISMO HAY QUE AGRUPAR las acciones de LIMPIAR LOS VECTOR FDS
 
-    showParamsConsoleHTTP(response, response.size(), connection.getClientSocket(), connection.getStatusCode(), false);
+    showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), false);
 }
 
 
@@ -100,7 +100,7 @@ void Master::manageConnection(Connection &connection)
         
         connection = VHostAssigned;         //post-herencia, clase BASE de Connection con la clase Base asignada
         
-        this->processRequest(connection, request);
+        connection.processRequest(request);
     }
     catch (const ServerException &e) {
         throw ServerException("manageConnection: " + std::string(e.what()), e.getCode());
