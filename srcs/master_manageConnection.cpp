@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 19:39:26 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 08:33:24 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,5 @@ void Master::manageConnection(Connection &connection)
         this->processRequest(connection, request);
         
     }catch (std::exception &e) {
-        connection.serveErrorPage();
-        throw std::runtime_error("manageConnection: " + std::string(e.what()));
-    }
+        throw std::runtime_error("manageConnection: " + std::string(e.what())); }
 }

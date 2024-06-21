@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 21:00:32 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 08:57:10 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,5 +154,5 @@ void showParamsConsoleHTTP(std::string responseStr, size_t sizeResponse, int cli
               << std::setw(colWidth) << code
               << std::setw(colWidth) << clientSocket
               << std::setw(colWidth) << mime
-              << std::setw(colWidth) << sizeResponse << "\n";
+              << std::setw(colWidth) << sizeResponse << "\n\n";
 }

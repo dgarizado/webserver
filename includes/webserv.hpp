@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/20 20:37:21 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 09:33:58 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,25 @@ typedef struct s_fileParse {
 	std::vector<t_server>		serverData;
 }t_fileParse;
 
+class ServerException : public std::exception {
+public:
+    ServerException(const std::string& msg, int c) : message(msg), code(c) {}
+	ServerException(const std::string& msg) : message(msg), code(0) {}
+
+    // Sobrescribir el método what() para proporcionar un mensaje de error
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+
+    // Método para obtener el código de error
+    int getCode() const noexcept {
+        return code;
+    }
+
+private:
+    std::string message;
+    int code;
+};
 
 //UTILS
 int 		ft_error(std::string msg);

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/20 11:52:27 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 09:14:09 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,8 @@ std::string genRowsAutoIndex(std::string path)
     DIR             *dp = opendir(path.c_str());
 
     if (dp == NULL) {
-        perror("genRowsAutoIndex: opendir: ");
-        return "No data available. ";
+        
+        throw std::runtime_error("genRowsAutoIndex: opendir: " + std::string(strerror(errno)));
     }
 
     while ((entry = readdir(dp)))
@@ -110,7 +110,7 @@ std::string genRowsAutoIndex(std::string path)
         try {
             html += genRowAutoIndex(entry, path + entry->d_name);
         } catch (const std::exception &e) {
-            std::cerr << "genRowsAutoIndex: genRowAutoIndex: stats of file " << e.what() << '\n';
+            std::cerr << "genRowsAutoIndex: genRowAutoIndex: stats of file " << std::string(e.what()) << '\n';
         }
     }
     closedir(dp);
