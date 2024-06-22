@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Epoll.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 21:20:42 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/22 13:54:50 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,7 @@ int Master::clientAccept(int socketToAccept)
     ev.data.fd = clientSocket;
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, clientSocket, &ev) == -1)
         return(ft_error("Error adding client socket to epoll"));
-	
-    _clientSockets.push_back(clientSocket);
+        
     client.setClientData(clientSocket, clientAddr, clientAddrSize, ev);
     _clientsMap[clientSocket] = client;
     return (0);
@@ -103,7 +102,7 @@ void Master::deleteConnection(int SocketAccepted)
 {
     epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, SocketAccepted, NULL);
     close(SocketAccepted);
-    _clientSockets.erase(std::remove(_clientSockets.begin(), _clientSockets.end(), SocketAccepted), _clientSockets.end());
+    _clientsMap.erase(SocketAccepted);
 }
 
 void Master::manageConnections(struct epoll_event *events, int nev)
@@ -116,7 +115,7 @@ void Master::manageConnections(struct epoll_event *events, int nev)
     {
         socketToAccept = events[i].data.fd;
         toAccept = std::find(_ListenSockets.begin(), _ListenSockets.end(), socketToAccept) != _ListenSockets.end();
-        toManage = std::find(_clientSockets.begin(), _clientSockets.end(), socketToAccept) != _clientSockets.end();
+        toManage = _clientsMap.find(socketToAccept) != _clientsMap.end();
         
         if (toAccept)
         {
@@ -139,8 +138,13 @@ void Master::manageConnections(struct epoll_event *events, int nev)
                 std::cerr << RED << "ServerException: startEventLoop: " + std::string(e.what()) << RESET << std::endl;
 
             }
-            std::cout << "Client socket: " << socketToAccept << " being disconected and deleted..." << std::endl;
-            this->deleteConnection(socketToAccept);
+            if (_clientsMap[socketToAccept].getKeepAlive() == false)
+            {
+                std::cout << "Client socket: " << socketToAccept << " being disconected and deleted..." << std::endl;
+                this->deleteConnection(socketToAccept); //TODO: Check if this is the right place to delete the connection
+            }
+            // std::cout << "Client socket: " << socketToAccept << " being disconected and deleted..." << std::endl;
+            // this->deleteConnection(socketToAccept); //TODO: Check if this is the right place to delete the connection
         }
     }
 }

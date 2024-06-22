@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParser.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 14:53:28 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/22 15:18:21 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/RequestParser.hpp"
+
+
+void LineParseConcat(RequestParser *ref, std::istringstream &iss, std::string &token)
+{
+    std::string     tokenconcated;
+    std::string     token2;
+
+    while (iss >> token2)
+        tokenconcated += token2;
+    ref->set(token, tokenconcated);
+}
 
 /**
  * @brief just parsing the line of Request starting by "User-Agent:" 
@@ -52,7 +63,7 @@ void contenTypeParse(RequestParser *ref, std::istringstream &iss)
  * @brief iter the tokens of the line. it extract the first token to know
  * wich variable to set in Request's map.
  */
-void lineParser(RequestParser *ref, std::string &requestLine)
+void RequestParser::lineParser(RequestParser *ref, std::string &requestLine)
 {
     std::istringstream  iss(requestLine);
     std::string         token;
@@ -63,9 +74,9 @@ void lineParser(RequestParser *ref, std::string &requestLine)
     if(token == "GET" || token == "POST" || token == "DELETE" || token == "PUT" || token == "HEAD" )
         receivedLineParse(ref, iss, token);
     else if (token == "User-Agent:")
-        userAgentLineParse(ref, iss);
+        LineParseConcat(ref, iss, token);
     else if (token == "Content-Type:")
-        contenTypeParse(ref, iss);
+        LineParseConcat(ref, iss, token);
     else if (token == "Host:" && iss >> token)
         ref->set("HTTP_HOST", token);
     else if (token == "Accept:" && iss >> token)
@@ -94,6 +105,19 @@ void lineParser(RequestParser *ref, std::string &requestLine)
         ref->set("HTTP_PRAGMA", token);
     else if (token == "Cache-Control:" && iss >> token)
         ref->set("HTTP_CACHE_CONTROL", token);
+    else if (token == "Content-Disposition:")
+        LineParseConcat(ref, iss, token);
+
+    //ADDED THIS FOR HAVING THE HEADER AND BODY SEPARATED
+    if (_headerWatchDog == 0)
+        _requestHeader += requestLine + "\n";
+    
+    if (token == "" && _headerWatchDog == 0)
+    {
+        _headerWatchDog = 1;
+    }
+    if (_headerWatchDog == 1)
+        _requestBody += requestLine + "\n";
 }
 
 /**
@@ -119,6 +143,10 @@ void RequestParser::loadConfigFromRequest(const std::string requestMessage)
             // throw std::runtime_error("loadConfigFromRequest: lineParser: " + std::string(e.what()));}
         }  
     }
+    std::cout <<  BYELLOW "Request Header: " RESET << _requestHeader << std::endl;
+    std::cout <<  BYELLOW "Request Body: " RESET << _requestBody << std::endl;
+    //print body lenght
+    std::cout <<  BCYAN "Request Body Lenght: " RESET << _requestBody.size() << std::endl;
 }
 
 /**

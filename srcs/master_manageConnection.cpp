@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master_manageConnection.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 20:33:05 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/22 13:54:26 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,29 +69,32 @@ void Connection::readFromSocket(void)
     int     clientSocket;
 
     clientSocket = this->getClientSocket();
-    bytesRead = read(clientSocket, buffer, 2048);
+    bytesRead = read(clientSocket, buffer, BUFFER);
     
     if (bytesRead < 0)
         throw std::runtime_error("readFromSocket: Error reading from client socket " + std::to_string(clientSocket));  //REMOVE CLIENT SOCKET FROM EPOLL SET AND CLOSE SOCKET!
 
     if (bytesRead == 0)
-        throw std::runtime_error("readFromSocket: 0 bytes readed from client socket " + std::to_string(clientSocket));
+        throw std::runtime_error("readFromSocket: 0 bytes read from client socket " + std::to_string(clientSocket));
     else //store the buffer in the connection object which represent the client
     {
         buffer[bytesRead] = '\0';
         this->setBuffer(buffer);
     } 
 }
-
+//CHEKPOINT
 void Master::manageConnection(Connection &connection)
 {
-    RequestParser   request;
+    RequestParser&   request = connection.getRequest();
     VHost           VHostAssigned;
     std::string     buffer;
 
     try{
         connection.readFromSocket();
         buffer = connection.getBuffer();
+        //Print buffer
+        std::cout << BYELLOW << "Buffer received from client: " << RESET << std::endl;
+        std::cout << BCYAN << buffer << RESET << std::endl;
         request.loadConfigFromRequest(buffer);
 
         request.showConfig();

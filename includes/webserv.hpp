@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 14:21:57 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 23:13:46 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 #define PINK "\033[95m"
 
 #define MAX_EVENTS 64 //IMPORATNTEEEEE PARA EL SUBJECTTTTTTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define BUFFER	   1000//IMPORTANTEEEEEEEEEEEEEEEEEEE LIMITEEEEEEE DE LECTURAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!
+#define BUFFER	   10000//IMPORTANTEEEEEEEEEEEEEEEEEEE LIMITEEEEEEE DE LECTURAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!
 
 enum server {
 	LISTEN,

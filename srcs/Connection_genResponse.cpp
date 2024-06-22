@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection_genResponse.cpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 14:43:13 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/22 14:04:20 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,18 @@ std::string Connection::genResponseGET(RequestParser &request)
     return responseHTTP_header + responseHTTP_body;
 }
 
+std::string Connection::genResponsePOST(RequestParser &request)
+{
+    return "POST";
+}
+
+void Connection::processPost()
+{
+    _keepAlive = true;
+    
+}
+
+
 std::string Connection::genResponse(RequestParser &request)
 {
     std::string method;
@@ -163,8 +175,15 @@ std::string Connection::genResponse(RequestParser &request)
     method = request.get()["REQUEST_METHOD"];
     if (method == "GET")
         return genResponseGET(request);
-   // else if (method == "POST")
-    //    response = genResponsePOST(request);
+    else if (method == "POST")
+    {
+        this->processPost();
+        // std::string body = genBodyFile("./html/index.html");
+        // std::string header = genHeaderHTTP(body, "./html/index.html");
+        //send http 100 continue
+        std::string continueRequest = "HTTP/1.1 100 Continue\r\n\r\n";
+        return continueRequest;
+    }
     else
         throw ServerException("genResponse: method not configured: " + method, 400);
 }

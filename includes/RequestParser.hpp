@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParser.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 17:28:48 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 10:19:19 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/22 14:40:54 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,21 @@
 # define BLUE "\033[34m"
 # define MAGENTA "\033[35m"
 # define RESET "\033[0m"
+//bright colors
+# define BRED "\033[91m"
+# define BGREEN "\033[92m"
+# define BYELLOW "\033[93m"
+# define BBLUE "\033[94m"
+# define BMAGENTA "\033[95m"
+# define BCYAN "\033[96m"
+
 
 class RequestParser {
 public:
 	//Constructors
-	RequestParser(void) {}
+	RequestParser(void) {
+		_headerWatchDog = 0;
+	}
 	RequestParser(RequestParser const &src);
 	RequestParser &operator=(RequestParser const &src);
 
@@ -45,8 +55,14 @@ public:
 	//getter
 	std::map<std::string, std::string> &get(void);
 
+	//Methods
+	void lineParser(RequestParser *ref, std::string &requestLine);
+
 private:
     std::map<std::string, std::string> _requestData;
+	std::string						   _requestHeader;
+	std::string						   _requestBody;
+	int								   _headerWatchDog;
 };
 
 #endif  // RequestParse_HPP 

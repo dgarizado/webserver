@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 11:23:45 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/22 13:52:14 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 
 Connection::Connection() : VHost(), _clientSocket(0), _clientAddrSize(sizeof(_clientAddr))
 {
+    _keepAlive = false;
+    std::cout << BBLUE << "Connection constructor called" << RESET << std::endl;
 }   
 
 Connection::~Connection()
 {
+    std::cout << BRED << "Connection destructor called" << RESET << std::endl;
 }
 
 Connection::Connection(Connection const &src): VHost(src)
@@ -27,6 +30,7 @@ Connection::Connection(Connection const &src): VHost(src)
 
 Connection &Connection::operator=(Connection const &src)
 {
+    std::cout << BBLUE << "Connection operator= called" << RESET << std::endl;
     if (this != &src)
     {
         _clientSocket = src._clientSocket;
@@ -41,7 +45,8 @@ Connection &Connection::operator=(Connection const &src)
         // _queryString = src._queryString;
         // _root = src._root;
         _statusCode = src._statusCode;
-        
+        _keepAlive = src._keepAlive;
+        _location = src._location;
         VHost::operator=(src);
     }
     return (*this);
@@ -54,6 +59,16 @@ Connection &Connection::operator=(VHost &src)
         this->setServer(src.getServerStruct());
     }
     return (*this);
+}
+
+RequestParser& Connection::getRequest(void)
+{
+    return _requestConnection;
+}
+
+bool Connection::getKeepAlive(void) const
+{
+    return _keepAlive;
 }
 
 int Connection::getClientSocket() const

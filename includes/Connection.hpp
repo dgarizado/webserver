@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 20:33:14 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/22 14:02:30 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ class Connection : public VHost
         std::string getFileName() const;
         std::string getValidDefaultIndex(void);
         t_location  getLocationVHost(Connection *ref, std::string uriRequested);
+        bool        getKeepAlive(void) const;
+        RequestParser& getRequest(void);
 
         //SETTERS
         void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
@@ -69,7 +71,12 @@ class Connection : public VHost
         std::string genResponse(RequestParser &request);
         std::string genPathDefaultIndex(void);
         std::string genResponseGET(RequestParser &request);
+        std::string genResponsePOST(RequestParser &request);
         void setVarsEnviroment(RequestParser &request);
+
+        //POST
+        void        processPost();
+
 
         void processRequest(RequestParser &request);
 
@@ -85,6 +92,15 @@ class Connection : public VHost
         std::string                 _fileName;
         std::string                 _path;
 		int                         _statusCode;
+        bool                        _keepAlive;
+        RequestParser               _requestConnection;
+
+        //POST
+        std::string                 _headerPost;
+        std::string                 _contentType;
+        std::string                 _body;
+        std::string                 _boundary;
+        std::string                 _boundaryEnd;
 };
 
 #endif

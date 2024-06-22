@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 08:57:10 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/21 22:27:34 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ std::string extractLocationUriStr(std::string uri)
 
 void showParamsConsole(std::string &uriRequested, std::string &pathSwapedWithQuery, std::string &path, std::string &fileName, std::string &queryString)
 {
-    const int colWidth = 40;
+    const int colWidth = 20;
     
     std::cout << MAGENTA << std::left     // print headers of columns
                          << std::setw(colWidth) << "Uri Requested"
@@ -118,7 +118,7 @@ void showParamsConsole(std::string &uriRequested, std::string &pathSwapedWithQue
 void showParamsConsoleHTTP(std::string responseStr, size_t sizeResponse, int clientSocket, int statusCode, bool error)
 {
      // Definir el ancho para cada columna
-    const int colWidth = 15;
+    const int colWidth = 10;
 
     std::istringstream stream(responseStr);
     std::string line;
