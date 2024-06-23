@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 08:57:10 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/23 18:35:04 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,20 @@ int ft_error(std::string msg)
 {
 	std::cerr << YELLOW << msg << RESET << std::endl;
 	return (-1);
+}
+
+std::ifstream openFile(std::string filePath)
+{
+    if (access(filePath.c_str(), F_OK) == -1)
+        throw ServerException("openFile: not found: " + filePath, NOT_FOUND);
+    if (access(filePath.c_str(), R_OK) == -1)
+        throw ServerException("openFile: Permision not allowed: " + filePath, FORBIDDEN);
+    
+    std::ifstream       file(filePath);
+    if (!file)
+        throw ServerException("openFile: internal error: " + filePath, INTERNAL_SERVER_ERROR);
+    
+    return file;
 }
 
 void printWaitConsole(void)
@@ -43,20 +57,51 @@ bool endsWith(const std::string& str, const std::string& ending) {
     return std::equal(ending.rbegin(), ending.rend(), str.rbegin());
 }
 
+char** convertToCharArray(const std::vector<std::string>& strList) {
+
+    char** charArray = new char*[strList.size() + 1];
+    
+    for (size_t i = 0; i < strList.size(); ++i) {
+        charArray[i] = new char[strList[i].size() + 1];
+        std::strcpy(charArray[i], strList[i].c_str());
+    }
+    
+    charArray[strList.size()] = nullptr;
+    
+    return charArray;
+}
+
+std::string extractPathInfo(std::string uri)
+{
+    std::string pathInfo;
+    size_t      slashPos;
+    size_t      dotPos;
+    size_t      lenght;
+
+    lenght = uri.length();
+    dotPos = uri.find('.', 0);
+    slashPos = uri.find('/', dotPos);
+    
+    if (dotPos != std::string::npos && slashPos != std::string::npos)
+        pathInfo = uri.substr(slashPos + 1 , lenght - slashPos);
+    else
+        pathInfo = "";
+    return pathInfo;
+}
+
+
 std::string extractFileNameStr(std::string uri)
 {
 	std::string fileName;
     size_t      slashPos;
-    size_t      questionMarkPos;
+    size_t      length;
     size_t      dotPos;
 
+    length = uri.length();
     slashPos = uri.rfind('/');
-    questionMarkPos = uri.find('?');
-    dotPos = uri.find('.', slashPos);
+    dotPos = uri.find('.');
 
-    if (dotPos != std::string::npos && questionMarkPos != std::string::npos)
-        fileName = uri.substr(slashPos + 1, questionMarkPos - slashPos - 1);
-    else if (dotPos != std::string::npos)
+    if (dotPos != std::string::npos)
         fileName = uri.substr(slashPos + 1);
     return fileName;
 }
@@ -73,6 +118,26 @@ std::string extractQueryStr(std::string uri)
     else
         queryString = "";
     return queryString;
+}
+
+std::string cleanPathInfo(std::string path, std::string query)
+{
+    if (query.empty() == false)
+    {
+        path.replace(path.find(query) - 1, query.length() + 1, "");// start -1 because Query dont have the '/', length + 1 to count the '/'
+    }
+    return path;
+}
+
+std::string extractExtension(std::string fileName)
+{
+    size_t dosPos;
+    
+    dosPos = fileName.rfind('.');
+    if (dosPos != std::string::npos)
+        return fileName.substr(dosPos);
+    else
+        return "";
 }
 
 std::string extractLocationUriStr(std::string uri)
@@ -95,24 +160,32 @@ std::string extractLocationUriStr(std::string uri)
 
 }
 
-void showParamsConsole(std::string &uriRequested, std::string &pathSwapedWithQuery, std::string &path, std::string &fileName, std::string &queryString)
+void showParamsConsole(std::string &uriRequested, std::string &path, std::string &fileName, std::string &pathInfo, std::string &queryString, std::string &format)
 {
     const int colWidth = 40;
     
-    std::cout << MAGENTA << std::left     // print headers of columns
-                         << std::setw(colWidth) << "Uri Requested"
-                         << std::setw(colWidth) << "Path Swaped With Query"
-                         << std::setw(colWidth) << "_Path"
-                         << std::setw(colWidth) << "_FileName"
-                         << std::setw(colWidth) << "_queryString" << "\n";
+    std::cout   << MAGENTA << std::left     // print headers of columns
+                << std::setw(colWidth) << "Uri Requested"
+                << std::setw(colWidth) << "_Path"
+                << std::setw(colWidth) << "_FileName" <<"\n";
 
-    std::cout << std::string(colWidth * 5, '-') << "\n";  // print separator
 
-    std::cout << std::setw(colWidth) << uriRequested        // print values
-              << std::setw(colWidth) << pathSwapedWithQuery
-              << std::setw(colWidth) << path
-              << std::setw(colWidth) << fileName
-              << std::setw(colWidth) << queryString << RESET << std::endl;
+    std::cout   << std::setw(colWidth) << uriRequested        // print values
+                << std::setw(colWidth) << path
+                << std::setw(colWidth) << fileName << std::endl;
+
+    std::cout   << std::string(colWidth * 2, '-') << "\n";  // print separator
+
+    std::cout   << std::left     // print headers of columns
+                << std::setw(colWidth) << "_format"
+                << std::setw(colWidth) << "_PathInfo"
+                << std::setw(colWidth) << "_queryString" << "\n";
+
+    std::cout   << std::left  
+                << std::setw(colWidth) << format
+                << std::setw(colWidth) << pathInfo
+                << std::setw(colWidth) << queryString << RESET << std::endl;
+
 }
 
 void showParamsConsoleHTTP(std::string responseStr, size_t sizeResponse, int clientSocket, int statusCode, bool error)

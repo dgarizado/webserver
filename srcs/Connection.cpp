@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 11:23:45 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/23 14:11:04 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,6 @@ bool Connection::methodCheck(std::string method)
     return false;
 }
 
-
 //??????? CUIDADOOOO
 std::string Connection::getMimeType(const std::string &path)//????????? default text y borrado octet CUIDADOOOOOO
 {
@@ -158,33 +157,21 @@ std::string Connection::getMimeType(const std::string &path)//????????? default 
     return mime;
 }
 
-void Connection::serveErrorPage(void)
+void Connection::serveErrorPage(std::string filePath)
 {
-    std::string         path = "./html/errorPages/";
     std::stringstream   buffer;
     std::string         response;
     std::string         response_header;
     std::string         response_body;
+    std::ifstream       file(filePath);
     
-    if (this->getStatusCode() == 400)
-        path += "400.html";
-    else if (this->getStatusCode() == 403)
-        path += "403.html";
-	else if (this->getStatusCode() == 404)
-        path += "404.html";
-	else if (this->getStatusCode() == 405)
-        path += "405.html";
-    else if (this->getStatusCode() == 500)
-        path += "500.html";
-
-    std::ifstream       file(path);
     buffer << file.rdbuf();
     
     response_body = buffer.str();
-    response_header = genHeaderHTTP(response_body, path);
+    response_header = genHeaderHTTP(response_body, filePath);
     response = response_header + response_body;
     
     send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
-//    std::cout << GREEN << response << RESET << std::endl;
+
     showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), true);
 }

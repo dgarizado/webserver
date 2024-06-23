@@ -17,11 +17,22 @@ void ft_braces(int &braces, std::string &token)
 
 void setDefaultValuesLocation(t_location &ref)
 {
-    ref.autoIndex               = false;//default value of autoIndex
-    ref.allowedMethods[GET]     = true;
-    ref.allowedMethods[POST]    = true;
-    ref.allowedMethods[PUT]     = true;
-    ref.allowedMethods[DELETE]  = false;
+    ref.autoIndex               = ALLOW_AUTOINDEX;
+    ref.allowedMethods[GET]     = ALLOW_GET;
+    ref.allowedMethods[POST]    = ALLOW_POS;
+    ref.allowedMethods[PUT]     = ALLOW_PUT;
+    ref.allowedMethods[DELETE]  = ALLOW_DELETE;
+}
+
+void setDefaultErrPages(t_http &ref)
+{
+    std::string path =  ERROR_PAGES;
+
+    ref.errPageMap[BAD_REQUEST] = path + BAD_REQUEST_FILE;
+    ref.errPageMap[FORBIDDEN] = path + FORBIDDEN_FILE;
+    ref.errPageMap[NOT_FOUND] = path + NOT_FOUND_FILE;
+    ref.errPageMap[METHOD_NOT_ALLOWED] = path + METHOD_NOT_ALLOWED_FILE;
+    ref.errPageMap[INTERNAL_SERVER_ERROR] = path + INTERNAL_SERVER_ERROR_FILE;
 }
 
 void setNotAllowedMethod(t_location &ref, std::istringstream &iss)
@@ -55,6 +66,19 @@ void setAllowedMethod(t_location &ref, std::istringstream &iss)
 		else throw std::invalid_argument("not valid method " + token);
 	}
 }
+void setCgiExtensions(t_location &ref, int &nServer, int &nLocation, std::istringstream &iss)
+{
+    std::string key;
+    std::string value;
+
+    iss >> key;
+    key.erase(std::remove(key.begin(), key.end(), ';'), key.end());
+
+    iss >> value;
+    value.erase(std::remove(value.begin(), value.end(), ';'), value.end());
+	
+    ref.cgiMap[key] = value;
+}
 
 void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
 {
@@ -83,6 +107,8 @@ void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLo
 		setNotAllowedMethod(ref->getStruct().serverData[nServer].locations[nLocation], iss);
     else if (token == "allow")
         setAllowedMethod(ref->getStruct().serverData[nServer].locations[nLocation], iss);
+    else if (token == "cgi")
+        setCgiExtensions(ref->getStruct().serverData[nServer].locations[nLocation], nServer, nLocation, iss);
 }
 
 void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
@@ -139,17 +165,16 @@ void varServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, int
         insideLocation(ref, file, iss, nServer, nLocation, token);
 }
 
-int insideServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, std::string &token)
+void insideServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, std::string &token)
 {
     static int      nServer = -1;
     int             nLocation = -1;
     int 	        serverBraces = 0;
-	int 		    encounter = -1;
     bool            vars[TOTAL_SERVER] = {false, false, false};//to markdown the vars to find
     std::string     line;
     t_server        empty;
 
-    if (token == "server" && (encounter = 1))
+    if (token == "server")
     {
         //push a empty t_server in server vector
         nServer++;
@@ -170,7 +195,6 @@ int insideServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, s
         if (vars[LISTEN] == false || vars[SERVER_NAME] == false || vars[LOCATION] == false)
             throw std::runtime_error("Server block wrong");
     }
-    return encounter;
 }
 
 /**
@@ -179,21 +203,37 @@ int insideServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, s
  * throw a exception.
  * @return 1 if any http block is encounter. -1 if not.
  */
-int insideHttp(FileParse *ref, std::ifstream &file, std::istringstream &iss, std::string &token)
+bool insideHttp(FileParse *ref, std::ifstream &file, std::istringstream &iss, std::string &token)
 {
 	int 	        httpBraces = 0;
-	int 		    encounter = -1;
+	int 		    http = false;
     bool            server = false;
     std::string     line;
 
-	if (token == "http" && (encounter = 1))
+	if (token == "http" && (http = true))
     {
+        setDefaultErrPages(ref->getStruct());
         do{
             while(iss >> token)
 		    {
 			    ft_braces(httpBraces, token);
-                if (insideServer(ref, file, iss, token) == 1)//if server jump into it
-                    server = true;
+                if (token == "server" && (server = true))
+                    insideServer(ref, file, iss, token);
+                
+                if (token == "error_page")
+                {
+                    iss >> token;
+                    int err = std::stoi(token);
+                    while (iss >> token)
+                    {
+                        token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+
+                        ref->getStruct().errPageMap[err] = token;
+                    }
+                }
+                  //  setErrPage(ref)
+               //if (insideServer(ref, file, iss, token) == true)//if server jump into it
+                 //   server = true;
             }   
             if (httpBraces > 0 && std::getline(file, line))
             {
@@ -206,7 +246,7 @@ int insideHttp(FileParse *ref, std::ifstream &file, std::istringstream &iss, std
             throw std::runtime_error("Http block wrong");
     }
 
-	return encounter;
+	return http;
 }
 
 
@@ -220,6 +260,7 @@ int lineParser(FileParse *ref, std::ifstream &file, std::string &line)
    
     //Process the first toke of the line
     iss >> token;
+
     return (insideHttp(ref, file, iss, token));//jump into if "http"
 }
 
@@ -253,9 +294,9 @@ int checksBraces(std::string filename)
 
 /**
  * @brief Getter the reference of the structure atribute of FileParse 
- * @return reference to t_fileParse of instance 
+ * @return reference to t_http of instance 
  */
-t_fileParse & FileParse::getStruct()
+t_http & FileParse::getStruct()
 {
     return this->configData;
 }
@@ -277,7 +318,7 @@ void FileParse::loadConfigFromFile(const std::string filename)
             throw std::runtime_error(std::string(strerror(errno)) + " " + filename);
         while (std::getline(file, line)) 
         {  
-            if (lineParser(this, file, line) == 1)//Parse line per line
+            if (lineParser(this, file, line) == true)//Parse line per line
                 http = true; 
         }
 
@@ -296,6 +337,8 @@ void FileParse::showConfig(void)
 
     std::cout << "/ports\t\t\t\t= " ;
     for (std::set<int>::iterator it = this->configData.ports.begin(); it != this->configData.ports.end(); ++it) {std::cout << *it << " ";} std::cout << std::endl;
+    std::cout << "/errorPages\t\t\t";
+    for (std::map<int, std::string>::iterator it = this->configData.errPageMap.begin(); it != this->configData.errPageMap.end(); ++it) {std::cout << "= " << it->first << " " << it->second << "\n\t\t\t\t";} std::cout << std::endl;
     std::cout << "/serverData/ " << std::endl;
     for (std::vector<t_server>::iterator it = this->configData.serverData.begin(); it != this->configData.serverData.end(); ++it) {
         std::cout << "           /server_name\t\t= " ;
@@ -309,6 +352,8 @@ void FileParse::showConfig(void)
             for (std::vector<std::string>::iterator itIndex = itLoc->index.begin(); itIndex != itLoc->index.end(); ++itIndex) {std::cout << *itIndex << " "; } std::cout << std::endl;
             std::cout << "\t\t    /autoindex\t= " << itLoc->autoIndex << std::endl;
             std::cout << "\t\t    /methods\t= " << "GET:" << itLoc->allowedMethods[GET] << " POST:" << itLoc->allowedMethods[POST] << " PUT:" << itLoc->allowedMethods[PUT] << " DELETE:" << itLoc->allowedMethods[DELETE] << std::endl;
+            std::cout << "\t\t    /cgi\t= ";
+            for (std::map<std::string, std::string>::iterator itCgi = itLoc->cgiMap.begin(); itCgi != itLoc->cgiMap.end(); ++itCgi) {std::cout << itCgi->first << " : " << itCgi->second << "  "; } std::cout << std::endl;
         }
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     }

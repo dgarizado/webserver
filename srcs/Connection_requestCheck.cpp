@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 10:19:40 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 10:55:29 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/23 16:47:57 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_location Connection::getLocationVHost(Connection *ref, std::string uriRequeste
     {
         if (it->location == locationName)
         {
-            this->_statusCode = 200;
+            this->_statusCode = OK;
             return *it;
         }
     }
@@ -62,9 +62,11 @@ std::string locationSwapedRoot(Connection *ref, std::string uriRequested)
 std::string cleanPathQuery(std::string path, std::string query)
 {
     if (query.empty() == false)
-    {
         path.replace(path.find(query) - 1, query.length() + 1, "");// start -1 because Query dont have the '?', length + 1 to count the '?'
-    }
+    
+    else if (endsWith(path, "?"))
+        path.pop_back();
+        
     return path;
 }
 
@@ -78,16 +80,33 @@ void Connection::requestParse(RequestParser &request)
     this->_location = this->getLocationVHost(this, uriRequested);
 
     if (this->_location.location == "NULL")
-    {
-        throw ServerException("requestParse: location requested wrong: " + uriRequested, 404);
-        //this->_statusCode = 404;
-        //throw std::runtime_error("requestParse: location requested wrong: " + uriRequested);
+        throw ServerException("requestParse: location requested wrong: " + uriRequested, NOT_FOUND);
+        
+    try {         
+        this->_queryString  = extractQueryStr(uriRequested);
+        
+        this->_path         = cleanPathQuery(uriRequested, this->_queryString);
+        
+        this->_pathInfo     = extractPathInfo(this->_path);
+        
+        this->_path         = cleanPathInfo(this->_path, this->_pathInfo);
+        
+        this->_fileName     = extractFileNameStr(this->_path);
+        
+        this->_format       = extractExtension(this->_fileName);
+        
+        this->_path         = locationSwapedRoot(this,this->_path);
+        
+        showParamsConsole(uriRequested, this->_path, this->_fileName, this->_pathInfo, this->_queryString, this->_format);   
+    } catch(const ServerException &e) {
+        throw ServerException("requestParse: " + std::string(e.what()), INTERNAL_SERVER_ERROR);
     }
-
-    this->_fileName = extractFileNameStr(uriRequested);
-    this->_queryString = extractQueryStr(uriRequested);
-    pathSwapedWithQuery = locationSwapedRoot(this, uriRequested);
-    this->_path = cleanPathQuery(pathSwapedWithQuery, this->_queryString);
-   
-    showParamsConsole(uriRequested, pathSwapedWithQuery, this->_path, this->_fileName, this->_queryString);
 }
+    //std::cout << "querystring " << this->_queryString << std::endl;
+    //std::cout << "path " <<this->_path << std::endl;
+    //std::cout << "pathinfo " <<this->_pathInfo<< std::endl;
+    //std::cout << "filename " <<this->_fileName<< std::endl;
+    //std::cout << "path " <<this->_path<< std::endl;
+    //std::cout << "format " <<this->_format<< std::endl;
+    //std::cout << "path " <<this->_path<< std::endl;
+    //    getchar();

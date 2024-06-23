@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+
 
 import os
 
 # Leer variables de entorno
-query_string = os.getenv('QUERY_STRING', '')
-request_method = os.getenv('REQUEST_METHOD', '')
+query_string = os.getenv('QUERY_STRING')
+request_method = os.getenv('REQUEST_METHOD')
 
 # Imprimir encabezado HTTP
 

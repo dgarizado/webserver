@@ -8,6 +8,7 @@
 # include <sstream>
 # include <iostream>
 # include <unistd.h>
+# include <map>
 
 # define RED "\033[31m"
 # define GREEN "\033[32m"
@@ -27,10 +28,10 @@ public:
 	void showConfig(void);
 
 	//getter
-	t_fileParse &getStruct(void);
+	t_http &getStruct(void);
 
 private:
-	t_fileParse configData;
+	t_http configData;
 };
 
 #endif  // FileParse_HPP 

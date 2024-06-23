@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/22 00:24:46 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/23 16:48:06 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void Connection::requestCheck(RequestParser &request)
     
     if (this->_path.empty())
 	{
-        throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, 500);
+        throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, INTERNAL_SERVER_ERROR);
 		//this->_statusCode = 404;
         //throw std::runtime_error("requestParse: location requested have not root defined: " + uriRequested);
 	}
@@ -30,7 +30,7 @@ void Connection::requestCheck(RequestParser &request)
     
     if (this->methodCheck(method) == false)
 	{
-        throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, 405);
+        throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
 		//this->_statusCode = 405;
         //throw std::runtime_error("requestParse: location requested method not allowed: " + method);
         
@@ -69,7 +69,7 @@ void Connection::readFromSocket(void)
     int     clientSocket;
 
     clientSocket = this->getClientSocket();
-    bytesRead = read(clientSocket, buffer, 2048);
+    bytesRead = read(clientSocket, buffer, BUFFER);
     
     if (bytesRead < 0)
         throw std::runtime_error("readFromSocket: Error reading from client socket " + std::to_string(clientSocket));  //REMOVE CLIENT SOCKET FROM EPOLL SET AND CLOSE SOCKET!

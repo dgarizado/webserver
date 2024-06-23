@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/21 12:21:39 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/23 16:48:12 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ std::string genRowAutoIndex(struct dirent *entry, std::string filePath)
     struct stat fileStat;
 
     if (stat(filePath.c_str(), &fileStat) < 0)
-        throw ServerException("genRowAutoIndex: " + std::string(strerror(errno)), 500);
+        throw ServerException("genRowAutoIndex: " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR);
       //  throw std::runtime_error(filePath);
 
     html += "<tr>";
@@ -102,7 +102,7 @@ std::string genRowsAutoIndex(std::string path)
     DIR             *dp = opendir(path.c_str());
 
     if (dp == NULL) {
-        throw ServerException("genRowsAutoIndex: opendir: " + std::string(strerror(errno)), 404);
+        throw ServerException("genRowsAutoIndex: opendir: " + std::string(strerror(errno)), NOT_FOUND);
        // throw std::runtime_error("genRowsAutoIndex: opendir: " + std::string(strerror(errno)));
     }
 
