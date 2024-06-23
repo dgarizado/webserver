@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/22 13:54:26 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 13:18:46 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,11 @@ void Connection::readFromSocket(void)
         throw std::runtime_error("readFromSocket: 0 bytes read from client socket " + std::to_string(clientSocket));
     else //store the buffer in the connection object which represent the client
     {
+        _buffer2.resize(bytesRead);
+        memcpy(_buffer2.data(), buffer, bytesRead); //for binary data
         buffer[bytesRead] = '\0';
         this->setBuffer(buffer);
+        std::cout << BRED << "TOTAL BYTES READ AT READ FROM SOCKET!: " << RESET << bytesRead << std::endl;
     } 
 }
 //CHEKPOINT
@@ -93,8 +96,9 @@ void Master::manageConnection(Connection &connection)
         connection.readFromSocket();
         buffer = connection.getBuffer();
         //Print buffer
-        std::cout << BYELLOW << "Buffer received from client: " << RESET << std::endl;
-        std::cout << BCYAN << buffer << RESET << std::endl;
+        std::cout << BYELLOW << "Buffer received from client: '" << RESET << std::endl;
+        std::cout << BCYAN << buffer <<"'"<< RESET << std::endl;
+        std::cout << BRED << "Buffer size: " << RESET << buffer.size() << std::endl;
         request.loadConfigFromRequest(buffer);
 
         request.showConfig();

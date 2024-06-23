@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/22 14:02:30 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 16:59:09 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,11 @@ class Connection : public VHost
         std::string genPathDefaultIndex(void);
         std::string genResponseGET(RequestParser &request);
         std::string genResponsePOST(RequestParser &request);
-        void setVarsEnviroment(RequestParser &request);
+        void        setVarsEnviroment(RequestParser &request);
 
         //POST
         void        processPost();
+        std::string parseBody(std::string &body);
 
 
         void processRequest(RequestParser &request);
@@ -97,10 +98,11 @@ class Connection : public VHost
 
         //POST
         std::string                 _headerPost;
-        std::string                 _contentType;
         std::string                 _body;
         std::string                 _boundary;
-        std::string                 _boundaryEnd;
+        std::string                 _postFileName;
+        std::vector<unsigned char>           _buffer2;
+        std::vector<unsigned char>           _buffer3;
 };
 
 #endif

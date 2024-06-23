@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 17:28:48 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/22 14:40:54 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/22 21:00:23 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ public:
 	//Constructors
 	RequestParser(void) {
 		_headerWatchDog = 0;
+		_bodyWatchDog = 0;
 	}
 	RequestParser(RequestParser const &src);
 	RequestParser &operator=(RequestParser const &src);
@@ -54,15 +55,26 @@ public:
 	
 	//getter
 	std::map<std::string, std::string> &get(void);
-
+	std::string							getRequestHeader(void) const;
+	std::string							getRequestBody(void) const;
+	int 								getHeaderWatchDog(void) const;
+	int 								getBodyWatchDog(void) const;
+	std::string							getPostFileName(void) const;
+	std::string							getBoundary(void) const;
+	
 	//Methods
 	void lineParser(RequestParser *ref, std::string &requestLine);
+	void contenTypeParse(RequestParser *ref, std::istringstream &iss);
+	void contentDispositionParse(RequestParser *ref, std::istringstream &iss);
 
 private:
     std::map<std::string, std::string> _requestData;
 	std::string						   _requestHeader;
 	std::string						   _requestBody;
 	int								   _headerWatchDog;
+	int 							   _bodyWatchDog;
+	std::string						   _boundary;
+	std::string						   _postFileName;
 };
 
 #endif  // RequestParse_HPP 

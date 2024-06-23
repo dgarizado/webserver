@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/22 15:18:21 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 14:04:32 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,26 @@ void receivedLineParse(RequestParser *ref, std::istringstream &iss, std::string 
     ref->set("SERVER_PROTOCOL", token);
 }
 
-void contenTypeParse(RequestParser *ref, std::istringstream &iss)
+std::string extractString1(const std::string& content, std::string str) {
+    std::istringstream tokenStream(content);
+    std::string token;
+    
+    while (std::getline(tokenStream, token, ';')) {
+        std::string::size_type pos = token.find(str);
+        if (pos != std::string::npos) {
+            // Extract the substring after the found position
+            std::string extracted = token.substr(pos + str.length());
+            // Check if the last character is a quote and remove it if so
+            if (!extracted.empty() && extracted.back() == '"') {
+                extracted.pop_back();
+            }
+            return extracted;
+        }
+    }
+    return ""; // Return empty string if not found
+}
+
+void RequestParser::contenTypeParse(RequestParser *ref, std::istringstream &iss)
 {
     std::string     token;
     std::string     tokenconcated;
@@ -56,19 +75,46 @@ void contenTypeParse(RequestParser *ref, std::istringstream &iss)
     while (iss >> token)
         tokenconcated += token;
     ref->set("CONTENT_TYPE", tokenconcated);
+
+    if (tokenconcated.find("boundary=") != std::string::npos)
+    {
+        _boundary = extractString1(tokenconcated, "boundary=");
+    }
+   
 }
 
 
+void RequestParser::contentDispositionParse(RequestParser *ref, std::istringstream &iss)
+{
+    std::string     token;
+    std::string     tokenconcated;
+
+    while (iss >> token)
+        tokenconcated += token;
+    ref->set("CONTENT_DISPOSITION", tokenconcated);
+
+    if (tokenconcated.find("filename=") != std::string::npos)
+    {
+        _postFileName = extractString1(tokenconcated, "filename=\"");
+    }
+}
+
+bool isTheEnd(std::string &line)
+{
+    if (line == "\r\n")
+        return true;
+    return false;
+}
 /**
  * @brief iter the tokens of the line. it extract the first token to know
  * wich variable to set in Request's map.
  */
 void RequestParser::lineParser(RequestParser *ref, std::string &requestLine)
 {
+    requestLine += "\n";
     std::istringstream  iss(requestLine);
     std::string         token;
     
-    //Process the first toke of the line
     iss >> token;
     
     if(token == "GET" || token == "POST" || token == "DELETE" || token == "PUT" || token == "HEAD" )
@@ -76,7 +122,9 @@ void RequestParser::lineParser(RequestParser *ref, std::string &requestLine)
     else if (token == "User-Agent:")
         LineParseConcat(ref, iss, token);
     else if (token == "Content-Type:")
-        LineParseConcat(ref, iss, token);
+    {
+        contenTypeParse(ref, iss);
+    }
     else if (token == "Host:" && iss >> token)
         ref->set("HTTP_HOST", token);
     else if (token == "Accept:" && iss >> token)
@@ -106,18 +154,21 @@ void RequestParser::lineParser(RequestParser *ref, std::string &requestLine)
     else if (token == "Cache-Control:" && iss >> token)
         ref->set("HTTP_CACHE_CONTROL", token);
     else if (token == "Content-Disposition:")
-        LineParseConcat(ref, iss, token);
+        contentDispositionParse(ref, iss);
 
     //ADDED THIS FOR HAVING THE HEADER AND BODY SEPARATED
     if (_headerWatchDog == 0)
-        _requestHeader += requestLine + "\n";
+        _requestHeader += requestLine;
     
-    if (token == "" && _headerWatchDog == 0)
+    if (isTheEnd(requestLine) && _headerWatchDog == 0)
     {
         _headerWatchDog = 1;
+        return;
     }
     if (_headerWatchDog == 1)
-        _requestBody += requestLine + "\n";
+    {
+        _requestBody += requestLine;
+    }
 }
 
 /**
@@ -144,9 +195,11 @@ void RequestParser::loadConfigFromRequest(const std::string requestMessage)
         }  
     }
     std::cout <<  BYELLOW "Request Header: " RESET << _requestHeader << std::endl;
-    std::cout <<  BYELLOW "Request Body: " RESET << _requestBody << std::endl;
-    //print body lenght
+    std::cout <<  BYELLOW "Request Body: '" RESET << _requestBody <<"'"<< std::endl;
+    
     std::cout <<  BCYAN "Request Body Lenght: " RESET << _requestBody.size() << std::endl;
+    if (_requestBody.size() > 2)
+        _bodyWatchDog = 1;
 }
 
 /**
@@ -191,4 +244,34 @@ RequestParser &RequestParser::operator=(RequestParser const &src)
         this->_requestData = src._requestData;
     }
     return *this;
+}
+
+std::string RequestParser::getRequestHeader(void) const
+{
+    return _requestHeader;
+}
+
+std::string RequestParser::getRequestBody(void) const
+{
+    return _requestBody;
+}
+
+int RequestParser::getHeaderWatchDog(void) const
+{
+    return _headerWatchDog;
+}
+
+int RequestParser::getBodyWatchDog(void) const
+{
+    return _bodyWatchDog;
+}
+
+std::string RequestParser::getPostFileName(void) const
+{
+    return _postFileName;
+}
+
+std::string RequestParser::getBoundary(void) const
+{
+    return _boundary;
 }

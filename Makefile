@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
+#    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/06/20 19:19:01 by vcereced         ###   ########.fr        #
+#    Updated: 2024/06/23 11:24:12 by dgarizad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,3 +64,5 @@ clean:
 fclean: clean
 	@$(RM) $(NAME)
 	@echo "$(RED)$(NAME) executable has been removed!$(CLR_RMV)"
+
+
