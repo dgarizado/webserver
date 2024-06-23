@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master_manageConnection.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 13:18:46 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:35:57 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void Connection::requestCheck(RequestParser &request)
     
     if (this->_path.empty())
 	{
-        throw ServerException("requestParse: location requested have not root defined: " + uriRequested, 500);
+        throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, INTERNAL_SERVER_ERROR);
 		//this->_statusCode = 404;
         //throw std::runtime_error("requestParse: location requested have not root defined: " + uriRequested);
 	}
@@ -30,7 +30,7 @@ void Connection::requestCheck(RequestParser &request)
     
     if (this->methodCheck(method) == false)
 	{
-        throw ServerException("requestParse: location requested method not allowed: " + uriRequested, 405);
+        throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
 		//this->_statusCode = 405;
         //throw std::runtime_error("requestParse: location requested method not allowed: " + method);
         
@@ -106,7 +106,7 @@ void Master::manageConnection(Connection &connection)
         VHostAssigned = this->assignVHost(request.get()["HTTP_HOST"]);
         
         connection = VHostAssigned;         //post-herencia, clase BASE de Connection con la clase Base asignada
-        
+
         connection.processRequest(request);
     }
     catch (const ServerException &e) {

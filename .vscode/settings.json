@@ -76,6 +76,7 @@
 		"random": "cpp",
 		"numbers": "cpp",
 		"ranges": "cpp",
-		"span": "cpp"
+		"span": "cpp",
+		"codecvt": "cpp"
 	}
 }

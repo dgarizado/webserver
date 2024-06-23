@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection_genResponse.cpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 19:10:20 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:32:35 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath
     std::stringstream   buffer;
     std::string         mime_type;
     std::string         response_header;
+    std::string         response_header_params;
     long                size;
     long                statusCode;
 
@@ -24,20 +25,24 @@ std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath
     statusCode = this->getStatusCode();
     size = bodyHTTP.size();
 
-    if (statusCode == 200)
-        response_header  = "HTTP/1.1 200 OK\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    else if (statusCode == 400)
-        response_header  = "HTTP/1.1 400 Bad Request\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    else if (statusCode == 403)
-        response_header  = "HTTP/1.1 403 Forbidden\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    else if (statusCode == 404)
-        response_header  = "HTTP/1.1 404 Not Found<\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    else if (statusCode == 405)
-        response_header  = "HTTP/1.1 405 Method Not Allowed\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
-    else if (statusCode == 500)
-        response_header  = "HTTP/1.1 500 Internal Server Error\r\nContent-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+    if (statusCode == OK)
+        response_header  = "HTTP/1.1 200 OK\r\n";
+    else if (statusCode == NO_CONTENT)
+        response_header  = "HTTP/1.1 204 No Content\r\n";
+    else if (statusCode == BAD_REQUEST)
+        response_header  = "HTTP/1.1 400 Bad Request\r\n";
+    else if (statusCode == FORBIDDEN)
+        response_header  = "HTTP/1.1 403 Forbidden\r\n";
+    else if (statusCode == NOT_FOUND)
+        response_header  = "HTTP/1.1 404 Not Found\r\n";
+    else if (statusCode == METHOD_NOT_ALLOWED)
+        response_header  = "HTTP/1.1 405 Method Not Allowed\r\n";
+    else if (statusCode == INTERNAL_SERVER_ERROR)
+        response_header  = "HTTP/1.1 500 Internal Server Error\r\n";
 
-    return response_header;
+    response_header_params = "Content-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+
+    return response_header + response_header_params;
 }
 
 std::string Connection::getValidDefaultIndex(void)
@@ -50,13 +55,11 @@ std::string Connection::getValidDefaultIndex(void)
         path = this->getPath() + *it;
         if (access(path.c_str(), F_OK)  != -1)
         {
-            this->_statusCode = 200;
+            this->_statusCode = OK;
             return *it;
         }
     }
-    //this->_statusCode = 404;
-    throw ServerException("getValidDefaultIndex: not any index found ", 404);
-   // throw std::runtime_error("getValidDefaultIndex: not any index found");
+    throw ServerException("getValidDefaultIndex: not any index found ", NOT_FOUND);
     return "";
 }
 
@@ -71,21 +74,6 @@ std::string Connection::genPathDefaultIndex(void)
 
     return defaultPath;
 }
-
-std::ifstream openFile(std::string filePath)
-{
-    if (access(filePath.c_str(), F_OK) == -1)
-        throw ServerException("openFile: not found: " + filePath, 404);
-    if (access(filePath.c_str(), R_OK) == -1)
-        throw ServerException("openFile: Permision not allowed: " + filePath, 403);
-
-    std::ifstream       file(filePath);
-    if (!file)
-        throw ServerException("openFile: internal error: " + filePath, 500);
-
-    return file;
-}
-
 
 std::string Connection::genBodyFile(std::string filePath)
 {
@@ -106,17 +94,31 @@ std::string Connection::genBodyFile(std::string filePath)
 
     buffer << file.rdbuf();
     responseHTTP_body = buffer.str();
-
-    this->_statusCode = 200;
-
+    
+    this->_statusCode = OK;
+    
     return responseHTTP_body;
+}
+
+bool Connection::isCgi(void)
+{
+    std::map<std::string, std::string>::iterator    it; 
+    std::string                                     key;
+
+    key = this->_format;
+    it = this->_location.cgiMap.find(key);
+
+    if (it != this->_location.cgiMap.end())
+        return true;
+    else
+        return false;
 }
 
 std::string Connection::genBodyHTTP(std::string filePath, RequestParser &request)
 {
     std::string         responseHTTP_body;
-
-    if (endsWith(filePath, "py"))
+    
+    if (this->isCgi())
         responseHTTP_body = genBodyCgi(filePath, request);
     else
         responseHTTP_body = genBodyFile(filePath);
@@ -148,8 +150,8 @@ std::string Connection::genResponseGET(RequestParser &request)
        responseHTTP_body = genBodyAutoIndex(this->_path);
     }
     else
-        throw ServerException("genResponse: not default index and autoindex defined ", 404);
-
+        throw ServerException("genResponse: not default index and autoindex defined ", NOT_FOUND);
+        
     responseHTTP_header = genHeaderHTTP(responseHTTP_body, this->_path);
 
     return responseHTTP_header + responseHTTP_body;
@@ -295,6 +297,8 @@ std::string Connection::genResponse(RequestParser &request)
         std::string continueRequest = "HTTP/1.1 100 Continue\r\n\r\n";
         return continueRequest;
     }
+     else if (method == "DELETE")
+       return genResponseDELETE(request);
     else
-        throw ServerException("genResponse: method not configured: " + method, 500);
+        throw ServerException("genResponse: method not configured: " + method, BAD_REQUEST);
 }

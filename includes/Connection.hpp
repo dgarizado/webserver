@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 18:38:03 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:24:09 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <filesystem>
 
 class VHost;
 
@@ -51,6 +52,7 @@ class Connection : public VHost
         void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
         void        setBuffer(std::string buffer);
         void        setStatusCode(int statusCode);
+        void        setVarsEnviroment(RequestParser &request);
 
 
         //DETERMINATOR
@@ -62,7 +64,7 @@ class Connection : public VHost
         //SERVE PAGE
    
         std::string getMimeType(const std::string &path);
-        void        serveErrorPage(void);  
+        void        serveErrorPage(std::string filePath);  
         std::string genBodyCgi(std::string filePath, RequestParser &request);
         std::string genBodyFile(std::string filePath);
         std::string genBodyHTTP(std::string filePath, RequestParser &request);
@@ -72,14 +74,16 @@ class Connection : public VHost
         std::string genPathDefaultIndex(void);
         std::string genResponseGET(RequestParser &request);
         std::string genResponsePOST(RequestParser &request);
-        void        setVarsEnviroment(RequestParser &request);
+        std::string genResponseDELETE(RequestParser &request);
+
+        void               processRequest(RequestParser &request);
 
         //POST
         void        processPost();
         void        createFilePost(std::string fileName, std::vector<unsigned char>& binary_data);
 
 
-        void processRequest(RequestParser &request);
+        bool        isCgi(void);
 
 
     private:
@@ -92,6 +96,8 @@ class Connection : public VHost
         std::string                 _queryString;
         std::string                 _fileName;
         std::string                 _path;
+        std::string                 _pathInfo;
+        std::string                 _format;
 		int                         _statusCode;
         bool                        _keepAlive;
         RequestParser               _requestConnection;

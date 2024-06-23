@@ -15,27 +15,34 @@
 void Connection::setVarsEnviroment(RequestParser &request)//mixing objects its not good but works 
 {
     const char *value;
+
     if (request.get()["REQUEST_METHOD"] == "GET") //mixing objects its not good but works 
     {
         value = this->_queryString.c_str();
         if (setenv("QUERY_STRING", value, 1) != 0)
-            throw ServerException("setVarsEnviroment: QUERY_STRING error: " + std::string(strerror(errno)), 500);
-        
+            throw ServerException("setVarsEnviroment: QUERY_STRING error: " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR);
+
         value = request.get()["REQUEST_METHOD"].c_str();
-        setenv("REQUEST_METHOD", value, 1);
         if (setenv("REQUEST_METHOD", value, 1) != 0)
-            throw ServerException("setVarsEnviroment: REQUEST_METHOD error: " + std::string(strerror(errno)), 500);
+            throw ServerException("setVarsEnviroment: REQUEST_METHOD error: " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR);
+
+        value = this->_pathInfo.c_str();
+        if (setenv("PATH_INFO", value, 1) != 0)
+            throw ServerException("setVarsEnviroment: PATH_INFO error: " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR);
     }
 }
 
 std::string Connection::genBodyCgi(std::string filePath, RequestParser &request)
 {
+    std::string cgi;// like /usr/bin/python3 or /usr/bin/bash
     std::string response_body;
     long        size;
     
     try{
+        openFile(filePath);
         setVarsEnviroment(request);
-        response_body = readOutputCgi(filePath);
+        cgi = this->_location.cgiMap[this->_format]; //example:  .py : /usr/bin/python3
+        response_body = readOutputCgi(cgi, filePath, this->_fileName);
     }catch(ServerException &e) {
         throw ServerException("genBodyCgi: " + std::string(e.what()), e.getCode());
     }

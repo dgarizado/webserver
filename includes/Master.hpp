@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Master.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/22 13:35:18 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:26:17 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,26 @@ class Master
 		void manageConnection(Connection &connection);
 		void manageConnections(struct epoll_event *events, int nev);
 
+		void setErrPages(std::map<int, std::string> errPagesMap);
+
 		//FINDS AND RETURNS THE VHOST OBJECT FOR A GIVEN SERVER NAME
 		VHost &getVHost(std::string serverName, int port);
 		VHost &assignVHost(std::string hostport);
+		std::map<int, std::string> &getErrPages(void);
 		
 
 		//AUXILIARY FUNCTIONS
 		void printServerNames();
-		int  servePage(Connection &connection, const std::string &path);
+		//int  servePage(Connection &connection, const std::string &path);
 		
 	private:
 
 		std::vector<int> _ListenSockets;
+
 		std::vector<VHost> _vhosts;
 		std::map<std::string, VHost> _vhostMap;
 		std::map<int, Connection> _clientsMap;
+		std::map<int, std::string> 		_errPageMap;
 		int _kq;
 		int _epoll_fd;
 };

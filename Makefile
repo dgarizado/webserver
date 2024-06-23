@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
+#    By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/06/23 11:24:12 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/06/23 19:45:55 by vcereced         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ RM		    := rm -rf
 
 # SRCS =  $(wildcard srcs/*.cpp)
 SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp utils_readCgi.cpp Connection_genResponseCgi.cpp VHost.cpp  FileParse.cpp RequestParser.cpp Connection.cpp \
-	   master_manageConnection.cpp Connection_genAutoIndex.cpp Connection_genResponse.cpp Connection_requestCheck.cpp
+	   master_manageConnection.cpp Connection_genAutoIndex.cpp Connection_genResponse.cpp Connection_requestCheck.cpp Connection_delete.cpp
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))

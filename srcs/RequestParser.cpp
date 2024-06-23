@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParser.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 14:04:32 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:36:09 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ void RequestParser::loadConfigFromRequest(const std::string requestMessage)
     std::string         line;                       // string to store a line
  
     if ( requestMessage.empty() )
-        throw ServerException("loadConfigFromRequest: is empty: ", 400);
+        throw ServerException("loadConfigFromRequest: is empty: ", BAD_REQUEST);
         //throw std::runtime_error("loadConfigFromRequest: is empty");
         
     while (std::getline(stream, line))              //Extract line per line till reach EOF
@@ -190,7 +190,7 @@ void RequestParser::loadConfigFromRequest(const std::string requestMessage)
 		try{
             lineParser(this, line);                 //Parse line per line 
         }catch (const std::exception& e) {
-             throw ServerException("loadConfigFromRequest: " + std::string(e.what()), 400);
+             throw ServerException("loadConfigFromRequest: " + std::string(e.what()), BAD_REQUEST);
             // throw std::runtime_error("loadConfigFromRequest: lineParser: " + std::string(e.what()));}
         }  
     }

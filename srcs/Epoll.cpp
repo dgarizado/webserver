@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Epoll.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/22 13:54:50 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:33:28 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,10 @@ void Master::deleteConnection(int SocketAccepted)
 
 void Master::manageConnections(struct epoll_event *events, int nev)
 {
-    int     socketToAccept;
-    bool    toAccept;
-    bool    toManage;
+    std::string errPagePath;
+    int         socketToAccept;
+    bool        toAccept;
+    bool        toManage;
     
     for (int i = 0; i < nev; ++i)
     {
@@ -130,8 +131,9 @@ void Master::manageConnections(struct epoll_event *events, int nev)
             } catch (const ServerException &e) {
                 
                 std::cerr << RED << "ServerException: startEventLoop: " << e.what() << " -> " << e.getCode() << RESET << std::endl;
+                errPagePath = this->getErrPages()[e.getCode()];
                 _clientsMap[socketToAccept].setStatusCode(e.getCode());
-                _clientsMap[socketToAccept].serveErrorPage();
+                _clientsMap[socketToAccept].serveErrorPage(errPagePath);
                 
             } catch (const std::exception &e) {
                 

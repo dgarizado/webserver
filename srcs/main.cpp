@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:41:19 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 12:27:47 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/23 14:12:58 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int main(int argc, char **argv)
 	// VHost &vhost = master.getVHost("www.domain2.com");
 	// std::cout << "VHOST SERVER NAME: " << vhost.getServerStruct().listen << std::endl;
 	master.setSockets(fileParser.getStruct().ports);
+	master.setErrPages(fileParser.getStruct().errPageMap);
 	master.setEvents();
 	master.startEventLoop();
 	return (0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/21 23:13:46 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:59:07 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,44 @@
 #include <cstdio>
 #include <iomanip>
 #include <sys/wait.h>
+#include <signal.h>
+#include <filesystem>
 
-#define RED "\033[31m"
-#define GREEN "\033[32m"
-#define YELLOW "\033[33m"
-#define BLUE "\033[34m"
-#define MAGENTA "\033[35m"
-#define CYAN "\033[36m"
-#define RESET "\033[0m"
-#define PINK "\033[95m"
 
-#define MAX_EVENTS 64 //IMPORATNTEEEEE PARA EL SUBJECTTTTTTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define BUFFER	   10000//IMPORTANTEEEEEEEEEEEEEEEEEEE LIMITEEEEEEE DE LECTURAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!
+#define RED 						"\033[31m"
+#define GREEN 						"\033[32m"
+#define YELLOW 						"\033[33m"
+#define BLUE 						"\033[34m"
+#define MAGENTA 					"\033[35m"
+#define CYAN 						"\033[36m"
+#define RESET 						"\033[0m"
+#define PINK 						"\033[95m"
+
+//DEFAULT CONFIGURATION!!!!
+#define MAX_EVENTS 					64 //IMPORATNTEEEEE PARA EL SUBJECTTTTTTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#define BUFFER	   					10000//IMPORTANTEEEEEEEEEEEEEEEEEEE LIMITEEEEEEE DE LECTURAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!
+#define BUFFER_READ_FROM_CGI		10000
+
+#define ERROR_PAGES 				"./html/errorPages/"
+#define OK 							200
+#define NO_CONTENT 					204
+#define BAD_REQUEST 				400
+#define FORBIDDEN 					403
+#define NOT_FOUND 					404
+#define METHOD_NOT_ALLOWED 			405
+#define INTERNAL_SERVER_ERROR 		500
+
+#define BAD_REQUEST_FILE 			"400.html"
+#define FORBIDDEN_FILE 				"403.html"
+#define NOT_FOUND_FILE 				"404.html"
+#define METHOD_NOT_ALLOWED_FILE 	"405.html"
+#define INTERNAL_SERVER_ERROR_FILE 	"500.html"
+
+#define ALLOW_AUTOINDEX 			false
+#define ALLOW_GET 					true
+#define ALLOW_POS 					true
+#define ALLOW_PUT 					true
+#define ALLOW_DELETE 				false
 
 enum server {
 	LISTEN,
@@ -65,29 +91,31 @@ enum methods {
 };
 
 typedef struct s_location {
-	std::string					location;
-	std::string					root;
-	std::vector<std::string>	index;
-	bool						autoIndex;
-	bool						allowedMethods[TOTAL_METHODS];
+	std::string							location;
+	std::string							root;
+	std::vector<std::string>			index;
+	std::map<std::string, std::string>	cgiMap;
+	bool								autoIndex;
+	bool								allowedMethods[TOTAL_METHODS];
 }t_location;
 
 typedef struct s_server {
-    std::vector<std::string>	server_name;
-    int 						listen;
-    int 						port;
-    std::vector<t_location>		locations;
+    std::vector<std::string>			server_name;
+    int 								listen;
+    int 								port;
+    std::vector<t_location>				locations;
 
 } t_server;
 
 typedef struct s_fileParse {
-	std::set<int>				ports;
-	std::vector<t_server>		serverData;
-}t_fileParse;
+	std::set<int>						ports;
+	std::map<int, std::string>			errPageMap;
+	std::vector<t_server>				serverData;
+}t_http;
 
-class ServerException : public std::exception {
+class ServerException: public std::exception {
 public:
-    ServerException(const std::string& msg, int c) : message(msg), code(c) {}
+    ServerException(const std::string& msg, int c) throw() : message(msg), code(c) {}
 	//ServerException(const std::string& msg) : message(msg), code(0) {}
 
     // Sobrescribir el método what() para proporcionar un mensaje de error
@@ -96,7 +124,7 @@ public:
     }
 
     // Método para obtener el código de error
-    int getCode() const noexcept {
+    int getCode() const {
         return code;
     }
 
@@ -106,14 +134,19 @@ private:
 };
 
 //UTILS
-int 		ft_error(std::string msg);
-std::string extractLocationUriStr(std::string uri);
-std::string extractFileNameStr(std::string uri);
-std::string extractQueryStr(std::string uri);
-bool        endsWith(const std::string &str, const std::string &ending);
-std::string readOutputCgi(std::string filePath);
-void 		showParamsConsole(std::string &, std::string &, std::string &, std::string &, std::string &);
-void 		showParamsConsoleHTTP(std::string , size_t , int, int, bool);
-void 		printWaitConsole(void);
+int 			ft_error(std::string msg);
+std::string 	extractLocationUriStr(std::string uri);
+std::string 	extractFileNameStr(std::string uri);
+std::string 	extractQueryStr(std::string uri);
+std::string 	extractPathInfo(std::string uri);
+std::string 	extractExtension(std::string fileName);
+std::string 	cleanPathInfo(std::string path, std::string query);
+bool        	endsWith(const std::string &str, const std::string &ending);
+std::string 	readOutputCgi(std::string cgi, std::string filePath, std::string file);
+void 			showParamsConsole(std::string &, std::string &, std::string &, std::string &, std::string &, std::string &);
+void 			showParamsConsoleHTTP(std::string , size_t , int, int, bool);
+void 			printWaitConsole(void);
+char** 			convertToCharArray(const std::vector<std::string>& strList); 
+std::ifstream 	openFile(std::string filePath);
 
 #endif
