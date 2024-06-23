@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 18:03:37 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 19:10:20 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,64 +162,15 @@ std::string Connection::genResponsePOST(RequestParser &request)
 
 
 /**
- * @brief This function will parse the body of a POST request
- * it will extract the boundary and the headers in the body
- * @param body 
- * @return std::string 
+ * @brief This function is used to parse the body of a POST request with a multipart/form-data content type.
+ * it returns the index of the first boundary found in the buffer.
+ * @param buffer 
+ * @param boundary 
+ * @param start 
+ * @return size_t 
  */
-std::string Connection::parseBody(std::string &body)
-{
-    std::string     headers;
-    std::string     bodyContent;
-    bool            contentStart = false;
-
-    _boundary = _requestConnection.getBoundary();
-    _postFileName = _requestConnection.getPostFileName();
-    std::cout << BBLUE "PARSING body: "  RESET<< body << std::endl;
-    std::istringstream iss(body);
-    std::string line;
-    while (std::getline(iss, line))
-    {
-        line += "\n";
-        if (contentStart == true)
-        {
-            bodyContent += line;
-        }
-        if (line == "\r\n")
-        {
-            contentStart = true;
-        }
-        if (contentStart == false)
-            headers += line;
-    }
-    std::cout << BBLUE "HEADERS PARSED FROM BODY: "  RESET<< headers << std::endl;
-    std::cout << BRED "SIZE OF HEADERS: "  RESET<< headers.size() << std::endl;
-    std::cout << BYELLOW "BOUNDARY IS:" RESET << _boundary << std::endl;
-    std::cout << BYELLOW "BOUNDARY end should be: " RESET << _boundary + "--" << std::endl;
+size_t findBoundary(std::vector<unsigned char>& buffer, std::vector<unsigned char>& boundary, size_t start) {
     
-    std::cout << BYELLOW "FILENAME IS:" RESET << _postFileName << std::endl;
-    std::cout << BBLUE "BODY PARSED FROM BODY: "  RESET<< bodyContent << std::endl;
-    std::cout << BRED "SIZE OF BODY: "  RESET<< body.size() << std::endl;
-    std::cout << BRED "SIZE OF BUFFER2: " RESET << _buffer2.size() << std::endl;
-    //extract first header.size bytes from _buffer2 as chars for printing
-    std::string headerContent(_buffer2.begin(), _buffer2.begin() + headers.size());
-    std::cout << BBLUE "HEADERS FROM BUFFER2: "  RESET<< headerContent << std::endl;
-    //extract the body from the buffer2 as binary data for not damaging the data
-    std::vector<unsigned char> bodyContent2(_buffer2.begin() + headers.size(), _buffer2.end());
-    std::cout << BYELLOW "BODY FROM BUFFER2: "  RESET<< bodyContent2.data() << std::endl;
-    std::cout << BRED "SIZE OF BODY FROM BUFFER2: "  RESET<< bodyContent2.size() << std::endl;
-    //get last line of the bodycontent2
-    return bodyContent;
-}
-
-//TESTES
-//Function to search for the boundary within the buffer
-// size_t findBoundary(const std::vector<unsigned char>& buffer, const std::vector<unsigned char>& boundary, size_t start) {
-//     auto it = std::search(buffer.begin() + start, buffer.end(), boundary.begin(), boundary.end());
-//     return (it == buffer.end()) ? buffer.size() : std::distance(buffer.begin(), it);
-// }
-
-size_t findBoundary(const std::vector<unsigned char>& buffer, const std::vector<unsigned char>& boundary, size_t start) {
     size_t bufferSize = buffer.size();
     size_t boundarySize = boundary.size();
     
@@ -238,21 +189,28 @@ size_t findBoundary(const std::vector<unsigned char>& buffer, const std::vector<
     return bufferSize; // Return the size of the buffer if the boundary is not found
 }
 
-// Function to extract a subvector from the buffer
-std::vector<unsigned char> extractSubVector(const std::vector<unsigned char>& buffer, size_t start, size_t end) {
+/**
+ * @brief This function extracts from buffer the part of the request between start and end.
+ * start and end are indexes indicating the range of the part to extract.
+ * @param buffer 
+ * @param start 
+ * @param end 
+ * @return std::vector<unsigned char> 
+ */
+std::vector<unsigned char> extractRealBody(const std::vector<unsigned char>& buffer, size_t start, size_t end) {
     if (start >= buffer.size() || end > buffer.size() || start >= end) 
     return {};
     return std::vector<unsigned char>(buffer.begin() + start, buffer.begin() + end);
 }
 
-// Function to find the end of headers (double CRLF)
-// size_t findHeadersEnd(const std::vector<unsigned char>& buffer, size_t start) {
-//     const std::string doubleCRLF = "\r\n\r\n";
-//     auto it = std::search(buffer.begin() + start, buffer.end(), doubleCRLF.begin(), doubleCRLF.end());
-//     return (it == buffer.end()) ? buffer.size() : std::distance(buffer.begin(), it) + doubleCRLF.size();
-// }
 
-// Function to find the end of headers (double CRLF)
+/**
+ * @brief This function is used to find the end of the headers in a part of a multipart/form-data request.
+ *  it returns the index of first character after the headers end(/r/n/r/n).
+ * @param buffer 
+ * @param start 
+ * @return size_t 
+ */
 size_t findHeadersEnd(const std::vector<unsigned char>& buffer, size_t start) {
     const char* doubleCRLF = "\r\n\r\n";
     size_t crlfSize = strlen(doubleCRLF);
@@ -273,66 +231,47 @@ size_t findHeadersEnd(const std::vector<unsigned char>& buffer, size_t start) {
     return bufferSize; // Return the size of the buffer if the headers end is not found
 }
 
-//END TESTES
 
-void Connection::processPost()
-{
-    std::string     fileName;
-    std::string     boundary;
-    std::string     body;
+void Connection::createFilePost(std::string fileName, std::vector<unsigned char>& binary_data) {
 
-
-    body = _requestConnection.getRequestBody();
-    body = parseBody(body);
-    boundary = _requestConnection.getBoundary();
-    fileName = _requestConnection.getPostFileName();
-    std::cout << BBLUE "boundary: "  RESET<< boundary << std::endl;
-    std::cout << BBLUE "fileName: "  RESET<< fileName << std::endl;
-
-    // create a file with the name of fileName and store the body of the request
-
-    //TESTEES
-
-    std::vector<unsigned char> boundaryVect(boundary.begin(), boundary.end());
-    // Find the start of the first part
-    size_t part_start = findBoundary(_buffer2, boundaryVect, 0);
-    if (part_start == _buffer2.size()) {
-        std::cerr << "BoundaryVect not found" << std::endl;
-        return ;
-    }
-
-    // Move past the boundaryVect to start parsing headers
-    part_start += boundaryVect.size() + 2; // +2 for the CRLF following the boundaryVect
-
-    // Find the end of the first part (next boundaryVect)
-    size_t part_end = findBoundary(_buffer2, boundaryVect, part_start);
-
-    // Extract the part between boundaries
-    std::vector<unsigned char> part = extractSubVector(_buffer2, part_start, part_end);
-
-    size_t headers_end = findHeadersEnd(part, 0);
-    if (headers_end == part.size()) {
-        std::cerr << "Headers end not found" << std::endl;
-        return ;
-    }
-
-    // Extract the binary data (after headers and CRLF)
-    std::vector<unsigned char> binary_data = extractSubVector(part, headers_end, part.size() - 2); // -2 to exclude trailing CRLF
-
-    // Write binary data to a file
     std::ofstream file(fileName, std::ios::binary);
     if (file.is_open()) {
         file.write(reinterpret_cast<const char*>(binary_data.data()), binary_data.size());
         file.close();
         std::cout << "File saved as " << fileName << std::endl;
     } else {
-        std::cerr << "Failed to open file for writing" << std::endl;
+        throw ServerException("createFilePost: Cannot open file: " + fileName, 500);
     }
-    //END TESTES
-    // std::ofstream file(fileName);
-    // file << body;
-    // file.close();
-    // std::cout << BBLUE "file created: "  RESET<< fileName << std::endl;
+}
+
+void Connection::processPost()
+{
+    std::string     fileName;
+    std::string     boundary;
+    size_t          part_start;
+    size_t          part_end;
+    
+    boundary = _requestConnection.getBoundary();
+    fileName = _requestConnection.getPostFileName();
+    std::cout << BBLUE "boundary: "  RESET<< boundary << std::endl;
+    std::cout << BBLUE "fileName: "  RESET<< fileName << std::endl;
+
+    std::vector<unsigned char> boundaryVect(boundary.begin(), boundary.end());
+    part_start = findBoundary(_buffer2, boundaryVect, 0);
+    
+    if (part_start == _buffer2.size())
+        throw ServerException("processPost: Boundary not found", 500);
+    
+    part_start += boundaryVect.size() + 2; // +2 for skipping the /r/n after the boundary line
+    part_end = findBoundary(_buffer2, boundaryVect, part_start); // Find the end of the part(next boundary line)
+
+    std::vector<unsigned char> part = extractRealBody(_buffer2, part_start, part_end);
+    size_t headers_end = findHeadersEnd(part, 0);
+    if (headers_end == part.size())
+        throw ServerException("processPost: Headers not found", 500);
+        
+    std::vector<unsigned char> binary_data = extractRealBody(part, headers_end, part.size() - 2); // -2 to exclude the last /r/n
+    createFilePost(fileName, binary_data); 
 }
 
 
@@ -357,5 +296,5 @@ std::string Connection::genResponse(RequestParser &request)
         return continueRequest;
     }
     else
-        throw ServerException("genResponse: method not configured: " + method, 400);
+        throw ServerException("genResponse: method not configured: " + method, 500);
 }

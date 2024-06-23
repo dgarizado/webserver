@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 16:59:09 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/06/23 18:38:03 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ class Connection : public VHost
 
         //POST
         void        processPost();
-        std::string parseBody(std::string &body);
+        void        createFilePost(std::string fileName, std::vector<unsigned char>& binary_data);
 
 
         void processRequest(RequestParser &request);
