@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 19:35:57 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 11:31:15 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,15 @@ void Connection::processRequest(RequestParser &request)
 
 void Connection::readFromSocket(void)
 {
-    char    buffer[BUFFER];//????????????????????????????????????????????limitante para el upload???????????????
+    char    buffer[BUFFER_READ_FROM_SOCKET];
     int     bytesRead;
     int     clientSocket;
 
     clientSocket = this->getClientSocket();
-    bytesRead = read(clientSocket, buffer, BUFFER);
+    bytesRead = read(clientSocket, buffer, BUFFER_READ_FROM_SOCKET);
     
     if (bytesRead < 0)
-        throw std::runtime_error("readFromSocket: Error reading from client socket " + std::to_string(clientSocket));  //REMOVE CLIENT SOCKET FROM EPOLL SET AND CLOSE SOCKET!
+        throw std::runtime_error("readFromSocket: Error reading from client socket " + std::to_string(clientSocket));
 
     if (bytesRead == 0)
         throw std::runtime_error("readFromSocket: 0 bytes read from client socket " + std::to_string(clientSocket));
@@ -115,5 +115,4 @@ void Master::manageConnection(Connection &connection)
     catch (const std::exception &e) {
         throw std::runtime_error("manageConnection: " + std::string(e.what()));
     }
-
 }

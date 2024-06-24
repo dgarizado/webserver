@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 16:48:12 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 11:28:25 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ std::string genRowLastMod(struct stat fileStat)
     std::string html;
     std::time_t modTime;
     struct tm   *timeinfo;
-    char        buffer[30];
+    char        buffer[100];
 
     modTime = fileStat.st_mtime;
     timeinfo = localtime(&modTime);

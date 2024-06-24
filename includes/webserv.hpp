@@ -6,74 +6,76 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 19:59:07 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 11:32:48 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //HERE WE WILL INCLUDE ALL THE HEADER FILES NEEDED FOR THE WEB SERVER
 #ifndef WEBSERV_HPP
-#define WEBSERV_HPP
+# define WEBSERV_HPP
 
-#include <string>
-#include <array>
-#include <vector>
-#include <map>
-#include <fstream>
-#include <sstream>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
+# include <string>
+# include <array>
+# include <vector>
+# include <map>
+# include <fstream>
+# include <sstream>
+# include <sys/socket.h>
+# include <sys/stat.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <unistd.h>
 // #include <sys/event.h> // Include this for kqueue
-#include <sys/time.h> 
-#include <set>
-#include <cstring>
-#include <algorithm>
-#include <sys/epoll.h>
-#include <fcntl.h>
-#include <iostream>
-#include <cstdio>
-#include <iomanip>
-#include <sys/wait.h>
-#include <signal.h>
-#include <filesystem>
-
-
-#define RED 						"\033[31m"
-#define GREEN 						"\033[32m"
-#define YELLOW 						"\033[33m"
-#define BLUE 						"\033[34m"
-#define MAGENTA 					"\033[35m"
-#define CYAN 						"\033[36m"
-#define RESET 						"\033[0m"
-#define PINK 						"\033[95m"
-
+# include <sys/time.h> 
+# include <set>
+# include <cstring>
+# include <algorithm>
+# include <sys/epoll.h>
+# include <fcntl.h>
+# include <iostream>
+# include <cstdio>
+# include <iomanip>
+# include <sys/wait.h>
+# include <signal.h>
+# include <filesystem>
+ 
+ 
+# define RED 						"\033[31m"
+# define GREEN 						"\033[32m"
+# define YELLOW 					"\033[33m"
+# define BLUE 						"\033[34m"
+# define MAGENTA 					"\033[35m"
+# define CYAN 						"\033[36m"
+# define RESET 						"\033[0m"
+# define PINK 						"\033[95m"
+ 
 //DEFAULT CONFIGURATION!!!!
-#define MAX_EVENTS 					64 //IMPORATNTEEEEE PARA EL SUBJECTTTTTTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#define BUFFER	   					10000//IMPORTANTEEEEEEEEEEEEEEEEEEE LIMITEEEEEEE DE LECTURAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!
-#define BUFFER_READ_FROM_CGI		10000
-
-#define ERROR_PAGES 				"./html/errorPages/"
-#define OK 							200
-#define NO_CONTENT 					204
-#define BAD_REQUEST 				400
-#define FORBIDDEN 					403
-#define NOT_FOUND 					404
-#define METHOD_NOT_ALLOWED 			405
-#define INTERNAL_SERVER_ERROR 		500
-
-#define BAD_REQUEST_FILE 			"400.html"
-#define FORBIDDEN_FILE 				"403.html"
-#define NOT_FOUND_FILE 				"404.html"
-#define METHOD_NOT_ALLOWED_FILE 	"405.html"
-#define INTERNAL_SERVER_ERROR_FILE 	"500.html"
-
-#define ALLOW_AUTOINDEX 			false
-#define ALLOW_GET 					true
-#define ALLOW_POS 					true
-#define ALLOW_PUT 					true
-#define ALLOW_DELETE 				false
+# define MAX_EVENTS 				64 
+# define BUFFER_READ_FROM_SOCKET  	10000
+# define BUFFER_READ_FROM_CGI		10000
+# define CLIENT_BODY_SIZE           100
+ 
+# define ERROR_PAGES 				"./html/errorPages/"
+# define OK 						200
+# define NO_CONTENT 				204
+# define BAD_REQUEST 				400
+# define FORBIDDEN 					403
+# define NOT_FOUND 					404
+# define METHOD_NOT_ALLOWED 		405
+# define PAYLOAD_TOO_LARGE			413
+# define INTERNAL_SERVER_ERROR 		500
+ 
+# define BAD_REQUEST_FILE 			"400.html"
+# define FORBIDDEN_FILE 			"403.html"
+# define NOT_FOUND_FILE 			"404.html"
+# define METHOD_NOT_ALLOWED_FILE 	"405.html"
+# define INTERNAL_SERVER_ERROR_FILE "500.html"
+ 
+# define ALLOW_AUTOINDEX 			false
+# define ALLOW_GET 					true
+# define ALLOW_POS 					true
+# define ALLOW_PUT 					true
+# define ALLOW_DELETE 				false
 
 enum server {
 	LISTEN,
