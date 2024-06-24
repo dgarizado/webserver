@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 19:26:17 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 13:22:28 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ class Master
 		VHost &getVHost(std::string serverName, int port);
 		VHost &assignVHost(std::string hostport);
 		std::map<int, std::string> &getErrPages(void);
-		
+		void setclientMaxBodySize(long);
+		long getclientMaxBodySize(void);
 
 		//AUXILIARY FUNCTIONS
 		void printServerNames();
@@ -60,11 +61,11 @@ class Master
 		
 	private:
 
-		std::vector<int> _ListenSockets;
-
-		std::vector<VHost> _vhosts;
-		std::map<std::string, VHost> _vhostMap;
-		std::map<int, Connection> _clientsMap;
+		std::vector<int> 				_ListenSockets;
+		long							_clientMaxBodySize;
+		std::vector<VHost> 				_vhosts;
+		std::map<std::string, VHost> 	_vhostMap;
+		std::map<int, Connection> 		_clientsMap;
 		std::map<int, std::string> 		_errPageMap;
 		int _kq;
 		int _epoll_fd;

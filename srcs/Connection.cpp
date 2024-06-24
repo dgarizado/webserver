@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 19:32:55 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:34:39 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,11 @@
 Connection::Connection() : VHost(), _clientSocket(0), _clientAddrSize(sizeof(_clientAddr))
 {
     _keepAlive = false;
-    std::cout << BBLUE << "Connection constructor called" << RESET << std::endl;
 }   
 
 Connection::~Connection()
 {
-    std::cout << BRED << "Connection destructor called" << RESET << std::endl;
+    
 }
 
 Connection::Connection(Connection const &src): VHost(src)
@@ -30,20 +29,13 @@ Connection::Connection(Connection const &src): VHost(src)
 
 Connection &Connection::operator=(Connection const &src)
 {
-    std::cout << BBLUE << "Connection operator= called" << RESET << std::endl;
     if (this != &src)
     {
         _clientSocket = src._clientSocket;
         _clientAddr = src._clientAddr;
         _clientAddrSize = src._clientAddrSize;
         _ev = src._ev;
-        _buffer = src._buffer;
-        // _requestedPathNoFile = src._requestedPathNoFile;
-        // _finalPath = src._finalPath;
-        // _requestedPath = src._requestedPath;
-        // _fileName = src._fileName;
-        // _queryString = src._queryString;
-        // _root = src._root;
+        _clientMaxBodySize = src._clientMaxBodySize;
         _statusCode = src._statusCode;
         _keepAlive = src._keepAlive;
         _location = src._location;
@@ -101,17 +93,13 @@ std::string Connection::getFileName() const
     return _fileName;
 }
 
-// std::string Connection::getFinalPath() const
-// {
-//     return _finalPath;
-// }
-
-void Connection::setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev)
+void Connection::setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev, long maxSize)
 {
     _clientSocket = clientSocket;
     _clientAddr = clientAddr;
     _clientAddrSize = clientAddrSize;
     _ev = ev;
+    _clientMaxBodySize = maxSize;
 }
 
 void Connection::setBuffer(std::string buffer)

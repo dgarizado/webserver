@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 19:33:28 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 13:54:31 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ int Master::clientAccept(int socketToAccept)
     ev.data.fd = clientSocket;
     if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, clientSocket, &ev) == -1)
         return(ft_error("Error adding client socket to epoll"));
-        
-    client.setClientData(clientSocket, clientAddr, clientAddrSize, ev);
+    
+    client.setClientData(clientSocket, clientAddr, clientAddrSize, ev,  this->getclientMaxBodySize());
     _clientsMap[clientSocket] = client;
     return (0);
 }

@@ -1,3 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   FileParse.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/24 12:12:05 by vcereced          #+#    #+#             */
+/*   Updated: 2024/06/24 14:05:45 by vcereced         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+
 #include "../includes/FileParse.hpp"
 
 
@@ -24,7 +38,7 @@ void setDefaultValuesLocation(t_location &ref)
     ref.allowedMethods[DELETE]  = ALLOW_DELETE;
 }
 
-void setDefaultErrPages(t_http &ref)
+void setDefaultParams(t_http &ref)
 {
     std::string path =  ERROR_PAGES;
 
@@ -32,7 +46,10 @@ void setDefaultErrPages(t_http &ref)
     ref.errPageMap[FORBIDDEN] = path + FORBIDDEN_FILE;
     ref.errPageMap[NOT_FOUND] = path + NOT_FOUND_FILE;
     ref.errPageMap[METHOD_NOT_ALLOWED] = path + METHOD_NOT_ALLOWED_FILE;
+    ref.errPageMap[PAYLOAD_TOO_LARGE] = path + PAYLOAD_TOO_LARGE_FILE;
     ref.errPageMap[INTERNAL_SERVER_ERROR] = path + INTERNAL_SERVER_ERROR_FILE;
+
+    ref.clientMaxBodySize = SOCKET_BUFFER_SIZE;
 }
 
 void setNotAllowedMethod(t_location &ref, std::istringstream &iss)
@@ -197,6 +214,40 @@ void insideServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, 
     }
 }
 
+void setClientMaxBodySize(FileParse *ref, std::istringstream &iss)
+{
+    std::string token;
+    long        n;
+
+    iss >> token;
+    token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+    n = std::stoi(token);
+    ref->getStruct().clientMaxBodySize = n;
+}
+
+void setErrPages(FileParse *ref, std::istringstream &iss)
+{
+    std::string token;
+    int         errN;
+    
+    iss >> token;
+    errN = std::stoi(token);
+    iss >> token;
+    token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+    ref->getStruct().errPageMap[errN] = token;
+}
+
+void varHttp(FileParse *ref, std::ifstream &file, std::istringstream &iss, std::string &token, bool &server)
+{
+    if (token == "server" && (server = true))
+        insideServer(ref, file, iss, token);
+    if (token == "error_page")
+        setErrPages(ref, iss);
+    if (token == "client_max_body_size")
+        setClientMaxBodySize(ref, iss);
+}
+
+
 /**
  * @brief iter if Http block till close the block. if http encounter start to process all 
  * line and its token / braces. if server is encounter it jump into it, if not encounter
@@ -212,28 +263,12 @@ bool insideHttp(FileParse *ref, std::ifstream &file, std::istringstream &iss, st
 
 	if (token == "http" && (http = true))
     {
-        setDefaultErrPages(ref->getStruct());
+        setDefaultParams(ref->getStruct());
         do{
             while(iss >> token)
 		    {
 			    ft_braces(httpBraces, token);
-                if (token == "server" && (server = true))
-                    insideServer(ref, file, iss, token);
-                
-                if (token == "error_page")
-                {
-                    iss >> token;
-                    int err = std::stoi(token);
-                    while (iss >> token)
-                    {
-                        token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
-
-                        ref->getStruct().errPageMap[err] = token;
-                    }
-                }
-                  //  setErrPage(ref)
-               //if (insideServer(ref, file, iss, token) == true)//if server jump into it
-                 //   server = true;
+                varHttp(ref, file, iss, token, server);
             }   
             if (httpBraces > 0 && std::getline(file, line))
             {
@@ -332,29 +367,3 @@ void FileParse::loadConfigFromFile(const std::string filename)
 	} 
 }
 
-void FileParse::showConfig(void)
-{
-
-    std::cout << "/ports\t\t\t\t= " ;
-    for (std::set<int>::iterator it = this->configData.ports.begin(); it != this->configData.ports.end(); ++it) {std::cout << *it << " ";} std::cout << std::endl;
-    std::cout << "/errorPages\t\t\t";
-    for (std::map<int, std::string>::iterator it = this->configData.errPageMap.begin(); it != this->configData.errPageMap.end(); ++it) {std::cout << "= " << it->first << " " << it->second << "\n\t\t\t\t";} std::cout << std::endl;
-    std::cout << "/serverData/ " << std::endl;
-    for (std::vector<t_server>::iterator it = this->configData.serverData.begin(); it != this->configData.serverData.end(); ++it) {
-        std::cout << "           /server_name\t\t= " ;
-        for (std::vector<std::string>::iterator itVec = it->server_name.begin(); itVec != it->server_name.end(); ++itVec) {std::cout << *itVec << " ";} std::cout << std::endl;
-        std::cout << "\t   /listen\t\t= " << it->listen << std::endl;
-        for (std::vector<t_location>::iterator itLoc = it->locations.begin(); itLoc != it->locations.end(); ++itLoc) {
-            std::cout << "\t   /location/" << std::endl;
-            std::cout << "\t\t    /location\t= " << itLoc->location << std::endl;
-            std::cout << "\t\t    /root\t= " << itLoc->root << std::endl;
-            std::cout << "\t\t    /index\t= ";
-            for (std::vector<std::string>::iterator itIndex = itLoc->index.begin(); itIndex != itLoc->index.end(); ++itIndex) {std::cout << *itIndex << " "; } std::cout << std::endl;
-            std::cout << "\t\t    /autoindex\t= " << itLoc->autoIndex << std::endl;
-            std::cout << "\t\t    /methods\t= " << "GET:" << itLoc->allowedMethods[GET] << " POST:" << itLoc->allowedMethods[POST] << " PUT:" << itLoc->allowedMethods[PUT] << " DELETE:" << itLoc->allowedMethods[DELETE] << std::endl;
-            std::cout << "\t\t    /cgi\t= ";
-            for (std::map<std::string, std::string>::iterator itCgi = itLoc->cgiMap.begin(); itCgi != itLoc->cgiMap.end(); ++itCgi) {std::cout << itCgi->first << " : " << itCgi->second << "  "; } std::cout << std::endl;
-        }
-    std::cout << "-------------------------------------------------------------------------" << std::endl;
-    }
-}

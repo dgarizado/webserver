@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 19:24:09 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 13:55:21 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Connection : public VHost
         Connection &operator=(Connection const &src);
         Connection &operator=(VHost &src);
 
-        void readFromSocket();
+        void readFromSocket(long clientMaxBodySize);
 
         //GETTERS
         int         getClientSocket() const;
@@ -49,7 +49,7 @@ class Connection : public VHost
         RequestParser& getRequest(void);
 
         //SETTERS
-        void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev);
+        void        setClientData(int clientSocket, sockaddr_in clientAddr, socklen_t clientAddrSize, struct epoll_event ev,  long maxSize);
         void        setBuffer(std::string buffer);
         void        setStatusCode(int statusCode);
         void        setVarsEnviroment(RequestParser &request);
@@ -101,7 +101,7 @@ class Connection : public VHost
 		int                         _statusCode;
         bool                        _keepAlive;
         RequestParser               _requestConnection;
-
+        long                        _clientMaxBodySize;
         //POST
         std::string                 _headerPost;
         std::string                 _body;

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/24 11:31:15 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:33:56 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,25 +16,19 @@ void Connection::requestCheck(RequestParser &request)
 {
     std::string method;
     std::string uriRequested;
-    
+       
     uriRequested = request.get()["REQUEST_URI"];
     
     if (this->_path.empty())
-	{
         throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, INTERNAL_SERVER_ERROR);
-		//this->_statusCode = 404;
-        //throw std::runtime_error("requestParse: location requested have not root defined: " + uriRequested);
-	}
     
     method = request.get()["REQUEST_METHOD"];
-    
+
     if (this->methodCheck(method) == false)
-	{
         throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
-		//this->_statusCode = 405;
-        //throw std::runtime_error("requestParse: location requested method not allowed: " + method);
-        
-	}
+  
+    if (method == "POST" && std::stol(request.get()["CONTENT_LENGTH"]) > this->_clientMaxBodySize )
+        throw ServerException("requestCheck: exceded max client body size " + uriRequested, PAYLOAD_TOO_LARGE);
 }
 
 /**
@@ -56,20 +50,19 @@ void Connection::processRequest(RequestParser &request)
         throw ServerException("processRequest: " + std::string(e.what()), e.getCode());
     }
     send(this->getClientSocket(), response.c_str(), response.size(), 0);
-    //close(this->getClientSocket());// IMPORTANT TO DEFINE!! ???????????????????????????????????????????????????? CREO QUE NO: ES AL SALIR DE MANAGE CONNECTION PUES FINALIZO AUNQUE ES LO MISMO HAY QUE AGRUPAR las acciones de LIMPIAR LOS VECTOR FDS
-
+   
     showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), false);
 }
 
 
-void Connection::readFromSocket(void)
+void Connection::readFromSocket(long clientMaxBodySize)
 {
-    char    buffer[BUFFER_READ_FROM_SOCKET];
+    char    buffer[SOCKET_BUFFER_SIZE];
     int     bytesRead;
     int     clientSocket;
 
     clientSocket = this->getClientSocket();
-    bytesRead = read(clientSocket, buffer, BUFFER_READ_FROM_SOCKET);
+    bytesRead = read(clientSocket, buffer, SOCKET_BUFFER_SIZE);
     
     if (bytesRead < 0)
         throw std::runtime_error("readFromSocket: Error reading from client socket " + std::to_string(clientSocket));
@@ -88,12 +81,15 @@ void Connection::readFromSocket(void)
 //CHEKPOINT
 void Master::manageConnection(Connection &connection)
 {
-    RequestParser&   request = connection.getRequest();
+    RequestParser&  request = connection.getRequest();
     VHost           VHostAssigned;
     std::string     buffer;
+    long            clientMaxBodySize;
+
+    clientMaxBodySize = this->getclientMaxBodySize();
 
     try{
-        connection.readFromSocket();
+        connection.readFromSocket(clientMaxBodySize);
         buffer = connection.getBuffer();
         //Print buffer
         std::cout << BYELLOW << "Buffer received from client: '" << RESET << std::endl;

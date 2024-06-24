@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 19:32:35 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:03:39 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath
         response_header  = "HTTP/1.1 404 Not Found\r\n";
     else if (statusCode == METHOD_NOT_ALLOWED)
         response_header  = "HTTP/1.1 405 Method Not Allowed\r\n";
+    else if (statusCode == PAYLOAD_TOO_LARGE)
+        response_header  = "HTTP/1.1 413 Payload To Large\r\n";
     else if (statusCode == INTERNAL_SERVER_ERROR)
         response_header  = "HTTP/1.1 500 Internal Server Error\r\n";
 

@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:19:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 18:40:29 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 11:58:28 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void handle_alarm(int sig) {
 
 std::string readOutputCgi(std::string cgi, std::string filePath, std::string file)//pendiente
 {
-    std::array<char, BUFFER_READ_FROM_CGI>  buffer;
+    std::array<char, CGI_BUFFER_SIZE>  buffer;
     std::string             result;
     ssize_t                 bytesRead;
     int                     pipefd[2];

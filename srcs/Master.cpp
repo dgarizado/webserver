@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 14:07:06 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 13:24:32 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,18 @@ Master &Master::operator=(Master const &src)
 	{
 		//copy the attributes here
 	}
+
 	return (*this);
+}
+
+void Master::setclientMaxBodySize(long n)
+{
+	this->_clientMaxBodySize = n;
+}
+
+long Master::getclientMaxBodySize(void)
+{
+	return this->_clientMaxBodySize;
 }
 
 std::map<int, std::string> &Master::getErrPages(void)

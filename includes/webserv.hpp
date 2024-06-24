@@ -6,7 +6,7 @@
 /*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/24 11:32:48 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:12:39 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,10 @@
  
 //DEFAULT CONFIGURATION!!!!
 # define MAX_EVENTS 				64 
-# define BUFFER_READ_FROM_SOCKET  	10000
-# define BUFFER_READ_FROM_CGI		10000
-# define CLIENT_BODY_SIZE           100
+# define SOCKET_BUFFER_SIZE  		10000 //default limit body size if not configured in .conf ??????
+# define CGI_BUFFER_SIZE			10000
+			
+
  
 # define ERROR_PAGES 				"./html/errorPages/"
 # define OK 						200
@@ -69,6 +70,7 @@
 # define FORBIDDEN_FILE 			"403.html"
 # define NOT_FOUND_FILE 			"404.html"
 # define METHOD_NOT_ALLOWED_FILE 	"405.html"
+# define PAYLOAD_TOO_LARGE_FILE 		"413.html"
 # define INTERNAL_SERVER_ERROR_FILE "500.html"
  
 # define ALLOW_AUTOINDEX 			false
@@ -112,6 +114,7 @@ typedef struct s_server {
 typedef struct s_fileParse {
 	std::set<int>						ports;
 	std::map<int, std::string>			errPageMap;
+	long								clientMaxBodySize;
 	std::vector<t_server>				serverData;
 }t_http;
 
