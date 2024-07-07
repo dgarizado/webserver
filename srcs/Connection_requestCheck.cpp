@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 10:19:40 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 13:24:45 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/07 16:14:53 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,4 @@ void Connection::requestParse(RequestParser &request)
         throw ServerException("requestParse: " + std::string(e.what()), INTERNAL_SERVER_ERROR);
     }
 }
-    //std::cout << "querystring " << this->_queryString << std::endl;
-    //std::cout << "path " <<this->_path << std::endl;
-    //std::cout << "pathinfo " <<this->_pathInfo<< std::endl;
-    //std::cout << "filename " <<this->_fileName<< std::endl;
-    //std::cout << "path " <<this->_path<< std::endl;
-    //std::cout << "format " <<this->_format<< std::endl;
-    //std::cout << "path " <<this->_path<< std::endl;
-    //    getchar();
+

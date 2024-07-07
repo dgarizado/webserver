@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 13:00:18 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/07 15:48:08 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,59 +124,6 @@ std::string genRowsAutoIndex(std::string path)
     return html;
 }
 
-// std::string Connection::genBodyAutoIndex(std::string path)
-// {
-//     std::string response_body_begin;
-//     std::string response_body_middle;
-//     std::string response_body_end;
-
-//     response_body_begin = R"(
-//     <!DOCTYPE html>
-//     <html>
-//     <head>
-//         <title>Index of /directorio-listado/</title>
-//         <style>
-//             body {
-//                 font-family: Arial, sans-serif;
-//             }
-//             table {
-//                 width: 100%;
-//                 border-collapse: collapse;
-//             }
-//             th, td {
-//                 padding: 8px;
-//                 text-align: left;
-//                 border-bottom: 1px solid #ddd;
-//             }
-//             th {
-//                 background-color: #f2f2f2;
-//             }
-//             a {
-//                 color: #0066cc;
-//                 text-decoration: none;
-//             }
-//             a:hover {
-//                 text-decoration: underline;
-//             }
-//         </style>
-//     </head>
-//     <body>
-//         <h1>Index of /directorio-listado/</h1>
-//         <table>
-//             <tr>
-//                 <th>Name</th>
-//                 <th>Last modified</th>
-//                 <th>Size</th>
-//                 <th>Permisions</th>
-//             </tr>)";
-//     response_body_middle = genRowsAutoIndex(path);
-//     response_body_end = R"(
-//             </table>
-//         </body>
-//     </html>)";
-
-//     return response_body_begin + response_body_middle + response_body_end;
-// }
 std::string Connection::genBodyAutoIndex(std::string path)
 {
     std::string response_body_begin;

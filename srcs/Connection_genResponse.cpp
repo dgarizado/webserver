@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 13:29:32 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/07 16:29:25 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,6 @@ std::string Connection::genBodyFile(std::string filePath)
     } catch (const ServerException &e) {
         throw ServerException("genBodyFile: " + std::string(e.what()), e.getCode());
     }
-    // if (!file){
-    //    // this->_statusCode = 404;
-    //   //  throw std::runtime_error("genBodyFile: Cannot open file:" + filePath);
-    //     throw ServerException("genBodyFile: " + std::string(strerror(errno) + filePath), 404);
-    // }
 
     buffer << file.rdbuf();
     responseHTTP_body = buffer.str();
@@ -238,13 +233,15 @@ size_t findHeadersEnd(const std::vector<unsigned char>& buffer, size_t start) {
 
 void Connection::createFilePost(std::string fileName, std::vector<unsigned char>& binary_data) {
 
+    std::string path = this->_path + fileName;
+    fileName = path;
     std::ofstream file(fileName.c_str(), std::ios::binary);
     if (file.is_open()) {
         file.write(reinterpret_cast<const char*>(binary_data.data()), binary_data.size());
         file.close();
         std::cout << "File saved as " << fileName << std::endl;
     } else {
-        throw ServerException("createFilePost: Cannot open file: " + fileName, 500);
+        throw ServerException("createFilePost: Cannot upload: " + fileName, 500);
     }
 }
 
@@ -292,14 +289,20 @@ std::string Connection::genResponse(RequestParser &request)
         _keepAlive = true;
 
         if (request.getBodyWatchDog() == 1)
+        {
             this->processPost();
-        // std::string body = genBodyFile("./html/index.html");
-        // std::string header = genHeaderHTTP(body, "./html/index.html");
-        //send http 100 continue
+            response = "HTTP/1.1 200 OK\r\n";
+            response += "Content-Type: text/plain\r\n";
+            response += "Content-Length: 22\r\n"; // Length of "POST request processed"
+            response += "\r\n";
+            response += "POST request processed";
+            _keepAlive = false;
+            return response;
+        }
         std::string continueRequest = "HTTP/1.1 100 Continue\r\n\r\n";
         return continueRequest;
     }
-     else if (method == "DELETE")
+    else if (method == "DELETE")
        return genResponseDELETE();
     else
         throw ServerException("genResponse: method not configured: " + method, BAD_REQUEST);
