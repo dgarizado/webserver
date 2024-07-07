@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Master.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/24 13:24:32 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 11:45:01 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,30 +89,32 @@ VHost &Master::assignVHost(std::string hostport)
     std::string         servername;
     std::string         tmp_port;
     int                 port;
-    std::getline(iss, servername, ':');
+    
+	std::getline(iss, servername, ':');
     std::getline(iss, tmp_port, ':');
-	port = std::stoi(tmp_port);
-    return this->getVHost(servername, port);
+	// port = std::stoi(tmp_port); stoi is not supported in the c++98 standard
+	std::stringstream(tmp_port) >> port;
+    
+	return this->getVHost(servername, port);
 }
 
 // AUXILIARY FUNCTIONS
 
 //print server names, for debugging purposes. iterating through vhosts
-void Master::printServerNames()
-{
-	std::vector<VHost>::iterator it = _vhosts.begin();
-	std::cout << "Printing server names" << std::endl;
-	for (int i = 0; i < _vhosts.size(); i++)
-	{
-		std::vector<std::string> serverNames = _vhosts[i].getServerStruct().server_name;
-		std::vector<std::string>::iterator it2 = serverNames.begin();
-		std::cout<< CYAN <<"HOST number: "<<RESET<< i << std::endl;
-		for (; it2 != serverNames.end(); it2++)
-		{
-			std::cout<<YELLOW << "Server name: " <<RESET<< *it2 << std::endl;
-		}
-	}
-}
+// void Master::printServerNames()
+// {
+// 	std::cout << "Printing server names" << std::endl;
+// 	for (int i = 0; i < _vhosts.size(); i++)
+// 	{
+// 		std::vector<std::string> serverNames = _vhosts[i].getServerStruct().server_name;
+// 		std::vector<std::string>::iterator it2 = serverNames.begin();
+// 		std::cout<< CYAN <<"HOST number: "<<RESET<< i << std::endl;
+// 		for (; it2 != serverNames.end(); it2++)
+// 		{
+// 			std::cout<<YELLOW << "Server name: " <<RESET<< *it2 << std::endl;
+// 		}
+// 	}
+// }
 
 /**
  * @brief Here we will create the VHost objects for each server block in the configuration file

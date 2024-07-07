@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/24 14:34:39 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:37:25 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ void Connection::serveErrorPage(std::string filePath)
     std::string         response;
     std::string         response_header;
     std::string         response_body;
-    std::ifstream       file(filePath);
+    std::ifstream       file(filePath.c_str());
     
     buffer << file.rdbuf();
     

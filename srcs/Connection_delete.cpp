@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection_delete.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 23:38:25 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 18:43:20 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 13:29:17 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 
 
-std::string responseDELETE(Connection *ref, RequestParser &request)
+std::string responseDELETE(Connection *ref)
 {
     std::string responseHTTP_header;
     std::string responseHTTP_body;
@@ -36,7 +36,7 @@ std::string responseDELETE(Connection *ref, RequestParser &request)
 }
 
 
-std::string Connection::genResponseDELETE(RequestParser &request)
+std::string Connection::genResponseDELETE()
 {
     std::string responseHTTP;
 
@@ -44,13 +44,15 @@ std::string Connection::genResponseDELETE(RequestParser &request)
         
         if (this->_fileName.empty() == true)
             throw ServerException("no filename to delete ", BAD_REQUEST);
-            
-        openFile(this->getPath());
+        
+        std::ifstream file;
+        openFile(this->getPath(), file);
         
         if (this->_fileName.empty() == false)
-            responseHTTP = responseDELETE(this, request);
+            responseHTTP = responseDELETE(this);
             
     }catch (const ServerException &e) {
         throw ServerException("genResponseDELETE: " + std::string(e.what()), e.getCode());
     }
+    return responseHTTP;
 }

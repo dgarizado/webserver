@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Connection_requestCheck.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 10:19:40 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 16:47:57 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 13:24:45 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Connection.hpp"
 
-t_location Connection::getLocationVHost(Connection *ref, std::string uriRequested)
+t_location Connection::getLocationVHost(std::string uriRequested)
 {
     std::vector<t_location> locations;
     std::string             locationName;
@@ -20,7 +20,6 @@ t_location Connection::getLocationVHost(Connection *ref, std::string uriRequeste
     
     locations = this->getServerStruct().locations;
     locationName = extractLocationUriStr(uriRequested);
-
     for (std::vector<t_location>::iterator it = locations.begin(); it != locations.end(); it++)
     {
         if (it->location == locationName)
@@ -36,7 +35,7 @@ t_location Connection::getLocationVHost(Connection *ref, std::string uriRequeste
 
 std::string catEndSlashStr(std::string str)
 {
-    if (!str.empty() && str.back() != '/')
+    if (!str.empty() && str[str.length() - 1] != '/')
         str += "/";
     return str;
 }
@@ -65,7 +64,7 @@ std::string cleanPathQuery(std::string path, std::string query)
         path.replace(path.find(query) - 1, query.length() + 1, "");// start -1 because Query dont have the '?', length + 1 to count the '?'
     
     else if (endsWith(path, "?"))
-        path.pop_back();
+        path.erase(path.length() - 1);
         
     return path;
 }
@@ -77,7 +76,7 @@ void Connection::requestParse(RequestParser &request)
     
     uriRequested = request.get()["REQUEST_URI"];
     
-    this->_location = this->getLocationVHost(this, uriRequested);
+    this->_location = this->getLocationVHost(uriRequested);
 
     if (this->_location.location == "NULL")
         throw ServerException("requestParse: location requested wrong: " + uriRequested, NOT_FOUND);

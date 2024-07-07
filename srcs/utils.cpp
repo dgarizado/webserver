@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/23 19:36:42 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:04:07 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,17 @@ int ft_error(std::string msg)
 	return (-1);
 }
 
-std::ifstream openFile(std::string filePath)
+void    openFile(std::string filePath, std::ifstream& file)
 {
     if (access(filePath.c_str(), F_OK) == -1)
         throw ServerException("openFile: not found: " + filePath, NOT_FOUND);
     if (access(filePath.c_str(), R_OK) == -1)
         throw ServerException("openFile: Permision not allowed: " + filePath, FORBIDDEN);
     
-    std::ifstream       file(filePath);
+    file.open(filePath.c_str());
     if (!file)
         throw ServerException("openFile: internal error: " + filePath, INTERNAL_SERVER_ERROR);
     
-    return file;
 }
 
 void printWaitConsole(void)
@@ -66,7 +65,7 @@ char** convertToCharArray(const std::vector<std::string>& strList) {
         std::strcpy(charArray[i], strList[i].c_str());
     }
     
-    charArray[strList.size()] = nullptr;
+    charArray[strList.size()] = NULL;
     
     return charArray;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection_genResponse.cpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/24 14:03:39 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 13:29:32 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,12 @@ std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath
     mime_type = this->getMimeType(filePath);//para python ???????????????????
     statusCode = this->getStatusCode();
     size = bodyHTTP.size();
-
+    //CONVERT size to string
+    std::string sizeStr;
+    std::stringstream ss;
+    ss << size;
+    ss >> sizeStr;
+    //end convert size to string
     if (statusCode == OK)
         response_header  = "HTTP/1.1 200 OK\r\n";
     else if (statusCode == NO_CONTENT)
@@ -42,7 +47,7 @@ std::string Connection::genHeaderHTTP(std::string bodyHTTP, std::string filePath
     else if (statusCode == INTERNAL_SERVER_ERROR)
         response_header  = "HTTP/1.1 500 Internal Server Error\r\n";
 
-    response_header_params = "Content-Type: " + mime_type + "\r\nContent-Length: " + std::to_string(size) + "\r\n\r\n";
+    response_header_params = "Content-Type: " + mime_type + "\r\nContent-Length: " + sizeStr + "\r\n\r\n";
 
     return response_header + response_header_params;
 }
@@ -84,7 +89,7 @@ std::string Connection::genBodyFile(std::string filePath)
     std::stringstream   buffer;
 
     try{
-       file = openFile(filePath);
+       openFile(filePath, file);
     } catch (const ServerException &e) {
         throw ServerException("genBodyFile: " + std::string(e.what()), e.getCode());
     }
@@ -159,11 +164,6 @@ std::string Connection::genResponseGET(RequestParser &request)
     return responseHTTP_header + responseHTTP_body;
 }
 
-std::string Connection::genResponsePOST(RequestParser &request)
-{
-    return "POST";
-}
-
 
 /**
  * @brief This function is used to parse the body of a POST request with a multipart/form-data content type.
@@ -203,7 +203,7 @@ size_t findBoundary(std::vector<unsigned char>& buffer, std::vector<unsigned cha
  */
 std::vector<unsigned char> extractRealBody(const std::vector<unsigned char>& buffer, size_t start, size_t end) {
     if (start >= buffer.size() || end > buffer.size() || start >= end) 
-    return {};
+    return std::vector<unsigned char>();;
     return std::vector<unsigned char>(buffer.begin() + start, buffer.begin() + end);
 }
 
@@ -238,7 +238,7 @@ size_t findHeadersEnd(const std::vector<unsigned char>& buffer, size_t start) {
 
 void Connection::createFilePost(std::string fileName, std::vector<unsigned char>& binary_data) {
 
-    std::ofstream file(fileName, std::ios::binary);
+    std::ofstream file(fileName.c_str(), std::ios::binary);
     if (file.is_open()) {
         file.write(reinterpret_cast<const char*>(binary_data.data()), binary_data.size());
         file.close();
@@ -300,7 +300,7 @@ std::string Connection::genResponse(RequestParser &request)
         return continueRequest;
     }
      else if (method == "DELETE")
-       return genResponseDELETE(request);
+       return genResponseDELETE();
     else
         throw ServerException("genResponse: method not configured: " + method, BAD_REQUEST);
 }

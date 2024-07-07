@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParser.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/23 19:36:09 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:36:46 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ std::string extractString1(const std::string& content, std::string str) {
             // Extract the substring after the found position
             std::string extracted = token.substr(pos + str.length());
             // Check if the last character is a quote and remove it if so
-            if (!extracted.empty() && extracted.back() == '"') {
-                extracted.pop_back();
+            if (!extracted.empty() && extracted[extracted.length() - 1] == '"') {
+                extracted.erase(extracted.length() - 1);
             }
             return extracted;
         }

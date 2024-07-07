@@ -36,10 +36,10 @@ std::string Connection::genBodyCgi(std::string filePath, RequestParser &request)
 {
     std::string cgi;// like /usr/bin/python3 or /usr/bin/bash
     std::string response_body;
-    long        size;
     
     try{
-        openFile(filePath);
+        std::ifstream file;
+        openFile(filePath, file);
         setVarsEnviroment(request);
         cgi = this->_location.cgiMap[this->_format]; //example:  .py : /usr/bin/python3
         response_body = readOutputCgi(cgi, filePath, this->_fileName);

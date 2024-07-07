@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   FileParse.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 12:12:05 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/24 14:05:45 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:32:03 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ void setCgiExtensions(t_location &ref, int &nServer, int &nLocation, std::istrin
     value.erase(std::remove(value.begin(), value.end(), ';'), value.end());
 	
     ref.cgiMap[key] = value;
+    nServer *= 1;
+    nLocation *= 1;
 }
 
 void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
@@ -166,7 +168,10 @@ void varServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, int
     {
         iss >> token;
         token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
-        port = std::stoi(token); //if error it throw exception
+        // port = std::stoi(token); //if error it throw exception
+        std::stringstream ss(token);
+        if (!(ss >> port))
+            throw std::runtime_error("port is not a number");
         ref->getStruct().ports.insert(port);
         ref->getStruct().serverData[nServer].listen = port;
     }
@@ -221,7 +226,10 @@ void setClientMaxBodySize(FileParse *ref, std::istringstream &iss)
 
     iss >> token;
     token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
-    n = std::stoi(token);
+    // n = std::stoi(token);
+    std::stringstream ss(token);
+    if (!(ss >> n))
+        throw std::runtime_error("client_max_body_size is not a number");
     ref->getStruct().clientMaxBodySize = n;
 }
 
@@ -231,7 +239,10 @@ void setErrPages(FileParse *ref, std::istringstream &iss)
     int         errN;
     
     iss >> token;
-    errN = std::stoi(token);
+    // errN = std::stoi(token);
+    std::stringstream ss(token);
+    if (!(ss >> errN))
+        throw std::runtime_error("error_page is not a number");
     iss >> token;
     token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
     ref->getStruct().errPageMap[errN] = token;
@@ -305,7 +316,7 @@ int lineParser(FileParse *ref, std::ifstream &file, std::string &line)
  */
 int checksBraces(std::string filename)
 {
-    std::ifstream       file(filename);
+    std::ifstream       file(filename.c_str());
     std::string         line;
     int                 braces = 0;
 
@@ -342,7 +353,7 @@ t_http & FileParse::getStruct()
  */
 void FileParse::loadConfigFromFile(const std::string filename)
 {
-    std::ifstream       file(filename);
+    std::ifstream       file(filename.c_str());
     std::string         line;
     bool                http = false;
     

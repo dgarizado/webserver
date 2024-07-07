@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection_genAutoIndex.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/24 11:28:25 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 13:00:18 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,15 @@ std::string genRowLastMod(struct stat fileStat)
 
 std::string genRowSize(struct stat fileStat)
 {
-    std::string html;
-    off_t       fileSize;
-
+    std::string          html;
+    off_t                fileSize;
+    std::ostringstream   oss;
+    
+    
     fileSize = fileStat.st_size;
-    html = std::to_string(fileSize) + " B";
+    oss << fileSize;
+    // html = std::to_string(fileSize) + " B";
+    html = oss.str() + " B";
 
     return html;
 }
@@ -120,56 +124,109 @@ std::string genRowsAutoIndex(std::string path)
     return html;
 }
 
+// std::string Connection::genBodyAutoIndex(std::string path)
+// {
+//     std::string response_body_begin;
+//     std::string response_body_middle;
+//     std::string response_body_end;
+
+//     response_body_begin = R"(
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//         <title>Index of /directorio-listado/</title>
+//         <style>
+//             body {
+//                 font-family: Arial, sans-serif;
+//             }
+//             table {
+//                 width: 100%;
+//                 border-collapse: collapse;
+//             }
+//             th, td {
+//                 padding: 8px;
+//                 text-align: left;
+//                 border-bottom: 1px solid #ddd;
+//             }
+//             th {
+//                 background-color: #f2f2f2;
+//             }
+//             a {
+//                 color: #0066cc;
+//                 text-decoration: none;
+//             }
+//             a:hover {
+//                 text-decoration: underline;
+//             }
+//         </style>
+//     </head>
+//     <body>
+//         <h1>Index of /directorio-listado/</h1>
+//         <table>
+//             <tr>
+//                 <th>Name</th>
+//                 <th>Last modified</th>
+//                 <th>Size</th>
+//                 <th>Permisions</th>
+//             </tr>)";
+//     response_body_middle = genRowsAutoIndex(path);
+//     response_body_end = R"(
+//             </table>
+//         </body>
+//     </html>)";
+
+//     return response_body_begin + response_body_middle + response_body_end;
+// }
 std::string Connection::genBodyAutoIndex(std::string path)
 {
     std::string response_body_begin;
     std::string response_body_middle;
     std::string response_body_end;
 
-    response_body_begin = R"(
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Index of /directorio-listado/</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 8px;
-                text-align: left;
-                border-bottom: 1px solid #ddd;
-            }
-            th {
-                background-color: #f2f2f2;
-            }
-            a {
-                color: #0066cc;
-                text-decoration: none;
-            }
-            a:hover {
-                text-decoration: underline;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Index of /directorio-listado/</h1>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Last modified</th>
-                <th>Size</th>
-                <th>Permisions</th>
-            </tr>)";
+    response_body_begin =
+        "<!DOCTYPE html>\n"
+        "<html>\n"
+        "<head>\n"
+        "    <title>Index of /directorio-listado/</title>\n"
+        "    <style>\n"
+        "        body {\n"
+        "            font-family: Arial, sans-serif;\n"
+        "        }\n"
+        "        table {\n"
+        "            width: 100%;\n"
+        "            border-collapse: collapse;\n"
+        "        }\n"
+        "        th, td {\n"
+        "            padding: 8px;\n"
+        "            text-align: left;\n"
+        "            border-bottom: 1px solid #ddd;\n"
+        "        }\n"
+        "        th {\n"
+        "            background-color: #f2f2f2;\n"
+        "        }\n"
+        "        a {\n"
+        "            color: #0066cc;\n"
+        "            text-decoration: none;\n"
+        "        }\n"
+        "        a:hover {\n"
+        "            text-decoration: underline;\n"
+        "        }\n"
+        "    </style>\n"
+        "</head>\n"
+        "<body>\n"
+        "    <h1>Index of /directorio-listado/</h1>\n"
+        "    <table>\n"
+        "        <tr>\n"
+        "            <th>Name</th>\n"
+        "            <th>Last modified</th>\n"
+        "            <th>Size</th>\n"
+        "            <th>Permisions</th>\n"
+        "        </tr>";
     response_body_middle = genRowsAutoIndex(path);
-    response_body_end = R"(
-            </table>
-        </body>
-    </html>)";
+    response_body_end =
+        "        </table>\n"
+        "    </body>\n"
+        "</html>";
 
     return response_body_begin + response_body_middle + response_body_end;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/24 14:12:39 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:00:09 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # define WEBSERV_HPP
 
 # include <string>
-# include <array>
 # include <vector>
 # include <map>
 # include <fstream>
@@ -120,9 +119,9 @@ typedef struct s_fileParse {
 
 class ServerException: public std::exception {
 public:
-    ServerException(const std::string& msg, int c) throw() : message(msg), code(c) {}
+    ServerException(const std::string& msg, int c) : message(msg), code(c) {}
+	virtual ~ServerException() throw() {} 
 	//ServerException(const std::string& msg) : message(msg), code(0) {}
-
     // Sobrescribir el método what() para proporcionar un mensaje de error
     const char* what()  const throw() {
         return message.c_str();
@@ -152,6 +151,6 @@ void 			showParamsConsole(std::string &, std::string &, std::string &, std::stri
 void 			showParamsConsoleHTTP(std::string , size_t , int, int, bool);
 void 			printWaitConsole(void);
 char** 			convertToCharArray(const std::vector<std::string>& strList); 
-std::ifstream 	openFile(std::string filePath);
+void 			openFile(std::string filePath, std::ifstream& file);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VHost.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 15:11:51 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/19 09:33:55 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:20:13 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ VHost::VHost()
 
 VHost::VHost(FileParse &config)
 {
+    std::cout << "config: " << config.getStruct().clientMaxBodySize << std::endl;
 	//parse the configuration and store it in the VHost object
 }
 

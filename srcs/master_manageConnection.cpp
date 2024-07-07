@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master_manageConnection.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/24 14:33:56 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 12:51:51 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,15 @@ void Connection::requestCheck(RequestParser &request)
 
     if (this->methodCheck(method) == false)
         throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
-  
-    if (method == "POST" && std::stol(request.get()["CONTENT_LENGTH"]) > this->_clientMaxBodySize )
-        throw ServerException("requestCheck: exceded max client body size " + uriRequested, PAYLOAD_TOO_LARGE);
+    
+    if (method == "POST")
+    {
+        std::istringstream iss(request.get()["CONTENT_LENGTH"]);
+        long contentLength;
+        iss >> contentLength;
+        if (contentLength > this->_clientMaxBodySize)
+            throw ServerException("requestCheck: exceded max client body size " + uriRequested, PAYLOAD_TOO_LARGE);
+    }
 }
 
 /**
@@ -63,12 +69,22 @@ void Connection::readFromSocket(long clientMaxBodySize)
 
     clientSocket = this->getClientSocket();
     bytesRead = read(clientSocket, buffer, SOCKET_BUFFER_SIZE);
-    
+    clientMaxBodySize *= 1;
     if (bytesRead < 0)
-        throw std::runtime_error("readFromSocket: Error reading from client socket " + std::to_string(clientSocket));
-
+    {
+        std::ostringstream oss;
+        oss << "readFromSocket: Error reading from client socket " << clientSocket;
+        // throw std::runtime_error("readFromSocket: Error reading from client socket " + std::to_string(clientSocket));
+        throw std::runtime_error(oss.str());
+        
+    }
     if (bytesRead == 0)
-        throw std::runtime_error("readFromSocket: 0 bytes read from client socket " + std::to_string(clientSocket));
+    {
+        std::ostringstream oss;
+        // throw std::runtime_error("readFromSocket: 0 bytes read from client socket " + std::to_string(clientSocket));
+        oss << "readFromSocket: 0 bytes read from client socket " << clientSocket;
+        throw std::runtime_error(oss.str());    
+    }
     else //store the buffer in the connection object which represent the client
     {
         _buffer2.resize(bytesRead);
