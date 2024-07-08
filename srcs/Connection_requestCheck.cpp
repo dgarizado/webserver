@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 10:19:40 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 16:14:53 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/08 19:43:06 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,14 @@ void Connection::requestParse(RequestParser &request)
 {
     std::string pathSwapedWithQuery;
     std::string uriRequested;
+    std::string method;
     
     uriRequested = request.get()["REQUEST_URI"];
-    
-    this->_location = this->getLocationVHost(uriRequested);
+    method = request.get()["REQUEST_METHOD"];
 
+    if (method != "GET" && method != "POST" && method != "DELETE" )
+        throw ServerException("requestParse: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
+    this->_location = this->getLocationVHost(uriRequested);
     if (this->_location.location == "NULL")
         throw ServerException("requestParse: location requested wrong: " + uriRequested, NOT_FOUND);
         

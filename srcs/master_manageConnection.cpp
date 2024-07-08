@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 12:51:51 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/08 19:29:33 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ void Connection::requestCheck(RequestParser &request)
        
     uriRequested = request.get()["REQUEST_URI"];
     
-    if (this->_path.empty())
-        throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, INTERNAL_SERVER_ERROR);
-    
     method = request.get()["REQUEST_METHOD"];
 
     if (this->methodCheck(method) == false)
         throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
+    if (this->_path.empty())
+        throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, INTERNAL_SERVER_ERROR);
+    
     
     if (method == "POST")
     {
