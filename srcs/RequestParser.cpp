@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 12:36:46 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/08 17:50:10 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ void RequestParser::contenTypeParse(RequestParser *ref, std::istringstream &iss)
         tokenconcated += token;
     ref->set("CONTENT_TYPE", tokenconcated);
 
+    if (tokenconcated.find("multipart/form-data") != std::string::npos)
+        _multiPart = true;
     if (tokenconcated.find("boundary=") != std::string::npos)
     {
         _boundary = extractString1(tokenconcated, "boundary=");
@@ -274,4 +276,9 @@ std::string RequestParser::getPostFileName(void) const
 std::string RequestParser::getBoundary(void) const
 {
     return _boundary;
+}
+
+bool RequestParser::getMultiPart(void) const
+{
+    return _multiPart;
 }

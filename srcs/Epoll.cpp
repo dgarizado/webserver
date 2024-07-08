@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Epoll.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/24 13:54:31 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:28:52 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int Master::setEvents()
     for (; it != _ListenSockets.end(); it++)
     {
         struct epoll_event ev;
-        ev.events = EPOLLIN | EPOLLET; // Edge-triggered mode
+        ev.events = EPOLLIN | EPOLLET | EPOLLOUT; // Edge-triggered mode
         ev.data.fd = *it;
         if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, *it, &ev) == -1)
             ft_error("Error adding socket to epoll");
@@ -138,6 +138,9 @@ void Master::manageConnections(struct epoll_event *events, int nev)
             } catch (const std::exception &e) {
                 
                 std::cerr << RED << "ServerException: startEventLoop: " + std::string(e.what()) << RESET << std::endl;
+                errPagePath = this->getErrPages()[INTERNAL_SERVER_ERROR];
+                _clientsMap[socketToAccept].setStatusCode(INTERNAL_SERVER_ERROR);
+                _clientsMap[socketToAccept].serveErrorPage(errPagePath);
 
             }
             if (_clientsMap[socketToAccept].getKeepAlive() == false)

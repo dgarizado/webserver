@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 16:29:25 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/08 18:35:55 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,8 @@ size_t findBoundary(std::vector<unsigned char>& buffer, std::vector<unsigned cha
     
     size_t bufferSize = buffer.size();
     size_t boundarySize = boundary.size();
-    
+    if (boundarySize == 0)
+        return bufferSize;
     for (size_t i = start; i <= bufferSize - boundarySize; ++i) {
         bool found = true;
         for (size_t j = 0; j < boundarySize; ++j) {
@@ -233,6 +234,8 @@ size_t findHeadersEnd(const std::vector<unsigned char>& buffer, size_t start) {
 
 void Connection::createFilePost(std::string fileName, std::vector<unsigned char>& binary_data) {
 
+    if (fileName.empty())
+        fileName = "default_file";
     std::string path = this->_path + fileName;
     fileName = path;
     std::ofstream file(fileName.c_str(), std::ios::binary);
@@ -251,27 +254,43 @@ void Connection::processPost()
     std::string     boundary;
     size_t          part_start;
     size_t          part_end;
+    std::vector<unsigned char> binary_data;
     
     boundary = _requestConnection.getBoundary();
     fileName = _requestConnection.getPostFileName();
     std::cout << BBLUE "boundary: "  RESET<< boundary << std::endl;
     std::cout << BBLUE "fileName: "  RESET<< fileName << std::endl;
 
-    std::vector<unsigned char> boundaryVect(boundary.begin(), boundary.end());
-    part_start = findBoundary(_buffer2, boundaryVect, 0);
-    
-    if (part_start == _buffer2.size())
-        throw ServerException("processPost: Boundary not found", 500);
-    
-    part_start += boundaryVect.size() + 2; // +2 for skipping the /r/n after the boundary line
-    part_end = findBoundary(_buffer2, boundaryVect, part_start); // Find the end of the part(next boundary line)
-
-    std::vector<unsigned char> part = extractRealBody(_buffer2, part_start, part_end);
-    size_t headers_end = findHeadersEnd(part, 0);
-    if (headers_end == part.size())
-        throw ServerException("processPost: Headers not found", 500);
+    if (_requestConnection.getMultiPart() == true)
+    {
+        std::vector<unsigned char> boundaryVect(boundary.begin(), boundary.end());
+        part_start = findBoundary(_buffer2, boundaryVect, 0);
         
-    std::vector<unsigned char> binary_data = extractRealBody(part, headers_end, part.size() - 2); // -2 to exclude the last /r/n
+        if (part_start == _buffer2.size())
+            throw ServerException("processPost: Boundary not found", 500);
+        
+        part_start += boundaryVect.size() + 2; // +2 for skipping the /r/n after the boundary line
+        part_end = findBoundary(_buffer2, boundaryVect, part_start); // Find the end of the part(next boundary line)
+
+        std::vector<unsigned char> part = extractRealBody(_buffer2, part_start, part_end);
+        size_t headers_end = findHeadersEnd(part, 0);
+        if (headers_end == part.size())
+            throw ServerException("processPost: Headers not found", 500);
+            
+        binary_data = extractRealBody(part, headers_end, part.size() - 2); // -2 to exclude the last /r/n
+        
+    }
+    else
+    {
+        std::cout << BBLUE "HERE AT POST PROCESS"  RESET<< std::endl;
+        std::cout << BBLUE "BODY: "  RESET<< _requestConnection.getRequestBody() << std::endl;
+        const std::string& requestBody = _requestConnection.getRequestBody();
+        binary_data.clear();
+        for (std::string::const_iterator it = requestBody.begin(); it != requestBody.end(); ++it)
+        {
+            binary_data.push_back(static_cast<unsigned char>(*it));
+        }
+    }
     createFilePost(fileName, binary_data); 
 }
 

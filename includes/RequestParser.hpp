@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 17:28:48 by vcereced          #+#    #+#             */
-/*   Updated: 2024/06/22 21:00:23 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/08 17:47:34 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ public:
 	RequestParser(void) {
 		_headerWatchDog = 0;
 		_bodyWatchDog = 0;
+		_multiPart = false;
 	}
 	RequestParser(RequestParser const &src);
 	RequestParser &operator=(RequestParser const &src);
@@ -50,10 +51,10 @@ public:
 	void loadConfigFromRequest(const std::string );
 	void showConfig(void);
 
-	//setter
+	//setters
 	void set(std::string, std::string);
 	
-	//getter
+	//getters
 	std::map<std::string, std::string> &get(void);
 	std::string							getRequestHeader(void) const;
 	std::string							getRequestBody(void) const;
@@ -61,6 +62,7 @@ public:
 	int 								getBodyWatchDog(void) const;
 	std::string							getPostFileName(void) const;
 	std::string							getBoundary(void) const;
+	bool 								getMultiPart(void) const;
 	
 	//Methods
 	void lineParser(RequestParser *ref, std::string &requestLine);
@@ -73,8 +75,10 @@ private:
 	std::string						   _requestBody;
 	int								   _headerWatchDog;
 	int 							   _bodyWatchDog;
+	//POST
 	std::string						   _boundary;
 	std::string						   _postFileName;
+	bool							   _multiPart;
 };
 
 #endif  // RequestParse_HPP 

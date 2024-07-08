@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 12:00:09 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/08 18:44:19 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
  
 //DEFAULT CONFIGURATION!!!!
 # define MAX_EVENTS 				64 
-# define SOCKET_BUFFER_SIZE  		10000 //default limit body size if not configured in .conf ??????
+# define SOCKET_BUFFER_SIZE  		42000 //default limit body size if not configured in .conf ??????
 # define CGI_BUFFER_SIZE			10000
 			
 
