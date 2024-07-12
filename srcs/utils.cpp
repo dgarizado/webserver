@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 12:04:07 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/11 10:43:11 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,18 @@ int ft_error(std::string msg)
 {
 	std::cerr << YELLOW << msg << RESET << std::endl;
 	return (-1);
+}
+
+void setNonBlocking(int sockfd) {
+    int flags = fcntl(sockfd, F_GETFL, 0);
+    if (flags == -1) {
+        std::cerr << "Error getting socket flags\n";
+        exit(EXIT_FAILURE);
+    }
+    if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) == -1) {
+        std::cerr << "Error setting non-blocking\n";
+        exit(EXIT_FAILURE);
+    }
 }
 
 void    openFile(std::string filePath, std::ifstream& file)
@@ -93,10 +105,10 @@ std::string extractFileNameStr(std::string uri)
 {
 	std::string fileName;
     size_t      slashPos;
-    size_t      length;
+    // size_t      length;
     size_t      dotPos;
 
-    length = uri.length();
+    // length = uri.length();
     slashPos = uri.rfind('/');
     dotPos = uri.find('.');
 

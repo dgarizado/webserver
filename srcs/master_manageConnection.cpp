@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master_manageConnection.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/08 19:29:33 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/12 16:23:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ void Master::manageConnection(Connection &connection)
     clientMaxBodySize = this->getclientMaxBodySize();
 
     try{
+
         connection.readFromSocket(clientMaxBodySize);
         buffer = connection.getBuffer();
         //Print buffer
@@ -118,7 +119,6 @@ void Master::manageConnection(Connection &connection)
         VHostAssigned = this->assignVHost(request.get()["HTTP_HOST"]);
         
         connection = VHostAssigned;         //post-herencia, clase BASE de Connection con la clase Base asignada
-
         connection.processRequest(request);
     }
     catch (const ServerException &e) {

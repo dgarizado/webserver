@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
+#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/07/07 10:59:18 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/07/11 09:39:28 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,7 @@ OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))
 OS = #HERE WE DISCOVER THE OS
 $(OBJDIR)/%.o: %.cpp $(HEADERS)
 	@mkdir -p $(@D)
-	@clang++ -c $< -o $@  $(FLAGS)
+	@clang++ -c $< -o $@  #$(FLAGS)
 
 
 ################################################################################
@@ -54,7 +54,7 @@ $(OBJDIR)/%.o: %.cpp $(HEADERS)
 all: $(NAME)
 
 $(NAME): $(OBJS) $(HEADERS)
-	@clang++ -o $(NAME) $(OBJS) $(FLAGS)
+	@clang++ -o $(NAME) $(OBJS) #$(FLAGS)
 	@echo "$(GREEN)$(NAME) executable has been created!$(CLR_RMV)"
 
 clean:

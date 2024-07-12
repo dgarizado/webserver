@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/08 18:44:19 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/11 10:43:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,5 +152,6 @@ void 			showParamsConsoleHTTP(std::string , size_t , int, int, bool);
 void 			printWaitConsole(void);
 char** 			convertToCharArray(const std::vector<std::string>& strList); 
 void 			openFile(std::string filePath, std::ifstream& file);
+void 			setNonBlocking(int sockfd);
 
 #endif
