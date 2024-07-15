@@ -6,7 +6,7 @@
 /*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 17:28:52 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/07/13 17:55:56 by dgarizad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int Master::setEvents()
     for (; it != _ListenSockets.end(); it++)
     {
         struct epoll_event ev;
-        ev.events = EPOLLIN | EPOLLET | EPOLLOUT; // Edge-triggered mode
+        ev.events = EPOLLIN | EPOLLOUT;
         ev.data.fd = *it;
         if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, *it, &ev) == -1)
             ft_error("Error adding socket to epoll");
