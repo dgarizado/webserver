@@ -43,6 +43,7 @@ std::string Connection::genBodyCgi(std::string filePath, RequestParser &request)
         setVarsEnviroment(request);
         cgi = this->_location.cgiMap[this->_format]; //example:  .py : /usr/bin/python3
         response_body = readOutputCgi(cgi, filePath, this->_fileName);
+        
     }catch(ServerException &e) {
         throw ServerException("genBodyCgi: " + std::string(e.what()), e.getCode());
     }

@@ -6,7 +6,7 @@
 #    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/07/07 10:59:18 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/09/20 18:56:04 by dgarizad         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ NAME = webserv
 HEADERS = includes/webserv.hpp  includes/Master.hpp  includes/VHost.hpp \
 includes/FileParse.hpp includes/RequestParser.hpp includes/Connection.hpp 
 OBJDIR = ./obj
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror  -std=c++98 
 
 CLR_RMV		:= \033[0m
 RED		    := \033[1;31m
