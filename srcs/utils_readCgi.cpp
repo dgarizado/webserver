@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_readCgi.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:19:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/09/20 19:04:03 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/25 20:27:05 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ std::string readOutputCgi(std::string cgi, std::string filePath, std::string fil
         int block =  waitpid(pid, &status, 0);
         block = block + 0;
         alarm(0);
-
-        if (WIFEXITED(status)) {
+        
+        if (WIFEXITED(status) && WEXITSTATUS(status) == 0 ) {
             std::cout << "Cgi in subprocess finished: exit status: " << WEXITSTATUS(status) << std::endl;
 
             close(pipefd[1]);
@@ -84,16 +84,17 @@ std::string readOutputCgi(std::string cgi, std::string filePath, std::string fil
             //     result.append(buffer.data(), bytesRead);
             close(pipefd[0]);
             
+        } else if (WIFEXITED(status) && WEXITSTATUS(status) != 0 ) {
+            waitpid(pid, &status, 0); // Esperar a que termine después de matarlo
+            throw ServerException("readOutputCgi: Cgi in subprocess finished suddenly: unexpected error", INTERNAL_SERVER_ERROR);
         } else if (WIFSIGNALED(status)) {
             waitpid(pid, &status, 0);
             std::stringstream ss;
             ss << WTERMSIG(status);
-            throw ServerException("readOutputCgi: Cgi in subprocess finished by signal: " + ss.str(), INTERNAL_SERVER_ERROR);        } 
+            throw ServerException("readOutputCgi: Cgi in subprocess finished by signal: " + ss.str(), INTERNAL_SERVER_ERROR);
+        } 
             // throw ServerException("readOutputCgi: Cgi in subprocess finished by signal: " + std::to_string(WTERMSIG(status)), INTERNAL_SERVER_ERROR);}
-            else {
-            waitpid(pid, &status, 0); // Esperar a que termine después de matarlo
-            throw ServerException("readOutputCgi: Cgi in subprocess finished suddenly: unexpected error", INTERNAL_SERVER_ERROR);
-        }
+        
 
         return result;
     }

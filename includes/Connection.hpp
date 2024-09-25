@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 13:29:42 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/25 20:06:58 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ class Connection : public VHost
         std::string genPathDefaultIndex(void);
         std::string genResponseGET(RequestParser &request);
         std::string genResponseDELETE(void);
+        void        Response(int clientSocket, const char * response, size_t size);
 
         void               processRequest(RequestParser &request);
 

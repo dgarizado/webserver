@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 12:37:25 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/25 20:08:24 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,8 @@ void Connection::serveErrorPage(std::string filePath)
     response_header = genHeaderHTTP(response_body, filePath);
     response = response_header + response_body;
     
-    send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
+    //send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
+    this->Response(this->getClientSocket(), response.c_str(), response.size());
 
     showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), true);
 }

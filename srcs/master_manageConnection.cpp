@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master_manageConnection.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/08 19:29:33 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/25 20:07:48 by vcereced         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,11 @@ void Connection::requestCheck(RequestParser &request)
     }
 }
 
+void Connection::Response(int clientSocket, const char * response, size_t size)
+{
+    send(clientSocket, response, size, 0);
+}
+
 /**
  * @brief get the buffer from the client object and process the request. 
  * 
@@ -55,7 +60,8 @@ void Connection::processRequest(RequestParser &request)
     }catch(const ServerException &e) {
         throw ServerException("processRequest: " + std::string(e.what()), e.getCode());
     }
-    send(this->getClientSocket(), response.c_str(), response.size(), 0);
+    //send(this->getClientSocket(), response.c_str(), response.size(), 0);
+    this->Response(this->getClientSocket(), response.c_str(), response.size());
    
     showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), false);
 }
