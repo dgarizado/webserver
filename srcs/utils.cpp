@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 12:04:07 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/25 18:38:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,8 @@ std::string extractFileNameStr(std::string uri)
 {
 	std::string fileName;
     size_t      slashPos;
-    size_t      length;
     size_t      dotPos;
 
-    length = uri.length();
     slashPos = uri.rfind('/');
     dotPos = uri.find('.');
 

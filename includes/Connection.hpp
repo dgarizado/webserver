@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/25 20:06:58 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/09/25 18:38:32 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Connection : public VHost
         Connection &operator=(Connection const &src);
         Connection &operator=(VHost &src);
 
-        void readFromSocket(long clientMaxBodySize);
+        void readFromSocket(void);
 
         //GETTERS
         int         getClientSocket() const;

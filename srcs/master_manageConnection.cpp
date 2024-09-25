@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master_manageConnection.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/25 20:07:48 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/09/25 18:39:04 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void Connection::processRequest(RequestParser &request)
 }
 
 
-void Connection::readFromSocket(long clientMaxBodySize)
+void Connection::readFromSocket(void)
 {
     char    buffer[SOCKET_BUFFER_SIZE];
     int     bytesRead;
@@ -75,7 +75,6 @@ void Connection::readFromSocket(long clientMaxBodySize)
 
     clientSocket = this->getClientSocket();
     bytesRead = read(clientSocket, buffer, SOCKET_BUFFER_SIZE);
-    clientMaxBodySize *= 1;
     if (bytesRead < 0)
     {
         std::ostringstream oss;
@@ -106,12 +105,9 @@ void Master::manageConnection(Connection &connection)
     RequestParser&  request = connection.getRequest();
     VHost           VHostAssigned;
     std::string     buffer;
-    long            clientMaxBodySize;
-
-    clientMaxBodySize = this->getclientMaxBodySize();
 
     try{
-        connection.readFromSocket(clientMaxBodySize);
+        connection.readFromSocket();
         buffer = connection.getBuffer();
         //Print buffer
         std::cout << BYELLOW << "Buffer received from client: '" << RESET << std::endl;
