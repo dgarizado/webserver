@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master_manageConnection.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/08 19:29:33 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/25 17:27:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ void Connection::processRequest(RequestParser &request)
     }catch(const ServerException &e) {
         throw ServerException("processRequest: " + std::string(e.what()), e.getCode());
     }
-    send(this->getClientSocket(), response.c_str(), response.size(), 0);
+    //send(this->getClientSocket(), response.c_str(), response.size(), 0);
+    this->response(this->getClientSocket(), response, strlen(response.c_str()));
    
     showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), false);
 }
@@ -69,7 +70,7 @@ void Connection::readFromSocket(long clientMaxBodySize)
 
     clientSocket = this->getClientSocket();
     bytesRead = read(clientSocket, buffer, SOCKET_BUFFER_SIZE);
-    clientMaxBodySize *= 1;
+    clientMaxBodySize = clientMaxBodySize + 1; //WATCH OUUUUTTTTTTTTTTTTTTTTTTTT
     if (bytesRead < 0)
     {
         std::ostringstream oss;

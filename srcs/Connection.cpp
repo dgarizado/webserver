@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 12:37:25 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/23 17:09:40 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,11 @@ std::string Connection::getMimeType(const std::string &path)//????????? default 
     return mime;
 }
 
+void    Connection::response(int clientSocket, std::string response, size_t size)
+{
+    send(clientSocket, response.c_str(), size, 0);
+}
+
 void Connection::serveErrorPage(std::string filePath)
 {
     std::stringstream   buffer;
@@ -174,7 +179,8 @@ void Connection::serveErrorPage(std::string filePath)
     response_header = genHeaderHTTP(response_body, filePath);
     response = response_header + response_body;
     
-    send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
+   // send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
+   this->response(this->getClientSocket(), response, strlen(response.c_str()));
 
     showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), true);
 }

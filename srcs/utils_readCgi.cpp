@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_readCgi.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:19:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/09/20 19:04:03 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/25 17:34:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ std::string readOutputCgi(std::string cgi, std::string filePath, std::string fil
 
             close(pipefd[1]);
             while ((bytesRead = read(pipefd[0], &buffer[0], buffer.size())) > 0)
-                result.append(&buffer[0], bytesRead);
+                result.append(&buffer[0], bytesRead); // HERE WE NEED TO ADD EXCEPTION when READ == -1.
             // while ((bytesRead = read(pipefd[0], buffer.data(), buffer.size())) > 0)
             //     result.append(buffer.data(), bytesRead);
             close(pipefd[0]);
@@ -88,9 +88,10 @@ std::string readOutputCgi(std::string cgi, std::string filePath, std::string fil
             waitpid(pid, &status, 0);
             std::stringstream ss;
             ss << WTERMSIG(status);
-            throw ServerException("readOutputCgi: Cgi in subprocess finished by signal: " + ss.str(), INTERNAL_SERVER_ERROR);        } 
+            throw ServerException("readOutputCgi: Cgi in subprocess finished by signal: " + ss.str(), INTERNAL_SERVER_ERROR);
+        } 
             // throw ServerException("readOutputCgi: Cgi in subprocess finished by signal: " + std::to_string(WTERMSIG(status)), INTERNAL_SERVER_ERROR);}
-            else {
+        else {
             waitpid(pid, &status, 0); // Esperar a que termine después de matarlo
             throw ServerException("readOutputCgi: Cgi in subprocess finished suddenly: unexpected error", INTERNAL_SERVER_ERROR);
         }

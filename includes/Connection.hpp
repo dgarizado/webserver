@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 13:29:42 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/23 16:39:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ class Connection : public VHost
         //SERVE PAGE
    
         std::string getMimeType(const std::string &path);
-        void        serveErrorPage(std::string filePath);  
+        void        serveErrorPage(std::string filePath);
+        void        response(int clientSocket, std::string response, size_t size); 
         std::string genBodyCgi(std::string filePath, RequestParser &request);
         std::string genBodyFile(std::string filePath);
         std::string genBodyHTTP(std::string filePath, RequestParser &request);
