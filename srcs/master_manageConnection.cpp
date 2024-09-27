@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/27 16:45:50 by marvin           ###   ########.fr       */
+/*   Updated: 2024/09/27 19:02:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,15 @@ void Connection::requestCheck(RequestParser &request)
         throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
     if (this->_path.empty())
         throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, INTERNAL_SERVER_ERROR);
+    std::cout << BYELLOW <<"URIREQUESTED: "<< uriRequested << RESET << std::endl; 
+    
     if (uriRequested.find("download") != std::string::npos)
+    {
+        std::cout << BYELLOW << uriRequested + " se HA levantado el FLAG" << RESET << std::endl;
         this->_download = true;
+    }
+    else
+        std::cout << RED << uriRequested + " NO se HA levantado el FLAG" << RESET << std::endl;
     
     if (method == "POST")
     {
@@ -80,14 +87,14 @@ void Connection::readFromSocket(void)
     {
         std::ostringstream oss;
         oss << "readFromSocket: Error reading from client socket " << clientSocket;
-        // throw std::runtime_error("readFromSocket: Error reading from client socket " + std::to_string(clientSocket));
+       
         throw std::runtime_error(oss.str());
         
     }
     if (bytesRead == 0)
     {
         std::ostringstream oss;
-        // throw std::runtime_error("readFromSocket: 0 bytes read from client socket " + std::to_string(clientSocket));
+        
         oss << "readFromSocket: 0 bytes read from client socket " << clientSocket;
         throw std::runtime_error(oss.str());    
     }
@@ -111,9 +118,9 @@ void Master::manageConnection(Connection &connection)
         connection.readFromSocket();
         buffer = connection.getBuffer();
         //Print buffer
-        std::cout << BYELLOW << "Buffer received from client: '" << RESET << std::endl;
-        std::cout << BCYAN << buffer <<"'"<< RESET << std::endl;
-        std::cout << BRED << "Buffer size: " << RESET << buffer.size() << std::endl;
+       // std::cout << BYELLOW << "Buffer received from client: '" << RESET << std::endl;
+        //std::cout << BCYAN << buffer <<"'"<< RESET << std::endl;
+        //std::cout << BRED << "Buffer size: " << RESET << buffer.size() << std::endl;
         request.loadConfigFromRequest(buffer);
 
         request.showConfig();
@@ -129,5 +136,6 @@ void Master::manageConnection(Connection &connection)
     }
     catch (const std::exception &e) {
         throw std::runtime_error("manageConnection: " + std::string(e.what()));
+        
     }
 }

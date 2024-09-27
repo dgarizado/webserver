@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParser.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 18:04:58 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/08 17:50:10 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/27 19:03:10 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,10 +196,10 @@ void RequestParser::loadConfigFromRequest(const std::string requestMessage)
             // throw std::runtime_error("loadConfigFromRequest: lineParser: " + std::string(e.what()));}
         }  
     }
-    std::cout <<  BYELLOW "Request Header: " RESET << _requestHeader << std::endl;
-    std::cout <<  BYELLOW "Request Body: '" RESET << _requestBody <<"'"<< std::endl;
+   // std::cout <<  BYELLOW "Request Header: " RESET << _requestHeader << std::endl;
+    //std::cout <<  BYELLOW "Request Body: '" RESET << _requestBody <<"'"<< std::endl;
     
-    std::cout <<  BCYAN "Request Body Lenght: " RESET << _requestBody.size() << std::endl;
+    //std::cout <<  BCYAN "Request Body Lenght: " RESET << _requestBody.size() << std::endl;
     if (_requestBody.size() > 2)
         _bodyWatchDog = 1;
 }

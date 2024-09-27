@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Master.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:48:47 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/07 11:45:01 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/27 18:31:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,4 +149,13 @@ void Master::setErrPages(std::map<int, std::string> errPagesMap)
 	this->_errPageMap = errPagesMap;
 }
 
+void Master::manageError(int exceptionStatusCode, int socketToAccept)
+{
+	std::string errPagePath;
+	
+	errPagePath = this->getErrPages()[exceptionStatusCode];
+	_clientsMap[socketToAccept].setStatusCode(exceptionStatusCode);
+	_clientsMap[socketToAccept].serveErrorPage(errPagePath);
+	this->deleteConnection(socketToAccept);
+}
 

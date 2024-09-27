@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/27 16:46:07 by marvin           ###   ########.fr       */
+/*   Updated: 2024/09/27 19:00:16 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Connection::Connection() : VHost(), _clientSocket(0), _clientAddrSize(sizeof(_cl
 
 Connection::~Connection()
 {
-    
+   // std::cout << BYELLOW <<"CONNECTION OBJECT DELETED"<< RESET << std::endl;
 }
 
 Connection::Connection(Connection const &src): VHost(src)
@@ -178,5 +178,5 @@ void Connection::serveErrorPage(std::string filePath)
     //send(this->getClientSocket(), response.c_str(), strlen(response.c_str()), 0);
     this->Response(this->getClientSocket(), response.c_str(), response.size());
 
-    showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), true);
+    //showParamsConsoleHTTP(response, response.size(), this->getClientSocket(), this->getStatusCode(), true);
 }

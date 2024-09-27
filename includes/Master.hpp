@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Master.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 16:11:34 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/06/24 13:22:28 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/09/27 18:32:36 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ class Master
 		
 		void manageConnection(Connection &connection);
 		void manageConnections(struct epoll_event *events, int nev);
+		void manageError(int exceptionStatusCode, int socketToAccept);
 
 		void setErrPages(std::map<int, std::string> errPagesMap);
 

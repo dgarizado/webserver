@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Epoll.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:41:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/13 17:55:56 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/27 18:33:03 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void Master::deleteConnection(int SocketAccepted)
 
 void Master::manageConnections(struct epoll_event *events, int nev)
 {
-    std::string errPagePath;
+    //std::string errPagePath;
     int         socketToAccept;
     bool        toAccept;
     bool        toManage;
@@ -131,16 +131,20 @@ void Master::manageConnections(struct epoll_event *events, int nev)
             } catch (const ServerException &e) {
                 
                 std::cerr << RED << "ServerException: startEventLoop: " << e.what() << " -> " << e.getCode() << RESET << std::endl;
-                errPagePath = this->getErrPages()[e.getCode()];
-                _clientsMap[socketToAccept].setStatusCode(e.getCode());
-                _clientsMap[socketToAccept].serveErrorPage(errPagePath);
+                this->manageError(e.getCode(), socketToAccept);
+                // errPagePath = this->getErrPages()[e.getCode()];
+                // _clientsMap[socketToAccept].setStatusCode(e.getCode());
+                // _clientsMap[socketToAccept].serveErrorPage(errPagePath);
+                // this->deleteConnection(socketToAccept);
                 
             } catch (const std::exception &e) {
                 
                 std::cerr << RED << "ServerException: startEventLoop: " + std::string(e.what()) << RESET << std::endl;
-                errPagePath = this->getErrPages()[INTERNAL_SERVER_ERROR];
-                _clientsMap[socketToAccept].setStatusCode(INTERNAL_SERVER_ERROR);
-                _clientsMap[socketToAccept].serveErrorPage(errPagePath);
+                this->manageError(INTERNAL_SERVER_ERROR, socketToAccept);
+                // errPagePath = this->getErrPages()[INTERNAL_SERVER_ERROR];
+                // _clientsMap[socketToAccept].setStatusCode(INTERNAL_SERVER_ERROR);
+                // _clientsMap[socketToAccept].serveErrorPage(errPagePath);
+                // this->deleteConnection(socketToAccept);
 
             }
             if (_clientsMap[socketToAccept].getKeepAlive() == false)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_readCgi.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:19:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/09/25 20:27:05 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/09/27 18:13:27 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,17 @@ std::string readOutputCgi(std::string cgi, std::string filePath, std::string fil
             std::cout << "Cgi in subprocess finished: exit status: " << WEXITSTATUS(status) << std::endl;
 
             close(pipefd[1]);
-            while ((bytesRead = read(pipefd[0], &buffer[0], buffer.size())) > 0)
-                result.append(&buffer[0], bytesRead);
-            // while ((bytesRead = read(pipefd[0], buffer.data(), buffer.size())) > 0)
-            //     result.append(buffer.data(), bytesRead);
+            
+            while ( (bytesRead = read(pipefd[0], &buffer[0], buffer.size())) )
+            {
+                if (bytesRead > 0)
+                    result.append(&buffer[0], bytesRead);
+                else if (bytesRead == 0)
+                    break;
+                else
+                    throw ServerException("readOutputCgi: error read from pipe", INTERNAL_SERVER_ERROR);     
+            }
+
             close(pipefd[0]);
             
         } else if (WIFEXITED(status) && WEXITSTATUS(status) != 0 ) {
