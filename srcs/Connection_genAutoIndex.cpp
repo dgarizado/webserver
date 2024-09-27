@@ -3,26 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   Connection_genAutoIndex.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 21:36:38 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 15:48:08 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/09/27 16:54:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Connection.hpp"
 
-std::string genRowName(struct dirent *entry)
+std::string genRowName(struct dirent *entry, bool download)
 {
     std::string html;
     
     if (entry->d_type == DT_DIR)
     {
-        std::cout << "adding this to html: " << "<a href=\"" << entry->d_name << "\\\">" << entry->d_name << "\\" << "</a>" << "\n";
+        //std::cout << "adding this to html: " << "<a href=\"" << entry->d_name << "\\\">" << entry->d_name << "\\" << "</a>" << "\n";
         html = html + "<a href=\"" + entry->d_name + "\\\">" + entry->d_name + "\\" + "</a>";
     }
-    else if (entry->d_type == DT_REG)
+    else if (entry->d_type == DT_REG && download == false)
         html = html + "<a href=\"" + entry->d_name + "\">" + entry->d_name + "</a>";
+    else if (entry->d_type == DT_REG && download == true)
+        html = html + "<a href=\"" + entry->d_name + "\" download=\"" + entry->d_name + "\">" + entry->d_name + "</a>";
     
     return html;
 }
@@ -75,7 +77,7 @@ std::string genRowSize(struct stat fileStat)
     return html;
 }
 
-std::string genRowAutoIndex(struct dirent *entry, std::string filePath)
+std::string genRowAutoIndex(struct dirent *entry, std::string filePath, bool download)
 {
     std::string html;
     struct stat fileStat;
@@ -86,7 +88,7 @@ std::string genRowAutoIndex(struct dirent *entry, std::string filePath)
 
     html += "<tr>";
     html += "<td>";
-    html += genRowName(entry);
+    html += genRowName(entry, download);
     html += "</td><td>";
     html += genRowLastMod(fileStat);
     html += "</td><td>";
@@ -99,7 +101,7 @@ std::string genRowAutoIndex(struct dirent *entry, std::string filePath)
     return html;
 }
 
-std::string genRowsAutoIndex(std::string path)
+std::string genRowsAutoIndex(std::string path, bool download)
 {
     std::string     html;
     struct dirent   *entry;
@@ -113,7 +115,7 @@ std::string genRowsAutoIndex(std::string path)
     while ((entry = readdir(dp)))
     {
         try {
-            html += genRowAutoIndex(entry, path + entry->d_name);
+            html += genRowAutoIndex(entry, path + entry->d_name, download);
         } catch (const ServerException &e) {
             throw ServerException("genRowsAutoIndex: " + std::string(e.what()), e.getCode());
             //std::cerr << "genRowsAutoIndex: genRowAutoIndex: stats of file " << std::string(e.what()) << '\n';
@@ -169,7 +171,7 @@ std::string Connection::genBodyAutoIndex(std::string path)
         "            <th>Size</th>\n"
         "            <th>Permisions</th>\n"
         "        </tr>";
-    response_body_middle = genRowsAutoIndex(path);
+    response_body_middle = genRowsAutoIndex(path, this->_download);
     response_body_end =
         "        </table>\n"
         "    </body>\n"

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vcereced <vcereced@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:12:40 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/25 20:08:24 by vcereced         ###   ########.fr       */
+/*   Updated: 2024/09/27 16:46:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 Connection::Connection() : VHost(), _clientSocket(0), _clientAddrSize(sizeof(_clientAddr))
 {
     _keepAlive = false;
+    _download = false;
 }   
 
 Connection::~Connection()

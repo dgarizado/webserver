@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/25 18:39:04 by marvin           ###   ########.fr       */
+/*   Updated: 2024/09/27 16:45:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void Connection::requestCheck(RequestParser &request)
         throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
     if (this->_path.empty())
         throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, INTERNAL_SERVER_ERROR);
-    
+    if (uriRequested.find("download") != std::string::npos)
+        this->_download = true;
     
     if (method == "POST")
     {

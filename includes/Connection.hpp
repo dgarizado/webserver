@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/25 18:38:32 by marvin           ###   ########.fr       */
+/*   Updated: 2024/09/27 16:46:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ class Connection : public VHost
         std::string                 _format;
 		int                         _statusCode;
         bool                        _keepAlive;
+        bool                        _download;
         RequestParser               _requestConnection;
         long                        _clientMaxBodySize;
         //POST
