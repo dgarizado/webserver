@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   FileParse.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 12:12:05 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/07 12:32:03 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/10/01 16:50:22 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ void varServer(FileParse *ref, std::ifstream &file, std::istringstream &iss, int
         token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
         // port = std::stoi(token); //if error it throw exception
         std::stringstream ss(token);
-        if (!(ss >> port))
+        if (!(ss >> port) || !isNumber(ss))
             throw std::runtime_error("port is not a number");
         ref->getStruct().ports.insert(port);
         ref->getStruct().serverData[nServer].listen = port;

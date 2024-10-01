@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+         #
+#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/09/20 18:56:04 by dgarizad         ###   ########.fr        #
+#    Updated: 2024/10/01 15:29:07 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,4 +65,6 @@ fclean: clean
 	@$(RM) $(NAME)
 	@echo "$(RED)$(NAME) executable has been removed!$(CLR_RMV)"
 
+run:
+	./webserv ./conf/server.conf
 

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:41:58 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/25 18:38:00 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/01 16:49:42 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,22 @@ int ft_error(std::string msg)
 {
 	std::cerr << YELLOW << msg << RESET << std::endl;
 	return (-1);
+}
+
+int	ftFreePointerArr(char **arr)
+{
+	int	i;
+
+	i = 0;
+	if (arr == NULL)
+		return (0);
+	while (arr[i])
+	{
+		free(arr[i++]);
+		arr[i - 1] = NULL;
+	}
+	free(arr);
+	return (0);
 }
 
 void    openFile(std::string filePath, std::ifstream& file)
@@ -68,6 +84,17 @@ char** convertToCharArray(const std::vector<std::string>& strList) {
     charArray[strList.size()] = NULL;
     
     return charArray;
+}
+
+bool isNumber(std::stringstream &ss)
+{
+    char c;
+    while (ss >> c)
+    {
+        if (!isdigit(c))
+            return false;
+    }
+    return true;
 }
 
 std::string extractPathInfo(std::string uri)
@@ -226,3 +253,4 @@ void showParamsConsoleHTTP(std::string responseStr, size_t sizeResponse, int cli
               << std::setw(colWidth) << mime
               << std::setw(colWidth) << sizeResponse << "\n\n";
 }
+

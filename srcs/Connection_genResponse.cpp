@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection_genResponse.cpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/07/08 18:35:55 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/10/01 17:31:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,13 +152,12 @@ std::string Connection::genResponseGET(RequestParser &request)
        responseHTTP_body = genBodyAutoIndex(this->_path);
     }
     else
-        throw ServerException("genResponse: not default index and autoindex defined ", NOT_FOUND);
+        throw ServerException("genResponse: not default index and autoindex defined ", INTERNAL_SERVER_ERROR);
         
     responseHTTP_header = genHeaderHTTP(responseHTTP_body, this->_path);
 
     return responseHTTP_header + responseHTTP_body;
 }
-
 
 /**
  * @brief This function is used to parse the body of a POST request with a multipart/form-data content type.

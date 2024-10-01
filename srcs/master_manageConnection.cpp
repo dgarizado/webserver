@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/27 19:02:50 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/01 15:55:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,21 @@ void Connection::requestCheck(RequestParser &request)
     
     if (uriRequested.find("download") != std::string::npos)
     {
-        std::cout << BYELLOW << uriRequested + " se HA levantado el FLAG" << RESET << std::endl;
+        //std::cout << BYELLOW << uriRequested + " se HA levantado el FLAG" << RESET << std::endl;
         this->_download = true;
     }
     else
-        std::cout << RED << uriRequested + " NO se HA levantado el FLAG" << RESET << std::endl;
+    {
+        //std::cout << RED << uriRequested + " NO se HA levantado el FLAG" << RESET << std::endl;
+        this->_download = false;
+    }
     
     if (method == "POST")
     {
         std::istringstream iss(request.get()["CONTENT_LENGTH"]);
         long contentLength;
         iss >> contentLength;
+        std::cout << BBLUE << "Content lenght at if: " << contentLength << "and body sizE: " << _clientMaxBodySize <<RESET << std::endl;
         if (contentLength > this->_clientMaxBodySize)
             throw ServerException("requestCheck: exceded max client body size " + uriRequested, PAYLOAD_TOO_LARGE);
     }

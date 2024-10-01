@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dgarizad <dgarizad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/07/08 18:44:19 by dgarizad         ###   ########.fr       */
+/*   Updated: 2024/10/01 17:04:19 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
  
 //DEFAULT CONFIGURATION!!!!
 # define MAX_EVENTS 				64 
-# define SOCKET_BUFFER_SIZE  		42000 //default limit body size if not configured in .conf ??????
+# define SOCKET_BUFFER_SIZE  		420000 //default limit body size if not configured in .conf ??????
 # define CGI_BUFFER_SIZE			10000
 			
 
@@ -69,7 +69,7 @@
 # define FORBIDDEN_FILE 			"403.html"
 # define NOT_FOUND_FILE 			"404.html"
 # define METHOD_NOT_ALLOWED_FILE 	"405.html"
-# define PAYLOAD_TOO_LARGE_FILE 		"413.html"
+# define PAYLOAD_TOO_LARGE_FILE 	"413.html"
 # define INTERNAL_SERVER_ERROR_FILE "500.html"
  
 # define ALLOW_AUTOINDEX 			false
@@ -152,5 +152,7 @@ void 			showParamsConsoleHTTP(std::string , size_t , int, int, bool);
 void 			printWaitConsole(void);
 char** 			convertToCharArray(const std::vector<std::string>& strList); 
 void 			openFile(std::string filePath, std::ifstream& file);
+int				ftFreePointerArr(char **arr);
+bool 			isNumber(std::stringstream &ss);
 
 #endif

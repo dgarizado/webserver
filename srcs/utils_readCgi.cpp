@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:19:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/09/27 18:13:27 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/01 15:27:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ std::string readOutputCgi(std::string cgi, std::string filePath, std::string fil
 
         dupAndCloseFd(pipefd);
         execve(cgi.c_str(), argv, environ);
-        
+        ftFreePointerArr(argv);
         _exit(EXIT_FAILURE);
     }
     else // Father process
