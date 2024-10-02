@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/10/02 10:57:01 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 15:19:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@
 # define OK 						200
 # define NO_CONTENT 				204
 # define MOVED_PERMANENTLY			301
-# define MOVED_TEMPORARILY			302
 # define BAD_REQUEST 				400
 # define FORBIDDEN 					403
 # define NOT_FOUND 					404

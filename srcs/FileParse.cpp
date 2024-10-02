@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 12:12:05 by vcereced          #+#    #+#             */
-/*   Updated: 2024/10/02 10:19:16 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 15:57:36 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,10 +164,7 @@ void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLo
     else if (token == "cgi")
         setCgiExtensions(ref->getStruct().serverData[nServer].locations[nLocation], nServer, nLocation, iss);
     else if (token == "return")
-    {
-        std::cout << RED << "ENTRO A RETUREN !!!!!!!!" << RESET << std::endl;
         setRedirection(ref->getStruct().serverData[nServer].locations[nLocation], iss);
-    }
 }
 
 void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
@@ -361,7 +358,7 @@ int checksBraces(std::string filename)
     int                 braces = 0;
 
     if (!file.is_open())
-        throw std::runtime_error("checksBraces: " +  std::string(strerror(errno))+ " " + filename);
+        throw std::runtime_error("checksBraces: " + filename);
     while (std::getline(file, line))
     {
         for (size_t i = 0; i < line.size(); ++i)
@@ -401,7 +398,7 @@ void FileParse::loadConfigFromFile(const std::string filename)
         
 		checksBraces(filename);
         if (!file.is_open())
-            throw std::runtime_error(std::string(strerror(errno)) + " " + filename);
+            throw std::runtime_error("loadConfigFromFile cannot open " + filename);
         while (std::getline(file, line)) 
         {  
             if (lineParser(this, file, line) == true)//Parse line per line

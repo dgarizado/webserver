@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 19:19:13 by vcereced          #+#    #+#             */
-/*   Updated: 2024/10/01 15:27:55 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 15:57:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,14 @@ std::string readOutputCgi(std::string cgi, std::string filePath, std::string fil
     signal(SIGALRM, handle_alarm);
 
     if (pipe(pipefd) == -1)
-        throw ServerException("readOutputCgi: cannot create pipe:  " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR);
+        throw ServerException("readOutputCgi: cannot create pipe:  ", INTERNAL_SERVER_ERROR);
 
     pid = fork();
     if (pid == -1)
     {
         close(pipefd[1]);
         close(pipefd[0]);
-        throw ServerException("readOutputCgi: fork failed:  " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR); 
+        throw ServerException("readOutputCgi: fork failed:  ", INTERNAL_SERVER_ERROR); 
     }
     
     if (pid == 0)// Child process

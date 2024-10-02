@@ -12,23 +12,23 @@
 
  #include "../includes/Connection.hpp"
 
-void Connection::setVarsEnviroment(RequestParser &request)//mixing objects its not good but works 
+void Connection::setVarsEnviroment(RequestParser &request)
 {
     const char *value;
 
-    if (request.get()["REQUEST_METHOD"] == "GET") //mixing objects its not good but works 
+    if (request.get()["REQUEST_METHOD"] == "GET")
     {
         value = this->_queryString.c_str();
         if (setenv("QUERY_STRING", value, 1) != 0)
-            throw ServerException("setVarsEnviroment: QUERY_STRING error: " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR);
+            throw ServerException("setVarsEnviroment: QUERY_STRING error: " , INTERNAL_SERVER_ERROR);
 
         value = request.get()["REQUEST_METHOD"].c_str();
         if (setenv("REQUEST_METHOD", value, 1) != 0)
-            throw ServerException("setVarsEnviroment: REQUEST_METHOD error: " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR);
+            throw ServerException("setVarsEnviroment: REQUEST_METHOD error: " , INTERNAL_SERVER_ERROR);
 
         value = this->_pathInfo.c_str();
         if (setenv("PATH_INFO", value, 1) != 0)
-            throw ServerException("setVarsEnviroment: PATH_INFO error: " + std::string(strerror(errno)), INTERNAL_SERVER_ERROR);
+            throw ServerException("setVarsEnviroment: PATH_INFO error: " , INTERNAL_SERVER_ERROR);
     }
 }
 
