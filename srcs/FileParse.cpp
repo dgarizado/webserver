@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 12:12:05 by vcereced          #+#    #+#             */
-/*   Updated: 2024/10/01 16:50:22 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 10:19:16 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,13 @@ void ft_braces(int &braces, std::string &token)
 
 void setDefaultValuesLocation(t_location &ref)
 {
-    ref.autoIndex               = ALLOW_AUTOINDEX;
-    ref.allowedMethods[GET]     = ALLOW_GET;
-    ref.allowedMethods[POST]    = ALLOW_POS;
-    ref.allowedMethods[PUT]     = ALLOW_PUT;
-    ref.allowedMethods[DELETE]  = ALLOW_DELETE;
+    ref.autoIndex                   = ALLOW_AUTOINDEX;
+    ref.allowedMethods[GET]         = ALLOW_GET;
+    ref.allowedMethods[POST]        = ALLOW_POS;
+    ref.allowedMethods[PUT]         = ALLOW_PUT;
+    ref.allowedMethods[DELETE]      = ALLOW_DELETE;
+    ref.redirection.statusCode      = 0;
+    ref.redirection.urlRedirection  = "";
 }
 
 void setDefaultParams(t_http &ref)
@@ -99,6 +101,39 @@ void setCgiExtensions(t_location &ref, int &nServer, int &nLocation, std::istrin
     nLocation *= 1;
 }
 
+void setRedirectionStatusCode(t_location &ref, std::string token)
+{
+    int                 statusCode;
+    std::stringstream   ss(token);
+    
+    if (!(ss >> statusCode) || !isNumber(ss))
+        throw std::invalid_argument("not valid status code of redirection " + token);
+    else
+        ref.redirection.statusCode = statusCode; 
+}
+
+void setRedirectionUrl(t_location &ref, std::string token)
+{
+    ref.redirection.urlRedirection = token;
+}
+void setRedirection(t_location &ref, std::istringstream &iss)
+{
+    std::string token;
+    
+	iss >> token;
+    token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+    
+    setRedirectionStatusCode(ref, token);
+
+    iss >> token;
+    token.erase(std::remove(token.begin(), token.end(), ';'), token.end());
+    
+    setRedirectionUrl(ref, token);
+    
+    if ((iss >> token))
+        throw std::invalid_argument("no valid redirection configuration");
+}
+
 void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)
 {
     if (token == "root" )
@@ -128,6 +163,11 @@ void varLocation(FileParse *ref, std::istringstream &iss, int &nServer, int &nLo
         setAllowedMethod(ref->getStruct().serverData[nServer].locations[nLocation], iss);
     else if (token == "cgi")
         setCgiExtensions(ref->getStruct().serverData[nServer].locations[nLocation], nServer, nLocation, iss);
+    else if (token == "return")
+    {
+        std::cout << RED << "ENTRO A RETUREN !!!!!!!!" << RESET << std::endl;
+        setRedirection(ref->getStruct().serverData[nServer].locations[nLocation], iss);
+    }
 }
 
 void insideLocation(FileParse *ref,std::ifstream &file, std::istringstream &iss, int &nServer, int &nLocation, std::string &token)

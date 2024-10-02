@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 13:30:21 by vcereced          #+#    #+#             */
-/*   Updated: 2024/10/01 17:31:58 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 10:53:11 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,16 +138,20 @@ std::string Connection::genResponseGET(RequestParser &request)
     defaultIndexs = this->getLocation().index;
     autoIndex = this->getLocation().autoIndex;
 
-    if (this->_fileName.empty() == false)
+    if (this->_location.redirection.statusCode != 0) //1º Redirection
+    {
+        return genResponseRedirection();
+    }
+    else if (this->_fileName.empty() == false) //2º file.html
     {
         responseHTTP_body = genBodyHTTP(this->_path, request);
     }
-    else if (defaultIndexs.empty() == false)
+    else if (defaultIndexs.empty() == false) //3º default index
     {
         this->_path = genPathDefaultIndex();
         responseHTTP_body = genBodyHTTP(this->_path, request);
     }
-    else if (autoIndex == true)
+    else if (autoIndex == true) //4º autoindex
     {
        responseHTTP_body = genBodyAutoIndex(this->_path);
     }
@@ -303,23 +307,7 @@ std::string Connection::genResponse(RequestParser &request)
     if (method == "GET")
         return genResponseGET(request);
     else if (method == "POST")
-    {
-        _keepAlive = true;
-
-        if (request.getBodyWatchDog() == 1)
-        {
-            this->processPost();
-            response = "HTTP/1.1 200 OK\r\n";
-            response += "Content-Type: text/plain\r\n";
-            response += "Content-Length: 22\r\n"; // Length of "POST request processed"
-            response += "\r\n";
-            response += "POST request processed";
-            _keepAlive = false;
-            return response;
-        }
-        std::string continueRequest = "HTTP/1.1 100 Continue\r\n\r\n";
-        return continueRequest;
-    }
+        return genResponsePOST(request);
     else if (method == "DELETE")
        return genResponseDELETE();
     else

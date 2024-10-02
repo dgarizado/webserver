@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:35:35 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/10/01 15:55:51 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 11:05:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void Connection::requestCheck(RequestParser &request)
 
     if (this->methodCheck(method) == false)
         throw ServerException("requestCheck: location requested method not allowed: " + uriRequested, METHOD_NOT_ALLOWED);
-    if (this->_path.empty())
+    if (this->_path.empty() && this->_location.redirection.statusCode == 0)
         throw ServerException("requestCheck: location requested have not root defined: " + uriRequested, INTERNAL_SERVER_ERROR);
     std::cout << BYELLOW <<"URIREQUESTED: "<< uriRequested << RESET << std::endl; 
     

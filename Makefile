@@ -6,7 +6,7 @@
 #    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 11:25:31 by dgarizad          #+#    #+#              #
-#    Updated: 2024/10/01 15:29:07 by marvin           ###   ########.fr        #
+#    Updated: 2024/10/02 10:58:55 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,8 @@ RM		    := rm -rf
 
 # SRCS =  $(wildcard srcs/*.cpp)
 SRCS = main.cpp Master.cpp  Epoll.cpp utils.cpp utils_readCgi.cpp Connection_genResponseCgi.cpp VHost.cpp  FileParse.cpp FileParse_showConfig.cpp RequestParser.cpp Connection.cpp \
-	   master_manageConnection.cpp Connection_genAutoIndex.cpp Connection_genResponse.cpp Connection_requestCheck.cpp Connection_delete.cpp
+	   master_manageConnection.cpp Connection_genAutoIndex.cpp Connection_genResponse.cpp Connection_requestCheck.cpp Connection_delete.cpp Connection_genResponsePOST.cpp \
+	   Connection_genResponseRedirection.cpp
 SRCS := $(addprefix srcs/, $(SRCS))
 # SRCS = srcs/main.cpp srcs/ConfParse.cpp srcs/Master.cpp srcs/utils.cpp
 OBJS = $(addprefix $(OBJDIR)/, $(SRCS:.cpp=.o))

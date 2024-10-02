@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 20:08:17 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/09/27 16:46:30 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 10:54:59 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,9 @@ class Connection : public VHost
         std::string genResponse(RequestParser &request);
         std::string genPathDefaultIndex(void);
         std::string genResponseGET(RequestParser &request);
+        std::string genResponsePOST(RequestParser &request);
         std::string genResponseDELETE(void);
+        std::string genResponseRedirection(void);
         void        Response(int clientSocket, const char * response, size_t size);
 
         void               processRequest(RequestParser &request);

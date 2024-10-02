@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:31:14 by dgarizad          #+#    #+#             */
-/*   Updated: 2024/10/01 17:04:19 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 10:57:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,22 +48,25 @@
 # define RESET 						"\033[0m"
 # define PINK 						"\033[95m"
  
+
 //DEFAULT CONFIGURATION!!!!
 # define MAX_EVENTS 				64 
 # define SOCKET_BUFFER_SIZE  		420000 //default limit body size if not configured in .conf ??????
 # define CGI_BUFFER_SIZE			10000
 			
-
- 
+			
 # define ERROR_PAGES 				"./html/errorPages/"
 # define OK 						200
 # define NO_CONTENT 				204
+# define MOVED_PERMANENTLY			301
+# define MOVED_TEMPORARILY			302
 # define BAD_REQUEST 				400
 # define FORBIDDEN 					403
 # define NOT_FOUND 					404
 # define METHOD_NOT_ALLOWED 		405
 # define PAYLOAD_TOO_LARGE			413
 # define INTERNAL_SERVER_ERROR 		500
+ 
  
 # define BAD_REQUEST_FILE 			"400.html"
 # define FORBIDDEN_FILE 			"403.html"
@@ -72,6 +75,7 @@
 # define PAYLOAD_TOO_LARGE_FILE 	"413.html"
 # define INTERNAL_SERVER_ERROR_FILE "500.html"
  
+
 # define ALLOW_AUTOINDEX 			false
 # define ALLOW_GET 					true
 # define ALLOW_POS 					true
@@ -93,6 +97,11 @@ enum methods {
 	TOTAL_METHODS
 };
 
+typedef struct s_redirection {
+	int									statusCode;
+	std::string							urlRedirection;
+}t_redirection;
+
 typedef struct s_location {
 	std::string							location;
 	std::string							root;
@@ -100,6 +109,7 @@ typedef struct s_location {
 	std::map<std::string, std::string>	cgiMap;
 	bool								autoIndex;
 	bool								allowedMethods[TOTAL_METHODS];
+	t_redirection						redirection;
 }t_location;
 
 typedef struct s_server {

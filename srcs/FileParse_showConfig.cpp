@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 12:11:50 by vcereced          #+#    #+#             */
-/*   Updated: 2024/09/27 18:04:51 by marvin           ###   ########.fr       */
+/*   Updated: 2024/10/02 10:04:34 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,15 @@ void printAutoIndex(std::vector<t_location>::iterator itLoc)
     }
 }
 
+void printRedirection(std::vector<t_location>::iterator itLoc)
+{
+    if (itLoc->redirection.statusCode != 0)
+    {
+        std::cout << "\t\t    /redirection= " << itLoc->redirection.statusCode << std::endl;
+        std::cout << "\t\t\t\t= " << itLoc->redirection.urlRedirection << std::endl;
+    }
+}
+
 void printCgi(std::vector<t_location>::iterator itLoc)
 {
     if (!itLoc->cgiMap.empty())
@@ -81,16 +90,17 @@ void printLocations(std::vector<t_server>::iterator it)
     for (std::vector<t_location>::iterator itLoc = it->locations.begin(); itLoc != it->locations.end(); ++itLoc)
     {
         std::cout << "\t\t    /location\t= " << itLoc->location << std::endl;
-        
         std::cout << "\t\t    /root\t= " << itLoc->root << std::endl;
         
         printIndexNames(itLoc);
-        
         printAutoIndex(itLoc);
         
         std::cout << "\t\t    /methods\t= " << "GET:" << itLoc->allowedMethods[GET] << " POST:" << itLoc->allowedMethods[POST] << " PUT:" << itLoc->allowedMethods[PUT] << " DELETE:" << itLoc->allowedMethods[DELETE] << std::endl;
+        
         printCgi(itLoc);
-        std::cout << std::endl;
+        printRedirection(itLoc);
+        
+        std::cout << std::endl << std::endl;
     }
 }
 
